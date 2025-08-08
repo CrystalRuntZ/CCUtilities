@@ -21,22 +21,18 @@ public class RewardManager {
     public void giveVoteReward(Player player) {
         String tier = getPermissionTier(player);
         if (tier == null) {
-            Bukkit.getLogger().warning("[VOTE] Could not determine vote tier for " + player.getName());
             return;
         }
 
         List<Map<String, Object>> pool;
 
         if (config.isBeginningOfMonth() && player.hasPermission("celestialvoting.botm." + tier)) {
-            Bukkit.getLogger().info("[VOTE] Using BOTM rewards for tier: " + tier);
             pool = config.getBotmRewardsForTier(tier);
         } else {
-            Bukkit.getLogger().info("[VOTE] Using regular rewards for tier: " + tier);
             pool = config.getRewardsForTier(tier);
         }
 
         if (pool == null || pool.isEmpty()) {
-            Bukkit.getLogger().warning("[VOTE] No reward pool found for tier: " + tier);
             return;
         }
 
@@ -46,7 +42,6 @@ public class RewardManager {
                 .sum();
 
         if (totalWeight <= 0) {
-            Bukkit.getLogger().warning("[VOTE] No valid chances found in pool for tier: " + tier);
             return;
         }
 
@@ -57,15 +52,11 @@ public class RewardManager {
             int chance = (int) reward.getOrDefault("chance", 0);
             cumulative += chance;
             if (roll < cumulative) {
-                Bukkit.getLogger().info("[VOTE] Selected reward for " + player.getName() + " (rolled " + roll + ")");
                 applyReward(player, reward);
                 VoteStreakTracker.recordVote(player);
                 return;
             }
         }
-
-        // Should never happen
-        Bukkit.getLogger().warning("[VOTE] Failed to select reward for " + player.getName() + ", this is a bug.");
     }
 
 

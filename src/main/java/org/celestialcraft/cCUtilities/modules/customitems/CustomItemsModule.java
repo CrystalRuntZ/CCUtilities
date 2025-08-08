@@ -111,6 +111,7 @@ public class CustomItemsModule implements Module {
         CustomItemRegistry.register(new ToxicChestplateItem());
         CustomItemRegistry.register(new VoidPickaxeItem());
         CustomItemRegistry.register(new WindStaffItem());
+        CustomItemRegistry.register(new RailGunItem());
 
         if (Bukkit.getPluginManager().isPluginEnabled("LuckPerms")) {
             CustomItemRegistry.register(new CapybaraSpawnEggItem());
