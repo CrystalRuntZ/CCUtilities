@@ -1,0 +1,491 @@
+vote-tiers:
+  - divine
+  - ethereal
+  - ascendant
+  - radiant
+  - heavenly
+  - normal
+
+rewards:
+  divine:
+    - type: COMMAND
+      value: "crates key give %player% worldkey 1"
+      chance: 10
+      broadcast-key: cratekey
+    - type: COMMAND
+      value: "eco give %player% 5"
+      chance: 10
+      broadcast-key: 5vp
+    - type: COMMAND
+      value: "give %player% spawner 1"
+      chance: 10
+      broadcast-key: spawner1
+    - type: COMMAND
+      value: "give %player% beacon 1"
+      chance: 10
+      broadcast-key: beacon1
+    - type: COMMAND
+      value: "acb %player% 500"
+      chance: 10
+      broadcast-key: claimblocks500
+    - type: COMMAND
+      value: "give %player% diamond 5"
+      chance: 10
+      broadcast-key: diamond5
+    - type: COMMAND
+      value: "xp give %player% 30l"
+      chance: 10
+      broadcast-key: 30l
+    - type: COMMAND
+      value: "crates key give %player decorkey 1%"
+      chance: 10
+      broadcast-key: decorkey
+    - type: COMMAND
+      value: "give %player% blaze_spawn_egg 1"
+      chance: 4
+      broadcast-key: blazeegg
+    - type: COMMAND
+      value: "give %player% cow_spawn_egg 1"
+      chance: 4
+      broadcast-key: cowegg
+    - type: COMMAND
+      value: "give %player% pig_spawn_egg 1"
+      chance: 4
+      broadcast-key: pigegg
+    - type: COMMAND
+      value: "give %player% sniffer_spawn_egg 1"
+      chance: 4
+      broadcast-key: snifferegg
+    - type: COMMAND
+      value: "give %player% skeleton_spawn_egg 1"
+      chance: 4
+      broadcast-key: skeletonegg
+
+  ethereal:
+    - type: COMMAND
+      value: "crates key give %player% worldkey 1"
+      chance: 10
+      broadcast-key: cratekey
+    - type: COMMAND
+      value: "eco give %player% 4"
+      chance: 10
+      broadcast-key: 4vp
+    - type: COMMAND
+      value: "give %player% spawner 1"
+      chance: 10
+      broadcast-key: spawner1
+    - type: COMMAND
+      value: "give %player% beacon 1"
+      chance: 10
+      broadcast-key: beacon1
+    - type: COMMAND
+      value: "acb %player% 500"
+      chance: 10
+      broadcast-key: claimblocks500
+    - type: COMMAND
+      value: "give %player% diamond 4"
+      chance: 10
+      broadcast-key: diamond4
+    - type: COMMAND
+      value: "xp give %player% 25l"
+      chance: 10
+      broadcast-key: 25l
+    - type: COMMAND
+      value: "crates key give %player decorkey 1%"
+      chance: 10
+      broadcast-key: decorkey
+    - type: COMMAND
+      value: "give %player% blaze_spawn_egg 1"
+      chance: 4
+      broadcast-key: blazeegg
+    - type: COMMAND
+      value: "give %player% cow_spawn_egg 1"
+      chance: 4
+      broadcast-key: cowegg
+    - type: COMMAND
+      value: "give %player% pig_spawn_egg 1"
+      chance: 4
+      broadcast-key: pigegg
+    - type: COMMAND
+      value: "give %player% sniffer_spawn_egg 1"
+      chance: 4
+      broadcast-key: snifferegg
+    - type: COMMAND
+      value: "give %player% skeleton_spawn_egg 1"
+      chance: 4
+      broadcast-key: skeletonegg
+
+  ascendant:
+    - type: COMMAND
+      value: "crates key give %player% worldkey 1"
+      chance: 10
+      broadcast-key: cratekey
+    - type: COMMAND
+      value: "eco give %player% 3"
+      chance: 10
+      broadcast-key: 3vp
+    - type: COMMAND
+      value: "give %player% beacon 1"
+      chance: 10
+      broadcast-key: beacon1
+    - type: COMMAND
+      value: "acb %player% 250"
+      chance: 10
+      broadcast-key: claimblocks250
+    - type: COMMAND
+      value: "give %player% diamond 3"
+      chance: 15
+      broadcast-key: diamond3
+    - type: COMMAND
+      value: "xp give %player% 20l"
+      chance: 15
+      broadcast-key: 20l
+    - type: COMMAND
+      value: "crates key give %player decorkey 1%"
+      chance: 10
+      broadcast-key: decorkey
+    - type: COMMAND
+      value: "give %player% spider_spawn_egg 1"
+      chance: 4
+      broadcast-key: spideregg
+    - type: COMMAND
+      value: "give %player% cow_spawn_egg 1"
+      chance: 4
+      broadcast-key: cowegg
+    - type: COMMAND
+      value: "give %player% pig_spawn_egg 1"
+      chance: 4
+      broadcast-key: pigegg
+    - type: COMMAND
+      value: "give %player% mooshroom_spawn_egg 1"
+      chance: 4
+      broadcast-key: mooshroomegg
+    - type: COMMAND
+      value: "give %player% skeleton_spawn_egg 1"
+      chance: 4
+      broadcast-key: skeletonegg
+
+  radiant:
+    - type: COMMAND
+      value: "crates key give %player% worldkey 1"
+      chance: 10
+      broadcast-key: cratekey
+    - type: COMMAND
+      value: "eco give %player% 2"
+      chance: 15
+      broadcast-key: 2vp
+    - type: COMMAND
+      value: "acb %player% 250"
+      chance: 15
+      broadcast-key: claimblocks250
+    - type: COMMAND
+      value: "give %player% diamond 2"
+      chance: 15
+      broadcast-key: diamond2
+    - type: COMMAND
+      value: "xp give %player% 15l"
+      chance: 15
+      broadcast-key: 15l
+    - type: COMMAND
+      value: "crates key give %player decorkey 1%"
+      chance: 10
+      broadcast-key: decorkey
+    - type: COMMAND
+      value: "give %player% spider_spawn_egg 1"
+      chance: 4
+      broadcast-key: spideregg
+    - type: COMMAND
+      value: "give %player% cow_spawn_egg 1"
+      chance: 4
+      broadcast-key: cowegg
+    - type: COMMAND
+      value: "give %player% pig_spawn_egg 1"
+      chance: 4
+      broadcast-key: pigegg
+    - type: COMMAND
+      value: "give %player% mooshroom_spawn_egg 1"
+      chance: 4
+      broadcast-key: mooshroomegg
+    - type: COMMAND
+      value: "give %player% skeleton_spawn_egg 1"
+      chance: 4
+      broadcast-key: skeletonegg
+
+  heavenly:
+    - type: COMMAND
+      value: "crates key give %player% worldkey 1"
+      chance: 10
+      broadcast-key: cratekey
+    - type: COMMAND
+      value: "eco give %player% 2"
+      chance: 15
+      broadcast-key: 2vp
+    - type: COMMAND
+      value: "acb %player% 250"
+      chance: 15
+      broadcast-key: claimblocks250
+    - type: COMMAND
+      value: "give %player% diamond 2"
+      chance: 15
+      broadcast-key: diamond2
+    - type: COMMAND
+      value: "xp give %player% 15l"
+      chance: 15
+      broadcast-key: 15l
+    - type: COMMAND
+      value: "crates key give %player decorkey 1%"
+      chance: 10
+      broadcast-key: decorkey
+    - type: COMMAND
+      value: "give %player% spider_spawn_egg 1"
+      chance: 4
+      broadcast-key: spideregg
+    - type: COMMAND
+      value: "give %player% cow_spawn_egg 1"
+      chance: 4
+      broadcast-key: cowegg
+    - type: COMMAND
+      value: "give %player% pig_spawn_egg 1"
+      chance: 4
+      broadcast-key: pigegg
+    - type: COMMAND
+      value: "give %player% chicken_spawn_egg 1"
+      chance: 4
+      broadcast-key: chickenegg
+    - type: COMMAND
+      value: "give %player% skeleton_spawn_egg 1"
+      chance: 4
+      broadcast-key: skeletonegg
+
+  normal:
+    - type: COMMAND
+      value: "crates key give %player% worldkey 1"
+      chance: 10
+      broadcast-key: cratekey
+    - type: COMMAND
+      value: "eco give %player% 1"
+      chance: 15
+      broadcast-key: 1vp
+    - type: COMMAND
+      value: "acb %player% 100"
+      chance: 15
+      broadcast-key: claimblocks100
+    - type: COMMAND
+      value: "give %player% diamond 1"
+      chance: 15
+      broadcast-key: diamond1
+    - type: COMMAND
+      value: "xp give %player% 10l"
+      chance: 15
+      broadcast-key: 10l
+    - type: COMMAND
+      value: "crates key give %player decorkey 1%"
+      chance: 10
+      broadcast-key: decorkey
+    - type: COMMAND
+      value: "give %player% zombie_spawn_egg 1"
+      chance: 4
+      broadcast-key: zombieegg
+    - type: COMMAND
+      value: "give %player% cow_spawn_egg 1"
+      chance: 4
+      broadcast-key: cowegg
+    - type: COMMAND
+      value: "give %player% pig_spawn_egg 1"
+      chance: 4
+      broadcast-key: pigegg
+    - type: COMMAND
+      value: "give %player% chicken_spawn_egg 1"
+      chance: 4
+      broadcast-key: chickenegg
+    - type: COMMAND
+      value: "give %player% skeleton_spawn_egg 1"
+      chance: 4
+      broadcast-key: skeletonegg
+
+botm-rewards:
+  divine:
+    - type: COMMAND
+      value: "crates key give %player% worldkey 1"
+      chance: 25
+      broadcast-key: cratekey
+    - type: COMMAND
+      value: "acb %player% 1000"
+      chance: 25
+      broadcast-key: claimblocks1000
+    - type: COMMAND
+      value: "give %player% diamond_block 1"
+      chance: 10
+      broadcast-key: db1
+    - type: COMMAND
+      value: "give %player% spawner 1"
+      chance: 20
+      broadcast-key: spawner1
+    - type: COMMAND
+      value: "give %player% beacon 1"
+      chance: 10
+      broadcast-key: beacon1
+    - type: COMMAND
+      value: "give %player% netherite_ingot 1"
+      chance: 5
+      broadcast-key: netheriteingot1
+    - type: COMMAND
+      value: "eco give %player% 5"
+      chance: 5
+      broadcast-key: 5vp
+
+  ethereal:
+    - type: COMMAND
+      value: "crates key give %player% worldkey 1"
+      chance: 25
+      broadcast-key: cratekey
+    - type: COMMAND
+      value: "acb %player% 1000"
+      chance: 25
+      broadcast-key: claimblocks1000
+    - type: COMMAND
+      value: "give %player% diamond_block 1"
+      chance: 10
+      broadcast-key: db1
+    - type: COMMAND
+      value: "give %player% spawner 1"
+      chance: 20
+      broadcast-key: spawner1
+    - type: COMMAND
+      value: "give %player% beacon 1"
+      chance: 10
+      broadcast-key: beacon1
+    - type: COMMAND
+      value: "give %player% netherite_ingot 1"
+      chance: 5
+      broadcast-key: netheriteingot1
+    - type: COMMAND
+      value: "eco give %player% 5"
+      chance: 5
+      broadcast-key: 5vp
+
+  ascendant:
+    - type: COMMAND
+      value: "crates key give %player% worldkey 1"
+      chance: 25
+      broadcast-key: cratekey
+    - type: COMMAND
+      value: "acb %player% 1000"
+      chance: 25
+      broadcast-key: claimblocks1000
+    - type: COMMAND
+      value: "give %player% diamond 7"
+      chance: 10
+      broadcast-key: diamond7
+    - type: COMMAND
+      value: "give %player% spawner 1"
+      chance: 20
+      broadcast-key: spawner1
+    - type: COMMAND
+      value: "give %player% beacon 1"
+      chance: 10
+      broadcast-key: beacon1
+    - type: COMMAND
+      value: "give %player% netherite_ingot 1"
+      chance: 5
+      broadcast-key: netheriteingot1
+    - type: COMMAND
+      value: "eco give %player% 5"
+      chance: 5
+      broadcast-key: 5vp
+
+  radiant:
+    - type: COMMAND
+      value: "crates key give %player% worldkey 1"
+      chance: 25
+      broadcast-key: cratekey
+    - type: COMMAND
+      value: "acb %player% 1000"
+      chance: 25
+      broadcast-key: claimblocks1000
+    - type: COMMAND
+      value: "give %player% diamond 7"
+      chance: 10
+      broadcast-key: diamond7
+    - type: COMMAND
+      value: "give %player% spawner 1"
+      chance: 10
+      broadcast-key: spawner1
+    - type: COMMAND
+      value: "give %player% beacon 1"
+      chance: 20
+      broadcast-key: beacon1
+    - type: COMMAND
+      value: "give %player% netherite_ingot 1"
+      chance: 5
+      broadcast-key: netheriteingot1
+    - type: COMMAND
+      value: "eco give %player% 5"
+      chance: 5
+      broadcast-key: 5vp
+
+  heavenly:
+    - type: COMMAND
+      value: "crates key give %player% worldkey 1"
+      chance: 25
+      broadcast-key: cratekey
+    - type: COMMAND
+      value: "acb %player% 1000"
+      chance: 25
+      broadcast-key: claimblocks1000
+    - type: COMMAND
+      value: "give %player% diamond 5"
+      chance: 10
+      broadcast-key: diamond5
+    - type: COMMAND
+      value: "give %player% spawner 1"
+      chance: 10
+      broadcast-key: spawner1
+    - type: COMMAND
+      value: "give %player% beacon 1"
+      chance: 20
+      broadcast-key: beacon1
+    - type: COMMAND
+      value: "give %player% netherite_ingot 1"
+      chance: 5
+      broadcast-key: netheriteingot1
+    - type: COMMAND
+      value: "eco give %player% 5"
+      chance: 5
+      broadcast-key: 5vp
+
+  normal:
+    - type: COMMAND
+      value: "crates key give %player% worldkey 1"
+      chance: 25
+      broadcast-key: cratekey
+    - type: COMMAND
+      value: "acb %player% 1000"
+      chance: 25
+      broadcast-key: claimblocks1000
+    - type: COMMAND
+      value: "give %player% diamond 5"
+      chance: 10
+      broadcast-key: diamond5
+    - type: COMMAND
+      value: "give %player% spawner 1"
+      chance: 10
+      broadcast-key: spawner1
+    - type: COMMAND
+      value: "give %player% beacon 1"
+      chance: 20
+      broadcast-key: beacon1
+    - type: COMMAND
+      value: "give %player% netherite_ingot 1"
+      chance: 5
+      broadcast-key: netheriteingot1
+    - type: COMMAND
+      value: "eco give %player% 5"
+      chance: 5
+      broadcast-key: 5vp
+
+streak-reward:
+  days: 7
+  type: COMMAND
+  value: "crates key give %player% worldkey 1"
+  broadcast-key: streak

@@ -1,0 +1,278 @@
+spawn-world: "wild_the_end"
+
+messages:
+  spawn: "{name} &7has appeared in the End!"
+
+dragon-types:
+  VOID:
+    base-health: 500
+    health-per-player: 50
+    bossbar-color: PURPLE
+
+  FIRE:
+    base-health: 500
+    health-per-player: 50
+    bossbar-color: RED
+
+  ICE:
+    base-health: 500
+    health-per-player: 50
+    bossbar-color: BLUE
+
+  STORM:
+    base-health: 500
+    health-per-player: 50
+    bossbar-color: WHITE
+
+  EARTH:
+    base-health: 500
+    health-per-player: 50
+    bossbar-color: GREEN
+
+  SHADOW:
+    base-health: 500
+    health-per-player: 50
+    bossbar-color: PINK
+
+  LIGHT:
+    base-health: 500
+    health-per-player: 50
+    bossbar-color: YELLOW
+
+  TOXIC:
+    base-health: 500
+    health-per-player: 50
+    bossbar-color: GREEN
+
+  ARCANE:
+    base-health: 500
+    health-per-player: 50
+    bossbar-color: PINK
+
+  SAND:
+    base-health: 500
+    health-per-player: 50
+    bossbar-color: YELLOW
+
+  BLOOD:
+    base-health: 500
+    health-per-player: 50
+    bossbar-color: RED
+
+  PLAGUE:
+    base-health: 500
+    health-per-player: 50
+    bossbar-color: GREEN
+
+  CRYSTAL:
+    base-health: 500
+    health-per-player: 50
+    bossbar-color: BLUE
+
+  AETHER:
+    base-health: 500
+    health-per-player: 50
+    bossbar-color: WHITE
+
+  HELLFIRE:
+    base-health: 500
+    health-per-player: 50
+    bossbar-color: RED
+
+  CELESTIAL:
+    base-health: 750
+    health-per-player: 75
+    bossbar-color: PURPLE
+
+dragons:
+  VOID:
+    rewards:
+      top:
+        - "crates key give %player% dragonkey 1"
+        - "crates key give %player% dragonkey 1"
+        - "crates key give %player% dragonkey 1"
+      thresholds:
+        commands:
+          - "crates key give %player% dragonkey 1"
+        chances:
+          50: 0.5
+
+  FIRE:
+    rewards:
+      top:
+        - "crates key give %player% dragonkey 1"
+        - "crates key give %player% dragonkey 1"
+        - "crates key give %player% dragonkey 1"
+      thresholds:
+        commands:
+          - "crates key give %player% dragonkey 1"
+        chances:
+          50: 0.5
+
+  ICE:
+    rewards:
+      top:
+        - "crates key give %player% dragonkey 1"
+        - "crates key give %player% dragonkey 1"
+        - "crates key give %player% dragonkey 1"
+      thresholds:
+        commands:
+          - "crates key give %player% dragonkey 1"
+        chances:
+          50: 0.5
+
+  STORM:
+    rewards:
+      top:
+        - "crates key give %player% dragonkey 1"
+        - "crates key give %player% dragonkey 1"
+        - "crates key give %player% dragonkey 1"
+      thresholds:
+        commands:
+          - "crates key give %player% dragonkey 1"
+        chances:
+          50: 0.5
+
+  EARTH:
+    rewards:
+      top:
+        - "crates key give %player% dragonkey 1"
+        - "crates key give %player% dragonkey 1"
+        - "crates key give %player% dragonkey 1"
+      thresholds:
+        commands:
+          - "crates key give %player% dragonkey 1"
+        chances:
+          50: 0.5
+
+  SHADOW:
+    rewards:
+      top:
+        - "crates key give %player% dragonkey 1"
+        - "crates key give %player% dragonkey 1"
+        - "crates key give %player% dragonkey 1"
+      thresholds:
+        commands:
+          - "crates key give %player% dragonkey 1"
+        chances:
+          50: 0.5
+
+  LIGHT:
+    rewards:
+      top:
+        - "crates key give %player% dragonkey 1"
+        - "crates key give %player% dragonkey 1"
+        - "crates key give %player% dragonkey 1"
+      thresholds:
+        commands:
+          - "crates key give %player% dragonkey 1"
+        chances:
+          50: 0.5
+
+  TOXIC:
+    rewards:
+      top:
+        - "crates key give %player% dragonkey 1"
+        - "crates key give %player% dragonkey 1"
+        - "crates key give %player% dragonkey 1"
+      thresholds:
+        commands:
+          - "crates key give %player% dragonkey 1"
+        chances:
+          50: 0.5
+
+  ARCANE:
+    rewards:
+      top:
+        - "crates key give %player% dragonkey 1"
+        - "crates key give %player% dragonkey 1"
+        - "crates key give %player% dragonkey 1"
+      thresholds:
+        commands:
+          - "crates key give %player% dragonkey 1"
+        chances:
+          50: 0.5
+
+  SAND:
+    rewards:
+      top:
+        - "crates key give %player% dragonkey 1"
+        - "crates key give %player% dragonkey 1"
+        - "crates key give %player% dragonkey 1"
+      thresholds:
+        commands:
+          - "crates key give %player% dragonkey 1"
+        chances:
+          50: 0.5
+
+  BLOOD:
+    rewards:
+      top:
+        - "crates key give %player% dragonkey 1"
+        - "crates key give %player% dragonkey 1"
+        - "crates key give %player% dragonkey 1"
+      thresholds:
+        commands:
+          - "crates key give %player% dragonkey 1"
+        chances:
+          50: 0.5
+
+  PLAGUE:
+    rewards:
+      top:
+        - "crates key give %player% dragonkey 1"
+        - "crates key give %player% dragonkey 1"
+        - "crates key give %player% dragonkey 1"
+      thresholds:
+        commands:
+          - "crates key give %player% dragonkey 1"
+        chances:
+          50: 0.5
+
+  CRYSTAL:
+    rewards:
+      top:
+        - "crates key give %player% dragonkey 1"
+        - "crates key give %player% dragonkey 1"
+        - "crates key give %player% dragonkey 1"
+      thresholds:
+        commands:
+          - "crates key give %player% dragonkey 1"
+        chances:
+          50: 0.5
+
+  AETHER:
+    rewards:
+      top:
+        - "crates key give %player% dragonkey 1"
+        - "crates key give %player% dragonkey 1"
+        - "crates key give %player% dragonkey 1"
+      thresholds:
+        commands:
+          - "crates key give %player% dragonkey 1"
+        chances:
+          50: 0.5
+
+  HELLFIRE:
+    rewards:
+      top:
+        - "crates key give %player% dragonkey 1"
+        - "crates key give %player% dragonkey 1"
+        - "crates key give %player% dragonkey 1"
+      thresholds:
+        commands:
+          - "crates key give %player% dragonkey 1"
+        chances:
+          50: 0.5
+
+  CELESTIAL:
+    rewards:
+      top:
+        - "crates key give %player% dragonkey 1"
+        - "crates key give %player% dragonkey 1"
+        - "crates key give %player% dragonkey 1"
+      thresholds:
+        commands:
+          - "crates key give %player% dragonkey 1"
+        chances:
+          50: 0.5

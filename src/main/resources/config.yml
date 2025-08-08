@@ -1,0 +1,138 @@
+random-keys:
+  enabled: true
+  key-name: worldcratekey
+  active-time-minutes: 5
+
+join-item:
+  material: DIAMOND
+  custom-model-data: 11000
+  name: '&#E9E4AF💫&#EADEAD&l🌟&#EBD8AB🌌 &#EECCA6C&#EFC6A4e&#F0C0A2l&#F2BAA0e&#F3B49Ds&#F4AE9Bt&#F5A899i&#F6A297a&#F89C94l
+    &#FA9090T&#F88C90o&#F68891k&#F58391e&#F37F91n &#EF7792🌌&#EE7393&l🌟&#EC6E93💫'
+  lore:
+    - '&7Welcome Token'
+    - '&f'
+    - '&fWelcome to &x&E&9&E&4&A&FC&x&E&C&D&6&A&Ae&x&E&F&C&8&A&5l&x&F&2&B&A&A&0e&x&F&4&A&C&9&As&x&F&7&9&E&9&5t&x&F&A&9&0&9&0i&x&F&2&7&C&9&2a&x&E&9&6&9&9&3l&x&E&1&5&5&9&5C&x&E&1&5&5&9&5r&x&E&1&5&5&9&5a&x&E&1&5&5&9&5f&x&E&1&5&5&9&5t&f!'
+    - '&fWe hope you enjoy the'
+    - '&fserver!'
+    - '&f'
+    - '&f♡ &x&E&E&8&A&A&6%PLAYER_NAME%'
+    - '&fFirst Join: &x&E&E&8&A&A&6%DATE%'
+    - '&f'
+    - '&8===== &x&E&B&D&A&A&Bᴄᴏʟʟᴇᴄᴛɪʙʟᴇ&8 ====='
+  slot: 0
+
+word-filter:
+  enabled: true
+  filtered-words:
+    - nigg
+    - n1gg
+    - retard
+    - ret4rd
+    - r3tard
+    - r3t4rd
+    - f4g
+    - fag
+    - f46
+    - r314rd
+  notify-permission: celestialutilities.wordfilter.notify
+  bypass-permission: celestialutilities.wordfilter.bypass
+
+activity-reward:
+  shop:
+    title: '&8Celestial Shop'
+    confirm-gui:
+      title: '&aConfirm Purchase?'
+
+rtp:
+  worlds:
+    overworld:
+      name: world
+      max-x: 5000
+      max-z: 5000
+      min-y: 63
+      max-y: 200
+    nether:
+      name: world_nether
+      max-x: 2500
+      max-z: 2500
+      min-y: 32
+      max-y: 100
+    end:
+      name: world_the_end
+      max-x: 3000
+      max-z: 3000
+      min-y: 60
+      max-y: 100
+
+orewatcher:
+  enabled: true
+  radius: 8
+  cooldown-seconds: 5
+  notify-permission: OreWatcher.notify
+  blocks:
+    - DIAMOND_ORE
+    - DEEPSLATE_DIAMOND_ORE
+    - ANCIENT_DEBRIS
+
+entitymanager:
+  enabled: true
+  limits:
+    passive:
+      COW: 16
+      SHEEP: 16
+      PIG: 16
+      CHICKEN: 16
+      RABBIT: 16
+      HORSE: 16
+      DONKEY: 16
+      LLAMA: 16
+      MULE: 16
+      FOX: 16
+      TURTLE: 16
+      VILLAGER: 100
+      SNIFFER: 16
+    hostile:
+      ZOMBIE: 16
+      SKELETON: 16
+      SPIDER: 16
+      CREEPER: 16
+      DROWNED: 16
+      HUSK: 16
+      STRAY: 16
+      PHANTOM: 16
+      SLIME: 16
+      MAGMA_CUBE: 16
+      BLAZE: 16
+      WITCH: 16
+      GUARDIAN: 16
+      HOGLIN: 16
+      ZOGLIN: 16
+      PIGLIN: 16
+      PIGLIN_BRUTE: 16
+      SHULKER: 16
+      WARDEN: 16
+      WITHER_SKELETON: 16
+      GHAST: 16
+    utility:
+      IRON_GOLEM: 16
+      SNOW_GOLEM: 16
+      ARMOR_STAND: 16
+      ITEM_FRAME: 200
+  total-limit: 100
+  blocks:
+    HOPPER: 40
+    DROPPER: 40
+    DISPENSER: 40
+    REPEATER: 40
+    COMPARATOR: 40
+  mobs:
+    ACACIA_BOAT: 16
+
+custom-items:
+  example_item:
+    name: '&bExample Item'
+    lore:
+      - '&7This is just a placeholder.'
+
+playershops:
+  selection-item: STONE_HOE

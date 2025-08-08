@@ -1,0 +1,123 @@
+name: CCUtilities
+version: '1.0'
+main: org.celestialcraft.cCUtilities.CCUtilities
+api-version: '1.21'
+website: https://celestialcraft.org
+author: CelestialCraft
+softdepend: [LuckPerms]
+
+permissions:
+  celestialpoints.admin:
+    description: Allows admin commands for Celestial Points
+    default: op
+
+  celestial.admin:
+    description: Allows reloading the plugin and using /celestial
+    default: op
+
+  entitymanager.use:
+    description: Allows use of /entitymanager
+    default: op
+
+  customitems.unity:
+    description: Allows use of Unity Item commands
+    default: true
+
+  rtp.use:
+    description: Allows use of /wild, /nether, /end, and /rtp
+    default: true
+
+  customenderdragon.spawn:
+    description: Allows spawning dragons manually with /ced spawn
+    default: op
+
+  customenderdragon.spawn.random:
+    description: Allows using /ced spawn random
+    default: op
+
+  customenderdragon.kill:
+    description: Allows killing the active dragon with /ced kill
+    default: op
+
+  customenderdragon.reload:
+    description: Allows reloading the config with /ced reload
+    default: op
+
+  customenderdragon.timer:
+    description: Allows checking the auto spawn timer with /ced timer
+    default: true
+
+  customenderdragon.fight:
+    description: Allows teleporting to the active dragon fight with /ced fight
+    default: true
+
+  quests.use:
+    description: Allows using the /quests command
+    default: true
+
+  quests.give:
+    description: Allows giving quests to players
+    default: op
+
+  quests.reload:
+    description: Allows reloading the quests config
+    default: op
+
+  quests.weekly:
+    description: Allows claiming weekly quests
+    default: true
+
+  quests.claim:
+    description: Allows claiming completed quests
+    default: true
+
+  quests.list:
+    description: Allows listing active quests
+    default: true
+
+  celestialvoting.admin:
+    description: Allows use of all CelestialVoting commands
+    default: op
+
+  celestialvoting.streak.others:
+    description: Allows viewing other players' vote streaks
+    default: op
+
+  celestialvoting.streak:
+    description: Allows viewing your own vote streak
+    default: true
+
+  ccutilities.rankselect.use:
+    default: true
+  ccutilities.rankselect.clear:
+    default: true
+  ccutilities.rankselect.star:
+    default: true
+  ccutilities.rankselect.architect:
+    default: false
+  ccutilities.rankselect.designer:
+    default: false
+  ccutilities.rankselect.ethereal:
+    default: false
+  ccutilities.rankselect.ascendant:
+    default: false
+  ccutilities.rankselect.radiant:
+    default: false
+  ccutilities.rankselect.heavenly:
+    default: false
+  ccutilities.rankselect.jupiter:
+    default: false
+  ccutilities.rankselect.saturn:
+    default: false
+  ccutilities.rankselect.neptune:
+    default: false
+  ccutilities.rankselect.earth:
+    default: false
+  ccutilities.rankselect.venus:
+    default: false
+  ccutilities.rankselect.mars:
+    default: false
+  ccutilities.rankselect.mercury:
+    default: false
+  ccutilities.rankselect.pluto:
+    default: false

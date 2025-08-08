@@ -1,0 +1,120 @@
+package org.celestialcraft.cCUtilities.modules.customitems;
+
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.util.BlockIterator;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+public class CelestialBucketItem implements CustomItem {
+
+    private static final String LORE_IDENTIFIER = "&7Celestial Bucket";
+    private final LegacyComponentSerializer legacy = LegacyComponentSerializer.legacySection();
+    private final Map<UUID, Long> removalCooldown = new HashMap<>();
+    private final Map<UUID, Long> placementCooldown = new HashMap<>();
+
+    @Override
+    public String getIdentifier() {
+        return "celestial_bucket";
+    }
+
+    @Override
+    public boolean matches(ItemStack item) {
+        if (item == null || item.getType() == Material.AIR || !item.hasItemMeta()) return false;
+
+        ItemMeta meta = item.getItemMeta();
+        List<Component> lore = meta.lore();
+        if (lore == null) return false;
+
+        String formatted = LORE_IDENTIFIER.replace("&", "§");
+        for (Component line : lore) {
+            if (legacy.serialize(line).equalsIgnoreCase(formatted)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void onInteract(PlayerInteractEvent event) {
+        if (event.getHand() != EquipmentSlot.HAND) return;
+
+        Player player = event.getPlayer();
+        ItemStack item = event.getItem();
+        if (!matches(item)) return;
+
+        if (player.getWorld().getEnvironment() == World.Environment.NETHER) return;
+
+        UUID uuid = player.getUniqueId();
+        long now = System.currentTimeMillis();
+
+        // Sneak right-click → remove water
+        if (player.isSneaking() &&
+                (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)) {
+            if (removalCooldown.containsKey(uuid) && now < removalCooldown.get(uuid)) {
+                event.setCancelled(true);
+                return;
+            }
+
+            Block targetBlock = getTargetBlock(player);
+            if (targetBlock == null) return;
+
+            for (int x = -3; x <= 3; x++) {
+                for (int y = -3; y <= 3; y++) {
+                    for (int z = -3; z <= 3; z++) {
+                        Block nearby = player.getLocation().add(x, y, z).getBlock();
+                        if (nearby.getType() == Material.WATER) {
+                            nearby.setType(Material.AIR);
+                        }
+                    }
+                }
+            }
+
+            removalCooldown.put(uuid, now + 3000);
+            event.setCancelled(true);
+            return;
+        }
+
+        // Normal right-click → place water
+        if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            if (placementCooldown.containsKey(uuid) && now < placementCooldown.get(uuid)) {
+                event.setCancelled(true);
+                return;
+            }
+
+            Block targetBlock = getTargetBlock(player);
+            if (targetBlock == null) return;
+
+            Block placeBlock = targetBlock.getRelative(event.getBlockFace());
+            if (placeBlock.getType().isAir()) {
+                placeBlock.setType(Material.WATER);
+            }
+
+            placementCooldown.put(uuid, now + 2000);
+            event.setCancelled(true);
+        }
+    }
+
+    private Block getTargetBlock(Player player) {
+        BlockIterator iterator = new BlockIterator(player, 5);
+        while (iterator.hasNext()) {
+            Block next = iterator.next();
+            if (!next.getType().isAir()) {
+                return next;
+            }
+        }
+        return null;
+    }
+}

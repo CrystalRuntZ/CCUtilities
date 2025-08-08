@@ -1,0 +1,14 @@
+enabled-modules:
+  celestialactivity: true
+  celestialvoting: true
+  customitems: true
+  customenchants: true
+  ced: true
+  quests: true
+  referral: true
+  playershops: true
+  rtp: true
+  orewatcher: true
+  entitymanager: true
+  randomkeys: true
+  rankselect: true
