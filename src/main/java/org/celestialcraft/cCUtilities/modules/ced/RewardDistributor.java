@@ -1,18 +1,18 @@
 package org.celestialcraft.cCUtilities.modules.ced;
 
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.Player;
-import org.celestialcraft.cCUtilities.MessageConfig;
 
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public class RewardDistributor {
 
     private final DragonConfig config;
     private final DamageTracker tracker;
-    private final MiniMessage mm = MiniMessage.miniMessage();
 
     public RewardDistributor(DragonConfig config, DamageTracker tracker) {
         this.config = config;
@@ -20,11 +20,9 @@ public class RewardDistributor {
     }
 
     public void distribute(EnderDragon dragon, DragonType type, UUID dragonId) {
-        Bukkit.getLogger().info("[CED][RW] Distribute start for " + type + " id=" + dragonId);
 
         Map<UUID, Double> allDamage = tracker.getAllDamagers(dragonId);
         if (allDamage == null || allDamage.isEmpty()) {
-            Bukkit.getLogger().warning("[CED][RW] No damage map for " + dragonId);
             return;
         }
 
@@ -46,14 +44,12 @@ public class RewardDistributor {
             if (player == null) continue;
 
             List<String> perPlace = config.getTopCommands(type, i + 1);
-            Bukkit.getLogger().info("[CED][RW] top-" + (i + 1) + " size=" + perPlace.size());
             if (!perPlace.isEmpty()) {
                 for (String c : perPlace) runCommand(c, player);
                 continue;
             }
 
             List<String> flat = config.getTopCommands(type);
-            Bukkit.getLogger().info("[CED][RW] top(flat) size=" + flat.size());
             if (!flat.isEmpty()) {
                 int idx = Math.min(i, flat.size() - 1);
                 runCommand(flat.get(idx), player);
@@ -62,8 +58,6 @@ public class RewardDistributor {
 
         List<String> thresholdCommands = config.getThresholdCommands(type);
         Map<Double, Double> thresholds = config.getThresholdChances(type);
-        Bukkit.getLogger().info("[CED][RW] thresholds: commands=" + (thresholdCommands == null ? -1 : thresholdCommands.size())
-                + " chances=" + (thresholds == null ? -1 : thresholds.size()));
         if (thresholdCommands == null || thresholdCommands.isEmpty() || thresholds == null || thresholds.isEmpty()) return;
 
         for (Map.Entry<Double, Double> entry : thresholds.entrySet()) {
@@ -85,12 +79,9 @@ public class RewardDistributor {
         if (raw == null || raw.isEmpty() || player == null) return;
         String cmd = raw.replace("%player%", player.getName());
         while (cmd.startsWith("/")) cmd = cmd.substring(1);
-        Bukkit.getLogger().info("[CED][RW] console: " + cmd);
         boolean consoleOk = Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);
         if (!consoleOk) {
-            Bukkit.getLogger().warning("[CED][RW] console failed, fallback to player");
             player.performCommand(cmd);
         }
-        if (MessageConfig.has("ced.reward-given")) player.sendMessage(mm.deserialize(MessageConfig.get("ced.reward-given")));
     }
 }

@@ -34,12 +34,8 @@ public class DragonDeathListener implements Listener {
         UUID id = dragon.getUniqueId();
         UUID expectedId = dragonManager.getActiveDragonId();
 
-        Bukkit.getLogger().info("[CED] DragonDeathListener triggered.");
-        Bukkit.getLogger().info("[CED] Dragon died. UUID: " + id);
-        Bukkit.getLogger().info("[CED] Active dragon UUID: " + expectedId);
 
         if (!id.equals(expectedId)) {
-            Bukkit.getLogger().warning("[CED] Skipping reward distribution. Dragon UUID does not match active dragon.");
             return;
         }
 
@@ -47,9 +43,6 @@ public class DragonDeathListener implements Listener {
         DragonType type = dragonManager.getActiveDragonType();
 
         List<Map.Entry<UUID, Double>> top = tracker.getTopDamagers(id, 3);
-        if (top.isEmpty()) {
-            Bukkit.getLogger().warning("[CED] No damagers found for dragon: " + id);
-        }
 
         for (Map.Entry<UUID, Double> entry : top) {
             Player player = Bukkit.getPlayer(entry.getKey());
@@ -58,7 +51,6 @@ public class DragonDeathListener implements Listener {
                 String msg = MessageConfig.get("ced.damage-dealt")
                         .replace("{amount}", String.valueOf(rounded));
                 player.sendMessage(mm.deserialize(msg));
-                Bukkit.getLogger().info("[CED] " + player.getName() + " dealt " + rounded + " damage.");
             }
         }
 

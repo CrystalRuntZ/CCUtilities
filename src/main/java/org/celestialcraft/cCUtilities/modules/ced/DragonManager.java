@@ -4,10 +4,12 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
-import org.bukkit.*;
-import org.bukkit.boss.BarColor;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
+import org.bukkit.boss.BarColor;
 import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -20,7 +22,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.celestialcraft.cCUtilities.MessageConfig;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 public class DragonManager {
     private final JavaPlugin plugin;
@@ -57,10 +61,6 @@ public class DragonManager {
                 if (activeDragon != null && activeDragon.equals(event.getEntity())) {
                     EnderDragon deadDragon = activeDragon;
                     DragonType type = activeDragonType;
-
-                    Bukkit.getLogger().info("[CED] Dragon died. UUID: " + deadDragon.getUniqueId());
-                    Bukkit.getLogger().info("[CED] Active dragon UUID: " + getActiveDragonId());
-
                     Bukkit.getPluginManager().callEvent(new DragonKillEvent(deadDragon, type));
                     killSpawnedMobs();
                 }
@@ -90,10 +90,7 @@ public class DragonManager {
         if (isDragonActive()) return;
 
         World endWorld = Bukkit.getWorld(plugin.getConfig().getString("spawn-world", "wild_the_end"));
-        if (endWorld == null) {
-            plugin.getLogger().warning("End world not found.");
-            return;
-        }
+        if (endWorld == null) return;
 
         Location spawnLoc = new Location(endWorld, 0, 64, 0);
         EnderDragon dragon = (EnderDragon) endWorld.spawnEntity(spawnLoc, EntityType.ENDER_DRAGON);
@@ -104,38 +101,24 @@ public class DragonManager {
         dragon.setPhase(EnderDragon.Phase.CIRCLING);
         dragon.setAI(true);
 
-        // ✅ Get name from messages.yml first, fallback to enum default
         String rawName = MessageConfig.get("ced.dragon-names." + type.name());
         final String nameString = (rawName == null || rawName.isBlank()) ? type.getDefaultFancyName() : rawName;
 
-        // Colored name for entity
         Component nameComponent = LegacyComponentSerializer.legacyAmpersand().deserialize(nameString);
         dragon.customName(nameComponent);
         dragon.setCustomNameVisible(true);
 
-        // ✅ Boss bar color debug
         BarColor color = config.getBossBarColor(type);
-        Bukkit.getLogger().info("[CED] Boss bar color for " + type.name() + " = " + color);
 
-// Plain text for boss bar display name (color handled separately)
         Component plainName = Component.text(PlainTextComponentSerializer.plainText().serialize(nameComponent));
 
-// ✅ Get health config values once
         double base = config.getBaseHealth(type);
         double perPlayer = config.getHealthPerPlayer(type);
 
-// Show boss bar with debug values
         bossBarHandler.showBossBar(type, plainName, color, base, perPlayer);
 
-// ✅ Custom health logic — set twice to ensure persistence
         int online = Math.max(1, Bukkit.getOnlinePlayers().size());
         double virtualMaxHealth = base + online * perPlayer;
-
-// Debug health calculation
-        Bukkit.getLogger().info("[CED] Base health: " + base);
-        Bukkit.getLogger().info("[CED] Health per player: " + perPlayer);
-        Bukkit.getLogger().info("[CED] Online players: " + online);
-        Bukkit.getLogger().info("[CED] Calculated virtual max health: " + virtualMaxHealth);
 
         Runnable setHealthTask = () -> {
             if (!dragon.isValid()) return;
@@ -147,15 +130,11 @@ public class DragonManager {
         Bukkit.getScheduler().runTaskLater(plugin, setHealthTask, 1L);
         Bukkit.getScheduler().runTaskLater(plugin, setHealthTask, 10L);
 
-
-
         damageTracker.register(dragon, virtualMaxHealth);
 
-        // Boss bar updater loop
         if (bossBarUpdater != null) bossBarUpdater.cancel();
         bossBarUpdater = new BukkitRunnable() {
             private int tickCounter = 0;
-
             @Override
             public void run() {
                 if (dragon.isDead() || !dragon.isValid()) {
@@ -163,10 +142,8 @@ public class DragonManager {
                     bossBarHandler.hideAllBossBars();
                     return;
                 }
-
                 double progress = damageTracker.getProgress(dragon);
                 bossBarHandler.updateProgress(type, progress);
-
                 if (++tickCounter % 40 == 0) {
                     bossBarHandler.updateVisiblePlayers(type);
                 }
@@ -174,7 +151,6 @@ public class DragonManager {
         };
         bossBarUpdater.runTaskTimer(plugin, 0L, 2L);
 
-        // ✅ Broadcast spawn message with MiniMessage for template, legacy for name
         String spawnTemplate = MessageConfig.get("ced.spawn");
         Component spawnMessage = mini.deserialize(spawnTemplate)
                 .replaceText(builder -> builder.matchLiteral("{name}").replacement(nameComponent));
@@ -185,7 +161,6 @@ public class DragonManager {
 
         plugin.getServer().getPluginManager().callEvent(new DragonSpawnEvent(dragon, type));
 
-        // ✅ Vanish timer with same name formatting fix
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -193,7 +168,6 @@ public class DragonManager {
                     this.cancel();
                     return;
                 }
-
                 if (System.currentTimeMillis() - lastActivityTime > 300_000L) {
                     String vanishTemplate = MessageConfig.get("ced.vanish");
                     Component vanishMsg = mini.deserialize(vanishTemplate)
@@ -208,18 +182,14 @@ public class DragonManager {
 
     public boolean killActiveDragon() {
         if (activeDragon == null || !activeDragon.isValid()) return false;
-
         World world = activeDragon.getWorld();
         activeDragon.remove();
         DragonUtils.clearEntitiesOnMainIsland(world);
         killSpawnedMobs();
-
         activeDragon = null;
         activeDragonType = null;
-
         if (bossBarUpdater != null) bossBarUpdater.cancel();
         bossBarHandler.hideAllBossBars();
-
         return true;
     }
 

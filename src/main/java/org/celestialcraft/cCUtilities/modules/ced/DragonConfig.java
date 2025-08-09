@@ -31,12 +31,6 @@ public class DragonConfig {
             plugin.saveResource("CustomEnderDragon.yml", false);
         }
         this.config = YamlConfiguration.loadConfiguration(file);
-        Bukkit.getLogger().info("[CED] Reloaded CustomEnderDragon.yml");
-    }
-
-    private void debugPath(String label, String path) {
-        boolean present = config.contains(path);
-        Bukkit.getLogger().info("[CED][CFG] " + label + " path=" + path + " present=" + present);
     }
 
     public String getName(DragonType type) {
@@ -58,8 +52,6 @@ public class DragonConfig {
     public double getBaseHealth(DragonType type) {
         String pathNew = "dragons." + type.name() + ".base-health";
         String pathOld = "dragon-types." + type.name() + ".base-health";
-        debugPath("base-health:new", pathNew);
-        debugPath("base-health:old", pathOld);
         if (config.contains(pathNew)) return config.getDouble(pathNew, 200.0);
         if (config.contains(pathOld)) return config.getDouble(pathOld, 200.0);
         return 200.0;
@@ -68,8 +60,6 @@ public class DragonConfig {
     public double getHealthPerPlayer(DragonType type) {
         String pathNew = "dragons." + type.name() + ".health-per-player";
         String pathOld = "dragon-types." + type.name() + ".health-per-player";
-        debugPath("hpp:new", pathNew);
-        debugPath("hpp:old", pathOld);
         if (config.contains(pathNew)) return config.getDouble(pathNew, 50.0);
         if (config.contains(pathOld)) return config.getDouble(pathOld, 50.0);
         return 50.0;
@@ -78,8 +68,6 @@ public class DragonConfig {
     public BarColor getBossBarColor(DragonType type) {
         String pathNew = "dragons." + type.name() + ".bossbar-color";
         String pathOld = "dragon-types." + type.name() + ".bossbar-color";
-        debugPath("barcolor:new", pathNew);
-        debugPath("barcolor:old", pathOld);
         String raw;
         if (config.contains(pathNew)) {
             raw = Objects.toString(config.getString(pathNew, "PURPLE"), "PURPLE");
@@ -91,28 +79,24 @@ public class DragonConfig {
         try {
             return BarColor.valueOf(raw.toUpperCase(Locale.ROOT));
         } catch (IllegalArgumentException e) {
-            Bukkit.getLogger().warning("[CED] Invalid bossbar-color '" + raw + "' for " + type.name() + ", defaulting to PURPLE.");
             return BarColor.PURPLE;
         }
     }
 
     public java.util.List<String> getTopCommands(DragonType type) {
         String path = "dragons." + type.name() + ".rewards.top";
-        debugPath("rewards:top(flat)", path);
         if (!config.isList(path)) return java.util.Collections.emptyList();
         return config.getStringList(path);
     }
 
     public java.util.List<String> getTopCommands(DragonType type, int place) {
         String path = "dragons." + type.name() + ".rewards.top-" + place;
-        debugPath("rewards:top-" + place, path);
         if (!config.isList(path)) return java.util.Collections.emptyList();
         return config.getStringList(path);
     }
 
     public java.util.List<String> getThresholdCommands(DragonType type) {
         String path = "dragons." + type.name() + ".rewards.thresholds.commands";
-        debugPath("rewards:threshold.commands", path);
         if (!config.isList(path)) return java.util.Collections.emptyList();
         return config.getStringList(path);
     }
@@ -120,7 +104,6 @@ public class DragonConfig {
     public Map<Double, Double> getThresholdChances(DragonType type) {
         Map<Double, Double> result = new HashMap<>();
         String base = "dragons." + type.name() + ".rewards.thresholds.chances";
-        debugPath("rewards:threshold.chances", base);
         ConfigurationSection section = config.getConfigurationSection(base);
         if (section != null) {
             for (String key : section.getKeys(false)) {
