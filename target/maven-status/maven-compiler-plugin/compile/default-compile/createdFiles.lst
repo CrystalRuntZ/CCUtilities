@@ -173,7 +173,6 @@ org\celestialcraft\cCUtilities\modules\customitems\EnderbowItem.class
 org\celestialcraft\cCUtilities\modules\customitems\FairytaleHatBoxItem.class
 org\celestialcraft\cCUtilities\modules\customitems\CelestialTeleporterItem.class
 org\celestialcraft\cCUtilities\modules\quests\QuestManager.class
-org\celestialcraft\cCUtilities\listeners\ActivityListener.class
 org\celestialcraft\cCUtilities\modules\customitems\LifestealSwordItem.class
 org\celestialcraft\cCUtilities\modules\customitems\MobPacifierItem.class
 org\celestialcraft\cCUtilities\modules\customitems\UnityRequestManager.class

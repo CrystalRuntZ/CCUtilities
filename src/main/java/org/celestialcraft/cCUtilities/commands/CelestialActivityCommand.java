@@ -41,15 +41,20 @@ public class CelestialActivityCommand implements CommandExecutor, TabCompleter {
             if (sender instanceof Player player) {
                 int balance = pointManager.getPoints(player);
                 boolean active = System.currentTimeMillis() - tracker.getLastActive(player.getUniqueId()) <= 30 * 60 * 1000;
+                String activityText = active ? "Active" : "Idle";
 
-                Component statusComponent = mini.deserialize(MessageConfig.get(
-                        active ? "activity-reward.status-active" : "activity-reward.status-idle"
-                ));
+                String rawSelf = MessageConfig.get("activity-reward.balance-self")
+                        .replace("%balance%", String.valueOf(balance))
+                        .replace("%activity%", activityText);
+
+                String statusKey = active ? "activity-reward.status-active" : "activity-reward.status-idle";
+                Component statusComponent = mini.deserialize(MessageConfig.get(statusKey));
 
                 player.sendMessage(mini.deserialize(
-                        MessageConfig.get("activity-reward.balance-self"),
+                        rawSelf,
                         Placeholder.component("balance", Component.text(balance)),
-                        Placeholder.component("status", statusComponent)
+                        Placeholder.component("status", statusComponent),
+                        Placeholder.unparsed("activity", activityText)
                 ));
             } else {
                 sender.sendMessage(mini.deserialize(MessageConfig.get("activity-reward.usage")));
@@ -61,16 +66,23 @@ public class CelestialActivityCommand implements CommandExecutor, TabCompleter {
             OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
             int balance = pointManager.getPoints(target);
             boolean active = System.currentTimeMillis() - tracker.getLastActive(target.getUniqueId()) <= 30 * 60 * 1000;
+            String activityText = active ? "Active" : "Idle";
+            String targetName = target.getName() != null ? target.getName() : "Unknown";
 
-            Component statusComponent = mini.deserialize(MessageConfig.get(
-                    active ? "activity-reward.status-active" : "activity-reward.status-idle"
-            ));
+            String rawOther = MessageConfig.get("activity-reward.balance-other")
+                    .replace("%player%", targetName)
+                    .replace("%balance%", String.valueOf(balance))
+                    .replace("%activity%", activityText);
+
+            String statusKey = active ? "activity-reward.status-active" : "activity-reward.status-idle";
+            Component statusComponent = mini.deserialize(MessageConfig.get(statusKey));
 
             sender.sendMessage(mini.deserialize(
-                    MessageConfig.get("activity-reward.balance-other"),
-                    Placeholder.unparsed("player", target.getName() != null ? target.getName() : "Unknown"),
+                    rawOther,
+                    Placeholder.unparsed("player", targetName),
                     Placeholder.component("balance", Component.text(balance)),
-                    Placeholder.component("status", statusComponent)
+                    Placeholder.component("status", statusComponent),
+                    Placeholder.unparsed("activity", activityText)
             ));
             return true;
         }

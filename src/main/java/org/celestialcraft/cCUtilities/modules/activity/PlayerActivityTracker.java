@@ -1,6 +1,7 @@
 package org.celestialcraft.cCUtilities.modules.activity;
 
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -15,7 +16,7 @@ public class PlayerActivityTracker {
     private final JavaPlugin plugin;
     private final Map<UUID, ActivityData> activityMap = new HashMap<>();
     private CelestialPointManager pointManager;
-    private final LegacyComponentSerializer legacy = LegacyComponentSerializer.legacyAmpersand();
+    private final MiniMessage mm = MiniMessage.miniMessage();
 
     public PlayerActivityTracker(JavaPlugin plugin) {
         this.plugin = plugin;
@@ -45,29 +46,39 @@ public class PlayerActivityTracker {
             }
         }, 0L, taskInterval);
 
-        // Reward tracker
+        // Reward tracker (single source of truth)
         Bukkit.getScheduler().runTaskTimer(plugin, () -> {
             long now = System.currentTimeMillis();
 
             for (Player player : Bukkit.getOnlinePlayers()) {
                 UUID uuid = player.getUniqueId();
 
-                long lastActiveReward = pointManager.getLastReward(uuid, true);
-                if (now - getLastActive(uuid) <= 30 * 60 * 1000 && now - lastActiveReward >= 30 * 60 * 1000) {
-                    pointManager.addPoints(player, 1);
-                    pointManager.setLastReward(uuid, true, now);
+                boolean isActive = now - getLastActive(uuid) <= 30 * 60 * 1000;
+                long lastReward = pointManager.getLastReward(uuid, isActive);
 
-                    String msg = MessageConfig.get("activity-reward.notify-message").replace("%type%", "being active");
-                    player.sendMessage(legacy.deserialize(msg));
-                }
+                long activeInterval = 30 * 60 * 1000L;
+                long idleInterval = 60 * 60 * 1000L;
+                long interval = isActive ? activeInterval : idleInterval;
 
-                long lastIdleReward = pointManager.getLastReward(uuid, false);
-                if (now - getLastActive(uuid) > 30 * 60 * 1000 && now - lastIdleReward >= 60 * 60 * 1000) {
-                    pointManager.addPoints(player, 1);
-                    pointManager.setLastReward(uuid, false, now);
+                if (now - lastReward >= interval) {
+                    int newBal = pointManager.addPoints(player, 1);
+                    pointManager.setLastReward(uuid, isActive, now);
 
-                    String msg = MessageConfig.get("activity-reward.notify-message").replace("%type%", "idling");
-                    player.sendMessage(legacy.deserialize(msg));
+                    String typeText = isActive ? "being active" : "idling";
+                    String activityText = isActive ? "Active" : "Idle";
+
+                    // Support both legacy %placeholders% and MiniMessage <placeholders>
+                    String raw = MessageConfig.get("activity-reward.notify-message")
+                            .replace("%type%", typeText)
+                            .replace("%activity%", activityText)
+                            .replace("%balance%", String.valueOf(newBal));
+
+                    player.sendMessage(mm.deserialize(
+                            raw,
+                            Placeholder.unparsed("type", typeText),
+                            Placeholder.unparsed("activity", activityText),
+                            Placeholder.unparsed("balance", String.valueOf(newBal))
+                    ));
                 }
             }
         }, taskInterval, taskInterval);
@@ -82,13 +93,9 @@ public class PlayerActivityTracker {
         return data != null ? data.lastActive : System.currentTimeMillis();
     }
 
-    public void saveAll() {
-        // future persistence support
-    }
+    public void saveAll() {}
 
-    public void reload() {
-        // reload tracking logic if needed
-    }
+    public void reload() {}
 
     private static class ActivityData {
         Triple lastLocation;

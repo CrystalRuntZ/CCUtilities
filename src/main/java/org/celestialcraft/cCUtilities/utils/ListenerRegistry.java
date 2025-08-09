@@ -23,7 +23,6 @@ public class ListenerRegistry {
         ConfirmationGuiManager confirmationGui = new ConfirmationGuiManager(plugin);
 
         if (ModuleManager.isEnabled("celestialactivity")) {
-            plugin.getServer().getPluginManager().registerEvents(new ActivityListener(tracker, pointManager, plugin), plugin);
             plugin.getServer().getPluginManager().registerEvents(new ShopClickListener(plugin, pointManager, confirmationGui), plugin);
             plugin.getServer().getPluginManager().registerEvents(new ConfirmationClickListener(plugin, pointManager), plugin);
         }

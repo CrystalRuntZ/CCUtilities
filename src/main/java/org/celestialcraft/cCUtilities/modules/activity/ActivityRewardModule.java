@@ -2,7 +2,6 @@ package org.celestialcraft.cCUtilities.modules.activity;
 
 import org.bukkit.plugin.java.JavaPlugin;
 import org.celestialcraft.cCUtilities.commands.*;
-import org.celestialcraft.cCUtilities.listeners.ActivityListener;
 import org.celestialcraft.cCUtilities.listeners.ConfirmationClickListener;
 import org.celestialcraft.cCUtilities.modules.modulemanager.ModuleManager;
 import org.celestialcraft.cCUtilities.modules.modulemanager.Module;
@@ -33,7 +32,6 @@ public class ActivityRewardModule implements Module {
         tracker.startTracking();
 
         // Listener registration
-        plugin.getServer().getPluginManager().registerEvents(new ActivityListener(tracker, pointManager, plugin), plugin);
         plugin.getServer().getPluginManager().registerEvents(new ConfirmationClickListener(plugin, pointManager), plugin);
 
         // Command registration
