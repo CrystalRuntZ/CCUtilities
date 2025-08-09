@@ -43,4 +43,10 @@ public interface CustomItem {
     default void onJoin(PlayerJoinEvent event) {}
     default void onQuit(PlayerQuitEvent event) {}
     default void onEntityDamage(EntityDamageByEntityEvent event) {}
+    default void onEntityDamageByEntity(EntityDamageByEntityEvent event) {}
+    default void onEntityDeath(EntityDeathEvent event) { }
+    default void onInteractEntity(PlayerInteractAtEntityEvent event) { }
+    default void onProjectileHit(ProjectileHitEvent event) { }
+    default void onWorldChange(PlayerChangedWorldEvent event) { }
+    default void onBedEnter(PlayerBedEnterEvent event) { }
 }

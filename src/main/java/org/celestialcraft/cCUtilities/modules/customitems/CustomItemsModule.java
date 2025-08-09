@@ -112,6 +112,33 @@ public class CustomItemsModule implements Module {
         CustomItemRegistry.register(new VoidPickaxeItem());
         CustomItemRegistry.register(new WindStaffItem());
         CustomItemRegistry.register(new RailGunItem());
+        CustomItemRegistry.register(new DayFlyTokenItem());
+        CustomItemRegistry.register(new AxeOfLifeItem());
+        CustomItemRegistry.register(new BabyConverterItem());
+        CustomItemRegistry.register(new BowOfLevitationItem());
+        CustomItemRegistry.register(new CelestialTransporterItem());
+        CustomItemRegistry.register(new DoubleXpSwordItem());
+        CustomItemRegistry.register(new EnderbowItem());
+        CustomItemRegistry.register(new FairytaleArmorItem());
+        CustomItemRegistry.register(new FantasyPickaxeItem());
+        CustomItemRegistry.register(new FlowerWandItem());
+        CustomItemRegistry.register(new IceStaffItem());
+        CustomItemRegistry.register(new InstaMagicBroomItem());
+        CustomItemRegistry.register(new MushroomWandItem());
+        CustomItemRegistry.register(new PeaShooterItem());
+        CustomItemRegistry.register(new PoisonedAppleItem());
+        CustomItemRegistry.register(new RandomSpawnEggItem());
+        CustomItemRegistry.register(new RandomFairytaleArmorItem());
+        CustomItemRegistry.register(new FairytaleHatBoxItem());
+        CustomItemRegistry.register(new RedRidingHoodHelmItem());
+        CustomItemRegistry.register(new ReusableFlyTokenItem());
+        CustomItemRegistry.register(new TerracottaPickaxeItem());
+        CustomItemRegistry.register(new RubySlippersItem());
+        CustomItemRegistry.register(new SandSmelterItem());
+        CustomItemRegistry.register(new SourCitrusItem());
+        CustomItemRegistry.register(new UnstripperItem());
+        CustomItemRegistry.register(new WaxyEffectItem());
+        CustomItemRegistry.register(new XpStorageItem());
 
         if (Bukkit.getPluginManager().isPluginEnabled("LuckPerms")) {
             CustomItemRegistry.register(new CapybaraSpawnEggItem());

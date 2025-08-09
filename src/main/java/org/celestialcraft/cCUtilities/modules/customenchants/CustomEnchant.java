@@ -1,7 +1,6 @@
 package org.celestialcraft.cCUtilities.modules.customenchants;
 
 import org.bukkit.entity.Player;
-import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
@@ -25,4 +24,6 @@ public interface CustomEnchant {
     default void onMove(PlayerMoveEvent event) {}
     default void onArmorEquip(Player player) {}
     default void onArmorUnequip(Player player) {}
+    default void onPlayerDeath(org.bukkit.event.entity.PlayerDeathEvent event) {}
+
 }

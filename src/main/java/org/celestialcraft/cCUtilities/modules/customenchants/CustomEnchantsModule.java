@@ -89,6 +89,11 @@ public class CustomEnchantsModule implements Module {
         ZombieRepellantEnchant zombieRepellant = new ZombieRepellantEnchant();
         CustomEnchantRegistry.register(zombieRepellant);
 
+        BeheadingEnchant beheading = new BeheadingEnchant();
+        CustomEnchantRegistry.register(beheading);
+
+        CustomEnchantRegistry.register(new InvisibilityEffectEnchant());
+
         PluginManager pm = plugin.getServer().getPluginManager();
         pm.registerEvents(new CustomEnchantAnvilListener(), plugin);
         pm.registerEvents(new CustomEnchantEffectListener(), plugin);

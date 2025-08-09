@@ -58,17 +58,42 @@ public class CustomItemEffectListener implements Listener {
 
 
     @EventHandler
-    public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
+    public void onPlayerInteractAtEntity(PlayerInteractAtEntityEvent event) {
         if (!ModuleManager.isEnabled("customitems")) return;
         Player player = event.getPlayer();
         ItemStack item = player.getInventory().getItemInMainHand();
-
-        for (CustomItem customItem : CustomItemRegistry.getAll()) {
-            if (customItem.matches(item)) {
-                customItem.onRightClickEntity(event);
-            }
+        CustomItem custom = CustomItemRegistry.get(item);
+        if (custom != null) {
+            custom.onInteractEntity(event);
         }
     }
+
+    @EventHandler
+    public void onBedEnter(PlayerBedEnterEvent event) {
+        if (!ModuleManager.isEnabled("customitems")) return;
+        for (CustomItem item : CustomItemRegistry.getAll()) {
+            item.onBedEnter(event);
+        }
+    }
+
+    @EventHandler
+    public void onWorldChange(PlayerChangedWorldEvent event) {
+        if (!ModuleManager.isEnabled("customitems")) return;
+        for (CustomItem item : CustomItemRegistry.getAll()) {
+            item.onWorldChange(event);
+        }
+    }
+
+
+    @EventHandler
+    public void onProjectileHit(ProjectileHitEvent event) {
+        if (!ModuleManager.isEnabled("customitems")) return;
+        for (CustomItem item : CustomItemRegistry.getAll()) {
+            item.onProjectileHit(event);
+        }
+    }
+
+
 
     @EventHandler
     public void onItemConsume(PlayerItemConsumeEvent event) {
@@ -209,12 +234,30 @@ public class CustomItemEffectListener implements Listener {
     }
 
     @EventHandler
+    public void onEntityDeath(EntityDeathEvent event) {
+        if (!ModuleManager.isEnabled("customitems")) return;
+        for (CustomItem item : CustomItemRegistry.getAll()) {
+            item.onEntityDeath(event);
+        }
+    }
+
+
+    @EventHandler
     public void onSwapHands(PlayerSwapHandItemsEvent event) {
         if (!ModuleManager.isEnabled("customitems")) return;
         for (CustomItem item : CustomItemRegistry.getAll()) {
             item.onHandSwap(event);
         }
     }
+
+    @EventHandler
+    public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
+        if (!ModuleManager.isEnabled("customitems")) return;
+        for (CustomItem item : CustomItemRegistry.getAll()) {
+            item.onEntityDamageByEntity(event);
+        }
+    }
+
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {

@@ -6,6 +6,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
 import org.celestialcraft.cCUtilities.modules.customenchants.CustomEnchant;
 import org.celestialcraft.cCUtilities.modules.customenchants.CustomEnchantRegistry;
@@ -28,6 +29,14 @@ public class CustomEnchantEffectListener implements Listener {
             enchant.onEntityTarget(event);
         }
     }
+
+    @EventHandler
+    public void onPlayerDeath(PlayerDeathEvent event) {
+        for (CustomEnchant enchant : CustomEnchantRegistry.getAll()) {
+            enchant.onPlayerDeath(event);
+        }
+    }
+
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
