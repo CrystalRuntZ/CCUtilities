@@ -87,192 +87,288 @@ dragon-types:
 dragons:
   VOID:
     rewards:
-      top:
+      top-1:
+        - "say [CED TEST] 1st -> %player%"
         - "crates key give %player% dragonkey 1"
+      top-2:
+        - "say [CED TEST] 2nd -> %player%"
         - "crates key give %player% dragonkey 1"
+      top-3:
+        - "say [CED TEST] 3rd -> %player%"
         - "crates key give %player% dragonkey 1"
       thresholds:
         commands:
+          - "say [CED TEST] Threshold hit by %player%"
           - "crates key give %player% dragonkey 1"
         chances:
           50: 0.5
 
   FIRE:
     rewards:
-      top:
+      top-1:
+        - "say [CED TEST] 1st -> %player%"
         - "crates key give %player% dragonkey 1"
+      top-2:
+        - "say [CED TEST] 2nd -> %player%"
         - "crates key give %player% dragonkey 1"
+      top-3:
+        - "say [CED TEST] 3rd -> %player%"
         - "crates key give %player% dragonkey 1"
       thresholds:
         commands:
+          - "say [CED TEST] Threshold hit by %player%"
           - "crates key give %player% dragonkey 1"
         chances:
           50: 0.5
 
   ICE:
     rewards:
-      top:
+      top-1:
+        - "say [CED TEST] 1st -> %player%"
         - "crates key give %player% dragonkey 1"
+      top-2:
+        - "say [CED TEST] 2nd -> %player%"
         - "crates key give %player% dragonkey 1"
+      top-3:
+        - "say [CED TEST] 3rd -> %player%"
         - "crates key give %player% dragonkey 1"
       thresholds:
         commands:
+          - "say [CED TEST] Threshold hit by %player%"
           - "crates key give %player% dragonkey 1"
         chances:
           50: 0.5
 
   STORM:
     rewards:
-      top:
+      top-1:
+        - "say [CED TEST] 1st -> %player%"
         - "crates key give %player% dragonkey 1"
+      top-2:
+        - "say [CED TEST] 2nd -> %player%"
         - "crates key give %player% dragonkey 1"
+      top-3:
+        - "say [CED TEST] 3rd -> %player%"
         - "crates key give %player% dragonkey 1"
       thresholds:
         commands:
+          - "say [CED TEST] Threshold hit by %player%"
           - "crates key give %player% dragonkey 1"
         chances:
           50: 0.5
 
   EARTH:
     rewards:
-      top:
+      top-1:
+        - "say [CED TEST] 1st -> %player%"
         - "crates key give %player% dragonkey 1"
+      top-2:
+        - "say [CED TEST] 2nd -> %player%"
         - "crates key give %player% dragonkey 1"
+      top-3:
+        - "say [CED TEST] 3rd -> %player%"
         - "crates key give %player% dragonkey 1"
       thresholds:
         commands:
+          - "say [CED TEST] Threshold hit by %player%"
           - "crates key give %player% dragonkey 1"
         chances:
           50: 0.5
 
   SHADOW:
     rewards:
-      top:
+      top-1:
+        - "say [CED TEST] 1st -> %player%"
         - "crates key give %player% dragonkey 1"
+      top-2:
+        - "say [CED TEST] 2nd -> %player%"
         - "crates key give %player% dragonkey 1"
+      top-3:
+        - "say [CED TEST] 3rd -> %player%"
         - "crates key give %player% dragonkey 1"
       thresholds:
         commands:
+          - "say [CED TEST] Threshold hit by %player%"
           - "crates key give %player% dragonkey 1"
         chances:
           50: 0.5
 
   LIGHT:
     rewards:
-      top:
+      top-1:
+        - "say [CED TEST] 1st -> %player%"
         - "crates key give %player% dragonkey 1"
+      top-2:
+        - "say [CED TEST] 2nd -> %player%"
         - "crates key give %player% dragonkey 1"
+      top-3:
+        - "say [CED TEST] 3rd -> %player%"
         - "crates key give %player% dragonkey 1"
       thresholds:
         commands:
+          - "say [CED TEST] Threshold hit by %player%"
           - "crates key give %player% dragonkey 1"
         chances:
           50: 0.5
 
   TOXIC:
     rewards:
-      top:
+      top-1:
+        - "say [CED TEST] 1st -> %player%"
         - "crates key give %player% dragonkey 1"
+      top-2:
+        - "say [CED TEST] 2nd -> %player%"
         - "crates key give %player% dragonkey 1"
+      top-3:
+        - "say [CED TEST] 3rd -> %player%"
         - "crates key give %player% dragonkey 1"
       thresholds:
         commands:
+          - "say [CED TEST] Threshold hit by %player%"
           - "crates key give %player% dragonkey 1"
         chances:
           50: 0.5
 
   ARCANE:
     rewards:
-      top:
+      top-1:
+        - "say [CED TEST] 1st -> %player%"
         - "crates key give %player% dragonkey 1"
+      top-2:
+        - "say [CED TEST] 2nd -> %player%"
         - "crates key give %player% dragonkey 1"
+      top-3:
+        - "say [CED TEST] 3rd -> %player%"
         - "crates key give %player% dragonkey 1"
       thresholds:
         commands:
+          - "say [CED TEST] Threshold hit by %player%"
           - "crates key give %player% dragonkey 1"
         chances:
           50: 0.5
 
   SAND:
     rewards:
-      top:
+      top-1:
+        - "say [CED TEST] 1st -> %player%"
         - "crates key give %player% dragonkey 1"
+      top-2:
+        - "say [CED TEST] 2nd -> %player%"
         - "crates key give %player% dragonkey 1"
+      top-3:
+        - "say [CED TEST] 3rd -> %player%"
         - "crates key give %player% dragonkey 1"
       thresholds:
         commands:
+          - "say [CED TEST] Threshold hit by %player%"
           - "crates key give %player% dragonkey 1"
         chances:
           50: 0.5
 
   BLOOD:
     rewards:
-      top:
+      top-1:
+        - "say [CED TEST] 1st -> %player%"
         - "crates key give %player% dragonkey 1"
+      top-2:
+        - "say [CED TEST] 2nd -> %player%"
         - "crates key give %player% dragonkey 1"
+      top-3:
+        - "say [CED TEST] 3rd -> %player%"
         - "crates key give %player% dragonkey 1"
       thresholds:
         commands:
+          - "say [CED TEST] Threshold hit by %player%"
           - "crates key give %player% dragonkey 1"
         chances:
           50: 0.5
 
   PLAGUE:
     rewards:
-      top:
+      top-1:
+        - "say [CED TEST] 1st -> %player%"
         - "crates key give %player% dragonkey 1"
+      top-2:
+        - "say [CED TEST] 2nd -> %player%"
         - "crates key give %player% dragonkey 1"
+      top-3:
+        - "say [CED TEST] 3rd -> %player%"
         - "crates key give %player% dragonkey 1"
       thresholds:
         commands:
+          - "say [CED TEST] Threshold hit by %player%"
           - "crates key give %player% dragonkey 1"
         chances:
           50: 0.5
 
   CRYSTAL:
     rewards:
-      top:
+      top-1:
+        - "say [CED TEST] 1st -> %player%"
         - "crates key give %player% dragonkey 1"
+      top-2:
+        - "say [CED TEST] 2nd -> %player%"
         - "crates key give %player% dragonkey 1"
+      top-3:
+        - "say [CED TEST] 3rd -> %player%"
         - "crates key give %player% dragonkey 1"
       thresholds:
         commands:
+          - "say [CED TEST] Threshold hit by %player%"
           - "crates key give %player% dragonkey 1"
         chances:
           50: 0.5
 
   AETHER:
     rewards:
-      top:
+      top-1:
+        - "say [CED TEST] 1st -> %player%"
         - "crates key give %player% dragonkey 1"
+      top-2:
+        - "say [CED TEST] 2nd -> %player%"
         - "crates key give %player% dragonkey 1"
+      top-3:
+        - "say [CED TEST] 3rd -> %player%"
         - "crates key give %player% dragonkey 1"
       thresholds:
         commands:
+          - "say [CED TEST] Threshold hit by %player%"
           - "crates key give %player% dragonkey 1"
         chances:
           50: 0.5
 
   HELLFIRE:
     rewards:
-      top:
+      top-1:
+        - "say [CED TEST] 1st -> %player%"
         - "crates key give %player% dragonkey 1"
+      top-2:
+        - "say [CED TEST] 2nd -> %player%"
         - "crates key give %player% dragonkey 1"
+      top-3:
+        - "say [CED TEST] 3rd -> %player%"
         - "crates key give %player% dragonkey 1"
       thresholds:
         commands:
+          - "say [CED TEST] Threshold hit by %player%"
           - "crates key give %player% dragonkey 1"
         chances:
           50: 0.5
 
   CELESTIAL:
     rewards:
-      top:
+      top-1:
+        - "say [CED TEST] 1st -> %player%"
         - "crates key give %player% dragonkey 1"
+      top-2:
+        - "say [CED TEST] 2nd -> %player%"
         - "crates key give %player% dragonkey 1"
+      top-3:
+        - "say [CED TEST] 3rd -> %player%"
         - "crates key give %player% dragonkey 1"
       thresholds:
         commands:
+          - "say [CED TEST] Threshold hit by %player%"
           - "crates key give %player% dragonkey 1"
         chances:
           50: 0.5

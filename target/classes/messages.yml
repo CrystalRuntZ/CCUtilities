@@ -12,7 +12,7 @@ randomkeys:
   disabled: "<red>RandomKeys is disabled in config."
   forced: "<green>Random key force-distributed."
   unknown-subcommand: "<red>Unknown subcommand. Use /randomkeys <reload|force>"
-  broadcast: "<gradient:#00ffff:#ff00ff><bold>%player%</bold></gradient> &7got a <rainbow><italic>RARE</italic></rainbow> key!"
+  broadcast: "<gradient:#00ffff:#ff00ff><b>%player%</b></gradient> <gray>got a</gray> <#F89B94>WORLD CRATE KEY</#F89B94><gray>!</gray>"
 
 word-filter:
   notify-message: "&c⚠ &c%player%'s &7message contained banned word: &f&o%WORD%"
@@ -46,8 +46,7 @@ activity-reward:
   status-active: "<green>ACTIVE"
   status-idle: "<gray>IDLE"
   usage: "<red>Usage: /ca bal [player]"
-  earned:
-    notify-message: "&b+1 Celestial Point!"
+  notify-message: "<#c1adfe>☆</c1adfe> <gray>You have earned 1 Activity Point! You now have <#c1adfe>%balance%</#c1adfe> <gray>points!</gray>"
   shop:
     title: "<#C1ADFE>Celestial Shop"
     cost-line: "&7Cost: &e%cost% Points"
@@ -185,7 +184,8 @@ ced:
   log-line: "- %player% (%uuid%): %dmg% dmg"
   reward-top: "<#c1adfe>🐉</#c1adfe> <gray>[</gray><#c1adfe>BOSS</#c1adfe><gray>]</gray> <gray>You received a</gray> <#c1adfe>top %place% reward</#c1adfe6> <gray>for fighting %dragon%!</gray>"
   reward-threshold: "<#c1adfe>🐉</#c1adfe> <gray>[</gray><#c1adfe>BOSS</#c1adfe><gray>]</gray> <gray>You earned a</gray> <#c1adfe>bonus reward</#c1adfe> <gray>for contributing at least</gray> <#c1adfe>%threshold%%</#c1adfe> <gray>to the fight against %dragon%!>/gray>"
-  auto-spawn-broadcast: "<#c1adfe>🐉</#c1adfe> <gray>[</gray><#c1adfe>BOSS</#c1adfe><gray>]</gray> <red>A powerful force is stirring in the end...</red>"
+  messages:
+    auto-spawn-broadcast: "<#c1adfe>🐉</#c1adfe> <gray>[</gray><#c1adfe>BOSS</#c1adfe><gray>]</gray> <red>A powerful force is stirring in the end...</red>"
   leaderboard:
     header: "<gray>==========[</gray> <#c1adfe>🐉 DRAGON LEADERBOARD</#c1adfe> <#c1adfe>🐉</#c1adfe> <gray>]==========</gray>"
     entry: "<#c1adfe>#%place%</#c1adfe> <gray>--</gray> <#c1adfe>%player%</#c1adfe> <gray>has dealt a total of</gray> <red>%damage%</red> <gray>to the dragons.</gray>"
@@ -236,7 +236,7 @@ celestialvoting:
       20l: "<#FFF6D1>☀</#FFF6D1> <gray>[</gray><#FFF6D1><b>VOTE</b></#FFF6D1><gray>]</gray> <#E15595>%player%</#E15595> <gray>has voted and received</gray> <#F89B94>20 XP LEVELS</#F89B94><gray>.</gray>"
       25l: "<#FFF6D1>☀</#FFF6D1> <gray>[</gray><#FFF6D1><b>VOTE</b></#FFF6D1><gray>]</gray> <#E15595>%player%</#E15595> <gray>has voted and received</gray> <#F89B94>25 XP LEVELS</#F89B94><gray>.</gray>"
       30l: "<#FFF6D1>☀</#FFF6D1> <gray>[</gray><#FFF6D1><b>VOTE</b></#FFF6D1><gray>]</gray> <#E15595>%player%</#E15595> <gray>has voted and received</gray> <#F89B94>30 XP LEVELS</#F89B94><gray>.</gray>"
-      decorkey: "<#FFF6D1>☀</#FFF6D1> <gray>[</gray><#FFF6D1><b>VOTE</b></#FFF6D1><gray>]</gray> <#E15595>%player%</#E15595> <gray>has voted and received</gray> <#F89B94>1 <#89FF87>&lD</#89FF87><#99FF89>&lE</#99FF89><#AAFF8A>&lC</#AAFF8A><#BAFF8C>&lO</#BAFF8C><#CAFF8D>&lR</#CAFF8D> <#F89B94>Crate Key</#F89B94><gray>.</gray>"
+      decorkey: "<#FFF6D1>☀</#FFF6D1> <gray>[</gray><#FFF6D1><b>VOTE</b></#FFF6D1><gray>]</gray> <#E15595>%player%</#E15595> <gray>has voted and received</gray> <#F89B94>1 <#89FF87>D</#89FF87><#99FF89>E</#99FF89><#AAFF8A>C</#AAFF8A><#BAFF8C>O</#BAFF8C><#CAFF8D>R</#CAFF8D> <#F89B94>Crate Key</#F89B94><gray>.</gray>"
       streak: "<#FFF6D1>☀</#FFF6D1> <gray>[</gray><#FFF6D1><b>VOTE</b></#FFF6D1><gray>]</gray> <#E15595>%player%</#E15595> <gray>has reached a</gray> <#F89B94>7 day voting streak</#F89B94> <gray>and received</gray> <#F89B94>a reward</#F89B94><gray>.</gray>"
       blazeegg: "<#FFF6D1>☀</#FFF6D1> <gray>[</gray><#FFF6D1><b>VOTE</b></#FFF6D1><gray>]</gray> <#E15595>%player%</#E15595> <gray>has voted and received</gray> <#F89B94>1 BLAZE EGG</#F89B94><gray>.</gray>"
       cowegg: "<#FFF6D1>☀</#FFF6D1> <gray>[</gray><#FFF6D1><b>VOTE</b></#FFF6D1><gray>]</gray> <#E15595>%player%</#E15595> <gray>has voted and received</gray> <#F89B94>1  COW EGG</#F89B94><gray>.</gray>"

@@ -129,7 +129,7 @@ public class DragonManager {
 
 // ✅ Custom health logic — set twice to ensure persistence
         int online = Math.max(1, Bukkit.getOnlinePlayers().size());
-        double virtualMaxHealth = base + (online - 1) * perPlayer;
+        double virtualMaxHealth = base + online * perPlayer;
 
 // Debug health calculation
         Bukkit.getLogger().info("[CED] Base health: " + base);
