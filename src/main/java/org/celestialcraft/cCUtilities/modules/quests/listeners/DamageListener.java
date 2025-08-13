@@ -9,6 +9,7 @@ import org.celestialcraft.cCUtilities.modules.quests.QuestManager;
 import org.celestialcraft.cCUtilities.modules.quests.model.Quest;
 import org.celestialcraft.cCUtilities.modules.quests.model.QuestType;
 import org.celestialcraft.cCUtilities.modules.quests.util.LoreUtils;
+import org.celestialcraft.cCUtilities.modules.quests.util.QuestProgress;
 
 import java.util.List;
 
@@ -19,9 +20,14 @@ public class DamageListener implements Listener {
         if (!ModuleManager.isEnabled("quests")) return;
         if (!(event.getDamager() instanceof Player player)) return;
 
-        int damage = (int) event.getDamage();
-        List<Quest> quests = QuestManager.getQuests(player);
+        int damage = Math.max(1, (int) Math.round(event.getFinalDamage()));
 
+        // 1) Try weekly bundle first (persists + auto-syncs lore)
+        boolean handled = QuestProgress.get().addProgress(player, QuestType.DAMAGE_MOBS, damage);
+        if (handled) return;
+
+        // 2) Fallback: single-quest item flow (original logic)
+        List<Quest> quests = QuestManager.getQuests(player);
         for (Quest quest : quests) {
             if (quest.getType() == QuestType.DAMAGE_MOBS && !quest.isComplete() && !quest.isExpired()) {
                 quest.setProgress(quest.getProgress() + damage);

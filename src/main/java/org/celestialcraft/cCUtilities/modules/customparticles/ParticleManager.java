@@ -1,58 +1,71 @@
 package org.celestialcraft.cCUtilities.modules.customparticles;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.Vector;
-import org.celestialcraft.cCUtilities.CCUtilities;
+import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.*;
+import java.util.EnumSet;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ParticleManager {
-    private static final Map<UUID, Set<ParticleEffectType>> activeParticles = new HashMap<>();
+    private static JavaPlugin plugin;
+    private static final Map<UUID, EnumSet<ParticleEffectType>> active = new ConcurrentHashMap<>();
+    private static int taskId = -1;
 
-    private static final BukkitRunnable particleTask = new BukkitRunnable() {
-        @Override
-        public void run() {
-            for (UUID uuid : activeParticles.keySet()) {
-                Player player = Bukkit.getPlayer(uuid);
-                if (player == null || !player.isOnline()) continue;
-
-                Set<ParticleEffectType> effects = activeParticles.get(uuid);
-                if (effects.contains(ParticleEffectType.FLAME_RING)) {
-                    drawFlameRing(player);
-                }
-            }
-        }
-    };
-
-    static {
-        particleTask.runTaskTimer(CCUtilities.getInstance(), 0L, 5L);
+    public static void init(JavaPlugin p) {
+        if (plugin == null) plugin = p;
     }
 
     public static void register(Player player, ParticleEffectType type) {
-        activeParticles.computeIfAbsent(player.getUniqueId(), k -> new HashSet<>()).add(type);
+        active.compute(player.getUniqueId(), (k, v) -> {
+            if (v == null) v = EnumSet.noneOf(ParticleEffectType.class);
+            v.add(type);
+            return v;
+        });
+        start();
     }
 
     public static void unregister(Player player, ParticleEffectType type) {
-        Set<ParticleEffectType> effects = activeParticles.get(player.getUniqueId());
-        if (effects != null) {
-            effects.remove(type);
-            if (effects.isEmpty()) {
-                activeParticles.remove(player.getUniqueId());
-            }
-        }
+        active.computeIfPresent(player.getUniqueId(), (k, v) -> {
+            v.remove(type);
+            return v.isEmpty() ? null : v;
+        });
+        if (active.isEmpty()) stop();
     }
 
-    private static void drawFlameRing(Player player) {
-        double radius = 0.8;
-        Location loc = player.getLocation().add(0, 0.2, 0);
-        for (double angle = 0; angle < Math.PI * 2; angle += Math.PI / 8) {
-            double x = radius * Math.cos(angle);
-            double z = radius * Math.sin(angle);
-            loc.getWorld().spawnParticle(Particle.FLAME, loc.clone().add(x, 0, z), 0, new Vector(0, 0.01, 0));
+    private static void start() {
+        if (plugin == null || taskId != -1) return;
+        taskId = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
+            if (active.isEmpty()) return;
+            for (UUID id : active.keySet()) {
+                Player p = plugin.getServer().getPlayer(id);
+                if (p == null || !p.isOnline()) continue;
+                EnumSet<ParticleEffectType> set = active.get(id);
+                if (set == null || set.isEmpty()) continue;
+                if (set.contains(ParticleEffectType.FLAME_RING)) drawFlameRing(p);
+            }
+        }, 0L, 2L).getTaskId();
+    }
+
+    private static void stop() {
+        if (plugin == null || taskId == -1) return;
+        plugin.getServer().getScheduler().cancelTask(taskId);
+        taskId = -1;
+    }
+
+    private static void drawFlameRing(Player p) {
+        Location loc = p.getLocation();
+        double y = loc.getY() + 0.1;
+        double r = 0.8;
+        int points = 24;
+        for (int i = 0; i < points; i++) {
+            double a = (Math.PI * 2 * i) / points;
+            double x = loc.getX() + Math.cos(a) * r;
+            double z = loc.getZ() + Math.sin(a) * r;
+            p.getWorld().spawnParticle(Particle.FLAME, x, y, z, 1, 0, 0, 0, 0);
         }
     }
 }

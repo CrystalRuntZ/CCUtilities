@@ -9,6 +9,7 @@ import org.celestialcraft.cCUtilities.modules.quests.QuestManager;
 import org.celestialcraft.cCUtilities.modules.quests.model.Quest;
 import org.celestialcraft.cCUtilities.modules.quests.model.QuestType;
 import org.celestialcraft.cCUtilities.modules.quests.util.LoreUtils;
+import org.celestialcraft.cCUtilities.modules.quests.util.QuestProgress;
 
 import java.util.List;
 
@@ -17,30 +18,35 @@ public class HarvestListener implements Listener {
     @EventHandler
     public void onHarvest(BlockBreakEvent event) {
         if (!ModuleManager.isEnabled("quests")) return;
+
         var block = event.getBlock();
         var data = block.getBlockData();
+        if (!(data instanceof Ageable ageable) || ageable.getAge() != ageable.getMaximumAge()) return;
 
-        if (data instanceof Ageable ageable && ageable.getAge() == ageable.getMaximumAge()) {
-            var player = event.getPlayer();
-            var blockType = block.getType().name().toUpperCase();
-            List<Quest> quests = QuestManager.getQuests(player);
+        var player = event.getPlayer();
+        var blockType = block.getType().name().toUpperCase();
 
-            for (Quest quest : quests) {
-                if (quest.getType() == QuestType.HARVEST_CROPS && !quest.isComplete() && !quest.isExpired()) {
-                    String target = quest.getTargetItem();
-                    if (target == null || target.equalsIgnoreCase(blockType)) {
-                        quest.setProgress(quest.getProgress() + 1);
+        // 1) Weekly bundle first (persists + auto-syncs lore; respects target crop)
+        boolean handled = QuestProgress.get().addProgress(player, QuestType.HARVEST_CROPS, blockType, 1);
+        if (handled) return;
 
-                        for (var item : player.getInventory().getContents()) {
-                            if (item == null) continue;
-                            var questId = LoreUtils.getQuestId(item);
-                            if (questId != null && questId.equals(quest.getId())) {
-                                LoreUtils.updateLore(item, quest);
-                            }
+        // 2) Fallback: single-quest item flow (original logic)
+        List<Quest> quests = QuestManager.getQuests(player);
+        for (Quest quest : quests) {
+            if (quest.getType() == QuestType.HARVEST_CROPS && !quest.isComplete() && !quest.isExpired()) {
+                String target = quest.getTargetItem();
+                if (target == null || target.equalsIgnoreCase(blockType)) {
+                    quest.setProgress(quest.getProgress() + 1);
+
+                    for (var item : player.getInventory().getContents()) {
+                        if (item == null) continue;
+                        var questId = LoreUtils.getQuestId(item);
+                        if (questId != null && questId.equals(quest.getId())) {
+                            LoreUtils.updateLore(item, quest);
                         }
-
-                        LoreUtils.sendProgressActionBar(player, quest);
                     }
+
+                    LoreUtils.sendProgressActionBar(player, quest);
                 }
             }
         }

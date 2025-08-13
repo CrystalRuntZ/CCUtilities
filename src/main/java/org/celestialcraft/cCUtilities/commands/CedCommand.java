@@ -107,12 +107,12 @@ public class CedCommand implements CommandExecutor, TabCompleter {
                     return true;
                 }
 
-                plugin.reloadConfig(); // Only reload plugin-level config.yml
+                plugin.reloadConfig();
 
                 var ced = org.celestialcraft.cCUtilities.CCUtilities.getInstance().cedModule;
-                ced.getConfig().reload(); // ✅ THIS reloads DragonConfig
+                ced.getConfig().reload();
 
-                dragonManager.reload(); // reload dragon manager state if needed
+                dragonManager.reload();
 
                 sender.sendMessage(MessageConfig.mm("ced.reloaded"));
                 return true;
@@ -151,7 +151,11 @@ public class CedCommand implements CommandExecutor, TabCompleter {
                     return true;
                 }
 
-                Location safe = findSafeGround(new Location(dragon.getWorld(), 0, 80, 0));
+                Location safe = findSafeSpotNearFountain(dragon.getWorld());
+                if (safe == null) {
+                    int y = Math.max(dragon.getWorld().getHighestBlockYAt(12, 0), 70);
+                    safe = new Location(dragon.getWorld(), 12.5, y, 0.5);
+                }
                 player.teleportAsync(safe);
                 player.sendMessage(MessageConfig.mm("ced.teleported"));
                 return true;
@@ -164,14 +168,52 @@ public class CedCommand implements CommandExecutor, TabCompleter {
         }
     }
 
-    private Location findSafeGround(Location base) {
-        World world = base.getWorld();
-        int x = base.getBlockX();
-        int z = base.getBlockZ();
+    private Location findSafeSpotNearFountain(World world) {
+        final int R_MIN = 10;
+        final int R_MAX = 40;
+        final int ATTEMPTS = 50;
 
+        Set<Material> allowedGround = EnumSet.of(
+                Material.END_STONE,
+                Material.OBSIDIAN
+        );
+
+        ThreadLocalRandom rng = ThreadLocalRandom.current();
+
+        for (int i = 0; i < ATTEMPTS; i++) {
+            double angle = rng.nextDouble(0, Math.PI * 2);
+            int r = rng.nextInt(R_MIN, R_MAX + 1);
+            int x = (int) Math.round(Math.cos(angle) * r);
+            int z = (int) Math.round(Math.sin(angle) * r);
+
+            Location loc = findColumnTopIfSafe(world, x, z, allowedGround);
+            if (loc != null) return loc;
+        }
+
+        for (int r = R_MIN; r <= R_MAX; r += 4) {
+            for (int deg = 0; deg < 360; deg += 6) {
+                double angle = Math.toRadians(deg);
+                int x = (int) Math.round(Math.cos(angle) * r);
+                int z = (int) Math.round(Math.sin(angle) * r);
+
+                Location loc = findColumnTopIfSafe(world, x, z, allowedGround);
+                if (loc != null) return loc;
+            }
+        }
+
+        return findColumnTopIfSafe(world, R_MIN, 0, allowedGround);
+    }
+
+    private Location findColumnTopIfSafe(World world, int x, int z, Set<Material> allowedGround) {
         int y = world.getHighestBlockYAt(x, z);
+        if (y <= world.getMinHeight()) return null;
+
         Block ground = world.getBlockAt(x, y - 1, z);
-        if (!ground.getType().isSolid()) y = 80;
+        Block head = world.getBlockAt(x, y, z);
+        Block aboveHead = world.getBlockAt(x, y + 1, z);
+
+        if (!allowedGround.contains(ground.getType())) return null;
+        if (!head.isEmpty() || !aboveHead.isEmpty()) return null;
 
         return new Location(world, x + 0.5, y, z + 0.5);
     }

@@ -13,6 +13,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.celestialcraft.cCUtilities.utils.ClaimUtils;
 
 import java.time.Duration;
 import java.util.*;
@@ -83,7 +84,6 @@ public class ForestBiomeWand implements CustomItem {
         Biome biome = BIOMES.get(index);
 
         NamespacedKey key = (NamespacedKey) biome.key();
-
         String formattedName = key.getKey().replace('_', ' ');
 
         Component title = Component.text("Biome: ", NamedTextColor.GRAY)
@@ -97,6 +97,12 @@ public class ForestBiomeWand implements CustomItem {
         World world = player.getWorld();
         if (!world.getName().equalsIgnoreCase(ALLOWED_WORLD)) {
             player.sendMessage(Component.text("You can only use this item in the wilderness!", NamedTextColor.RED));
+            return;
+        }
+
+        // NEW: Claim check
+        if (!ClaimUtils.canBuild(player, player.getLocation())) {
+            player.sendMessage(Component.text("You can only use this wand inside your own claims!", NamedTextColor.RED));
             return;
         }
 

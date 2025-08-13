@@ -47,7 +47,6 @@ org\celestialcraft\cCUtilities\modules\ced\listeners\ArcaneDragonListener$1.clas
 org\celestialcraft\cCUtilities\modules\ced\listeners\EarthDragonListener$1.class
 org\celestialcraft\cCUtilities\modules\quests\listeners\PlayerJoinListener.class
 org\celestialcraft\cCUtilities\commands\ReferralCommand.class
-org\celestialcraft\cCUtilities\modules\quests\listeners\RunListener.class
 org\celestialcraft\cCUtilities\modules\referral\ReferralDatabase.class
 org\celestialcraft\cCUtilities\modules\customenchants\BleedEnchant$1.class
 org\celestialcraft\cCUtilities\modules\celestialvoting\RewardManager.class
@@ -63,7 +62,6 @@ org\celestialcraft\cCUtilities\modules\customitems\UnityRequest.class
 org\celestialcraft\cCUtilities\modules\customitems\FrostyChestplateItem.class
 org\celestialcraft\cCUtilities\modules\customitems\PropulsionBoosterItem$1.class
 org\celestialcraft\cCUtilities\modules\customitems\CyberCottonCandyItem.class
-org\celestialcraft\cCUtilities\modules\customparticles\ParticleManager$1.class
 org\celestialcraft\cCUtilities\listeners\CustomEnchantAnvilClickListener.class
 org\celestialcraft\cCUtilities\modules\entitymanager\ChunkEntityTracker.class
 org\celestialcraft\cCUtilities\modules\customitems\TryzubTridentItem.class
@@ -85,9 +83,11 @@ org\celestialcraft\cCUtilities\modules\customitems\DyeShooterItem.class
 org\celestialcraft\cCUtilities\modules\customitems\WarHorseItem.class
 org\celestialcraft\cCUtilities\modules\quests\util\WeeklyQuestGenerator$1.class
 org\celestialcraft\cCUtilities\modules\ced\listeners\CrystalDragonListener$2.class
+org\celestialcraft\cCUtilities\modules\quests\util\WeeklyQuestItemFactory.class
 org\celestialcraft\cCUtilities\modules\customitems\ThermalHelmetItem.class
 org\celestialcraft\cCUtilities\modules\celestialvoting\CelestialVotingModule.class
 org\celestialcraft\cCUtilities\modules\customitems\InfiniteEnderPearlItem.class
+org\celestialcraft\cCUtilities\modules\quests\bundle\WeeklyBundle.class
 org\celestialcraft\cCUtilities\modules\referral\ReferralModule.class
 org\celestialcraft\cCUtilities\modules\customenchants\ProtectionOfTheEndEnchant.class
 org\celestialcraft\cCUtilities\modules\customitems\CyberStorageItem.class
@@ -142,14 +142,17 @@ org\celestialcraft\cCUtilities\modules\rtp\RtpModule.class
 org\celestialcraft\cCUtilities\utils\ShopUtils.class
 org\celestialcraft\cCUtilities\modules\customparticles\RainbowParticlesEnchant$1.class
 org\celestialcraft\cCUtilities\modules\customitems\CriticalChestplateItem.class
+org\celestialcraft\cCUtilities\modules\quests\listeners\QuestsJoinListener.class
 org\celestialcraft\cCUtilities\modules\customitems\TerracottaPickaxeItem.class
 org\celestialcraft\cCUtilities\modules\ced\DragonConfig.class
 org\celestialcraft\cCUtilities\modules\customitems\RailPlacerItem$2.class
 org\celestialcraft\cCUtilities\utils\ActivityTracker.class
 org\celestialcraft\cCUtilities\modules\celestialvoting\config\VotingConfig.class
 org\celestialcraft\cCUtilities\utils\CommandRegistry.class
+org\celestialcraft\cCUtilities\modules\quests\bundle\WeeklyBundleStorage.class
 org\celestialcraft\cCUtilities\modules\modulemanager\Module.class
 org\celestialcraft\cCUtilities\listeners\ConfirmationClickListener.class
+org\celestialcraft\cCUtilities\modules\quests\util\QuestProgress.class
 org\celestialcraft\cCUtilities\modules\ced\CedModule.class
 org\celestialcraft\cCUtilities\modules\customitems\RailPlacerItem.class
 org\celestialcraft\cCUtilities\modules\ced\DragonManager.class
@@ -181,6 +184,7 @@ org\celestialcraft\cCUtilities\modules\ced\listeners\IceDragonListener.class
 org\celestialcraft\cCUtilities\modules\customitems\SurrenderItem.class
 org\celestialcraft\cCUtilities\utils\TextFormatter.class
 org\celestialcraft\cCUtilities\commands\ShopsMainCommand.class
+org\celestialcraft\cCUtilities\modules\quests\util\LoreUtils$1.class
 org\celestialcraft\cCUtilities\modules\customitems\PhoenixChestplateItem.class
 org\celestialcraft\cCUtilities\modules\customitems\RailPlacerItem$RailType.class
 org\celestialcraft\cCUtilities\listeners\ShopActivityListener.class
@@ -205,6 +209,7 @@ org\celestialcraft\cCUtilities\modules\ced\listeners\ShadowDragonListener$1.clas
 org\celestialcraft\cCUtilities\modules\customitems\LavaforgedBootsItem.class
 org\celestialcraft\cCUtilities\modules\quests\model\Quest.class
 org\celestialcraft\cCUtilities\modules\customitems\portal\PortalManager.class
+org\celestialcraft\cCUtilities\modules\quests\util\QuestProgressService.class
 org\celestialcraft\cCUtilities\listeners\ShopWandListener.class
 org\celestialcraft\cCUtilities\modules\customitems\MercyUltimateItem.class
 org\celestialcraft\cCUtilities\modules\ced\listeners\BloodDragonListener$2.class
@@ -259,6 +264,7 @@ org\celestialcraft\cCUtilities\modules\ced\listeners\LightDragonListener.class
 org\celestialcraft\cCUtilities\modules\ced\listeners\ShadowDragonListener$2.class
 org\celestialcraft\cCUtilities\commands\CelestialVoteRewardCommand.class
 org\celestialcraft\cCUtilities\modules\ced\BossBarHandler.class
+org\celestialcraft\cCUtilities\modules\quests\listeners\RunDistanceListener.class
 org\celestialcraft\cCUtilities\modules\customparticles\FlameRingEnchant.class
 org\celestialcraft\cCUtilities\modules\customitems\ReallocatorItem.class
 org\celestialcraft\cCUtilities\modules\randomkeys\KeyDistributor$1.class

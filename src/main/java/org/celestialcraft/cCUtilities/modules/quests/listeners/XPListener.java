@@ -8,6 +8,7 @@ import org.celestialcraft.cCUtilities.modules.quests.QuestManager;
 import org.celestialcraft.cCUtilities.modules.quests.model.Quest;
 import org.celestialcraft.cCUtilities.modules.quests.model.QuestType;
 import org.celestialcraft.cCUtilities.modules.quests.util.LoreUtils;
+import org.celestialcraft.cCUtilities.modules.quests.util.QuestProgress;
 
 import java.util.List;
 
@@ -16,9 +17,16 @@ public class XPListener implements Listener {
     @EventHandler
     public void onGainXP(PlayerExpChangeEvent event) {
         if (!ModuleManager.isEnabled("quests")) return;
-        var player = event.getPlayer();
-        int amount = event.getAmount();
 
+        var player = event.getPlayer();
+        int amount = Math.max(0, event.getAmount());
+        if (amount == 0) return;
+
+        // 1) Weekly bundle first (persists + auto-syncs lore)
+        boolean handled = QuestProgress.get().addProgress(player, QuestType.GAIN_EXPERIENCE, amount);
+        if (handled) return;
+
+        // 2) Fallback: single-quest item flow (original logic)
         List<Quest> quests = QuestManager.getQuests(player);
         for (Quest quest : quests) {
             if (quest.getType() == QuestType.GAIN_EXPERIENCE && !quest.isComplete() && !quest.isExpired()) {

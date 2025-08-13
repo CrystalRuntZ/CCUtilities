@@ -78,10 +78,11 @@ public class ListenerRegistry {
             plugin.getServer().getPluginManager().registerEvents(new MobKillListener(), plugin);
             plugin.getServer().getPluginManager().registerEvents(new PlaceBlockListener(), plugin);
             plugin.getServer().getPluginManager().registerEvents(new PlayerJoinListener(), plugin);
-            plugin.getServer().getPluginManager().registerEvents(new RunListener(), plugin);
+            plugin.getServer().getPluginManager().registerEvents(new RunDistanceListener(), plugin);
             plugin.getServer().getPluginManager().registerEvents(new SmeltListener(), plugin);
             plugin.getServer().getPluginManager().registerEvents(new SwimListener(), plugin);
             plugin.getServer().getPluginManager().registerEvents(new XPListener(), plugin);
+            new org.celestialcraft.cCUtilities.modules.quests.listeners.QuestsJoinListener();
         }
 
         if (ModuleManager.isEnabled("ced")) {

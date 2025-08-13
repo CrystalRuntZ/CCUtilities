@@ -2,7 +2,6 @@ C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtili
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\activity\ConfirmationGuiManager.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\customitems\ForestBiomeWand.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\customitems\TerracottaPickaxeItem.java
-C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\quests\listeners\RunListener.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\customitems\CelestialBucketItem.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\utils\SpawnerDataUtil.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\customitems\TryzubTridentItem.java
@@ -26,11 +25,13 @@ C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtili
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\customparticles\CustomParticlesModule.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\quests\listeners\BlockBreakListener.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\listeners\ConfirmationClickListener.java
+C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\quests\bundle\WeeklyBundleStorage.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\commands\EntityManagerTabCompleter.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\customitems\InstaMagicBroomItem.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\customparticles\ParticleEffectType.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\playershops\data\ShopRegion.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\ced\listeners\LightDragonListener.java
+C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\quests\util\QuestProgress.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\customenchants\BeheadingEnchant.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\listeners\CustomEnchantAnvilListener.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\customitems\FlowerWandItem.java
@@ -49,6 +50,7 @@ C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtili
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\ced\listeners\AetherDragonListener.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\ced\listeners\EarthDragonListener.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\quests\listeners\DamageListener.java
+C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\quests\listeners\RunDistanceListener.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\customitems\PocketSandItem.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\listeners\ShopWandListener.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\customparticles\HeartTrailEnchant.java
@@ -109,6 +111,7 @@ C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtili
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\customitems\PortalGunItem.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\ced\listeners\DragonDamageListener.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\customitems\IceKingsStaffItem.java
+C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\quests\util\WeeklyQuestItemFactory.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\customitems\CondenseCommandItem.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\ced\DragonSpawnEvent.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\customitems\DoubleXpSwordItem.java
@@ -123,6 +126,7 @@ C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtili
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\customitems\MultitoolItem.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\customitems\DayFlyTokenItem.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\ced\DragonType.java
+C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\quests\bundle\WeeklyBundle.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\customitems\FantasyPickaxeItem.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\customitems\FairytaleHatBoxItem.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\customitems\LemurLeaperItem.java
@@ -190,6 +194,7 @@ C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtili
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\wordfilter\WordFilterModule.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\quests\listeners\PlayerJoinListener.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\customitems\VegemiteItem.java
+C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\quests\listeners\QuestsJoinListener.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\ced\listeners\CelestialDragonListener.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\quests\listeners\PlaceBlockListener.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\customitems\BabyConverterItem.java
@@ -214,6 +219,7 @@ C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtili
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\ced\listeners\HellfireDragonListener.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\customitems\DyeShooterItem.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\ced\listeners\EndermanSpawnBlocker.java
+C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\quests\util\QuestProgressService.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\randomkeys\KeyDataManager.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\entitymanager\EntityManagerModule.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\randomkeys\KeyDistributor.java

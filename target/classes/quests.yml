@@ -1,0 +1,4 @@
+reward_groups:
+  weekly:
+    - "crates key give %player% questkey 1"
+    - "xp add %player% 500"

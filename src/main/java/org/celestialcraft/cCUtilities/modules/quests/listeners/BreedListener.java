@@ -9,6 +9,7 @@ import org.celestialcraft.cCUtilities.modules.quests.QuestManager;
 import org.celestialcraft.cCUtilities.modules.quests.model.Quest;
 import org.celestialcraft.cCUtilities.modules.quests.model.QuestType;
 import org.celestialcraft.cCUtilities.modules.quests.util.LoreUtils;
+import org.celestialcraft.cCUtilities.modules.quests.util.QuestProgress;
 
 import java.util.List;
 
@@ -20,8 +21,13 @@ public class BreedListener implements Listener {
         if (!(event.getBreeder() instanceof Player breeder)) return;
 
         String bredType = event.getEntityType().name().toUpperCase();
-        List<Quest> quests = QuestManager.getQuests(breeder);
 
+        // 1) Try weekly bundle first (persists + auto-syncs lore; respects target filter)
+        boolean handled = QuestProgress.get().addProgress(breeder, QuestType.BREED_ANIMALS, bredType, 1);
+        if (handled) return;
+
+        // 2) Fallback: single-quest item flow (your original logic)
+        List<Quest> quests = QuestManager.getQuests(breeder);
         for (Quest quest : quests) {
             if (quest.getType() == QuestType.BREED_ANIMALS && !quest.isComplete() && !quest.isExpired()) {
                 String target = quest.getTargetItem();
