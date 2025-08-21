@@ -17,10 +17,7 @@ import org.celestialcraft.cCUtilities.modules.quests.bundle.WeeklyBundleStorage;
 import org.celestialcraft.cCUtilities.modules.quests.config.QuestConfig;
 import org.celestialcraft.cCUtilities.modules.quests.model.Quest;
 import org.celestialcraft.cCUtilities.modules.quests.storage.QuestCooldowns;
-import org.celestialcraft.cCUtilities.modules.quests.util.LoreUtils;
-import org.celestialcraft.cCUtilities.modules.quests.util.QuestItemFactory;
-import org.celestialcraft.cCUtilities.modules.quests.util.WeeklyQuestGenerator;
-import org.celestialcraft.cCUtilities.modules.quests.util.WeeklyQuestItemFactory;
+import org.celestialcraft.cCUtilities.modules.quests.util.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -86,29 +83,68 @@ public class QuestsCommand implements CommandExecutor {
             }
 
             case "weekly" -> {
+                // Players only
                 if (!(sender instanceof Player player)) {
-                    sender.sendMessage(mini.deserialize(MessageConfig.get("quests.player-only")));
+                    sender.sendMessage(MiniMessage.miniMessage().deserialize(MessageConfig.get("quests.players-only")));
                     return true;
                 }
 
-                long nowMs = System.currentTimeMillis();
-                Long lastClaim = QuestCooldowns.getLastWeeklyClaim(player.getUniqueId());
-                long oneWeekMs = 7L * 24 * 60 * 60 * 1000;
-
-                if (lastClaim != null && nowMs - lastClaim < oneWeekMs) {
-                    long remaining = oneWeekMs - (nowMs - lastClaim);
-                    long hours = remaining / 1000 / 60 / 60;
-                    long minutes = (remaining / 1000 / 60) % 60;
-                    player.sendMessage(mini.deserialize(MessageConfig.get("quests.weekly-cooldown")
-                            .replace("%hours%", String.valueOf(hours))
-                            .replace("%minutes%", String.valueOf(minutes))));
+                // Permission gate
+                if (!player.hasPermission("quests.weekly")) {
+                    player.sendMessage(MiniMessage.miniMessage().deserialize(MessageConfig.get("quests.no-permission")));
                     return true;
                 }
 
-                // Generate quests for the bundle
+                // Optional admin bypass: quests.weekly.bypass
+                if (player.hasPermission("quests.weekly.bypass")) {
+                    // ===== existing grant logic (bypasses cooldown) =====
+                    List<Quest> generated = WeeklyQuestGenerator.generateWeeklyQuests(player.getUniqueId());
+                    long oneWeekMs = 7L * 24 * 60 * 60 * 1000;
+                    long expiresAtEpochSeconds = (System.currentTimeMillis() + oneWeekMs) / 1000L;
+
+                    WeeklyBundle bundle = new WeeklyBundle(
+                            java.util.UUID.randomUUID(),
+                            player.getUniqueId(),
+                            expiresAtEpochSeconds,
+                            generated
+                    );
+
+                    WeeklyBundleStorage storage = new WeeklyBundleStorage(CCUtilities.getInstance());
+                    storage.save(bundle);
+
+                    ItemStack paper = WeeklyQuestItemFactory.build(CCUtilities.getInstance(), bundle);
+                    paper.editMeta(meta -> meta.displayName(
+                            MiniMessage.miniMessage()
+                                    .deserialize("<#c1adfe>" + player.getName() + "'s Weekly Quest</#c1adfe>")
+                                    .decoration(net.kyori.adventure.text.format.TextDecoration.ITALIC, false)
+                    ));
+                    // Delegate lore rendering to LoreUtils (consistent style)
+                    LoreUtils.updateLoreMultiple(paper, generated);
+                    player.getInventory().addItem(paper);
+
+                    player.sendMessage(MiniMessage.miniMessage().deserialize(MessageConfig.get("quests.weekly.granted")));
+                    return true;
+                }
+
+                // Cooldown via WeeklyClaimGate (PDC-backed)
+                WeeklyClaimGate gate = new WeeklyClaimGate(CCUtilities.getInstance());
+                long now = System.currentTimeMillis();
+
+                if (!gate.canClaim(player, now)) {
+                    long rem = gate.millisRemaining(player, now);
+                    String pretty = WeeklyClaimGate.formatRemaining(rem);
+                    player.sendMessage(
+                            MiniMessage.miniMessage().deserialize(
+                                    MessageConfig.get("quests.weekly.cooldown")
+                                            .replace("%remaining%", pretty)
+                            )
+                    );
+                    return true;
+                }
+
+                // ===== cooldown satisfied -> grant and record =====
                 List<Quest> generated = WeeklyQuestGenerator.generateWeeklyQuests(player.getUniqueId());
-
-                // Expire in 7 days (swap to "next Monday 00:00 UTC" if preferred)
+                long oneWeekMs = 7L * 24 * 60 * 60 * 1000;
                 long expiresAtEpochSeconds = (System.currentTimeMillis() + oneWeekMs) / 1000L;
 
                 WeeklyBundle bundle = new WeeklyBundle(
@@ -118,23 +154,25 @@ public class QuestsCommand implements CommandExecutor {
                         generated
                 );
 
-                // Store and give paper
                 WeeklyBundleStorage storage = new WeeklyBundleStorage(CCUtilities.getInstance());
                 storage.save(bundle);
 
                 ItemStack paper = WeeklyQuestItemFactory.build(CCUtilities.getInstance(), bundle);
-
                 paper.editMeta(meta -> meta.displayName(
                         MiniMessage.miniMessage()
                                 .deserialize("<#c1adfe>" + player.getName() + "'s Weekly Quest</#c1adfe>")
                                 .decoration(net.kyori.adventure.text.format.TextDecoration.ITALIC, false)
                 ));
-
+                // Delegate lore rendering to LoreUtils (consistent style)
                 LoreUtils.updateLoreMultiple(paper, generated);
-
                 player.getInventory().addItem(paper);
+
+                // record claim and notify
+                gate.recordClaim(player, now);
+                player.sendMessage(MiniMessage.miniMessage().deserialize(MessageConfig.get("quests.weekly.granted")));
                 return true;
             }
+
 
             case "expiry" -> {
                 if (!(sender instanceof Player player)) {
@@ -310,7 +348,7 @@ public class QuestsCommand implements CommandExecutor {
                 return true;
             }
 
-                case "resetweekly" -> {
+            case "resetweekly" -> {
                 if (!sender.hasPermission("quests.admin")) {
                     sender.sendMessage(mini.deserialize(MessageConfig.get("quests.no-permission")));
                     return true;
@@ -319,16 +357,27 @@ public class QuestsCommand implements CommandExecutor {
                     sender.sendMessage(mini.deserialize("<red>Usage:</red> /quests resetweekly <player>"));
                     return true;
                 }
+
                 Player target = Bukkit.getPlayer(args[1]);
                 if (target == null) {
                     sender.sendMessage(mini.deserialize(MessageConfig.get("quests.player-not-found")));
                     return true;
                 }
-                var storage = new WeeklyBundleStorage(CCUtilities.getInstance());
-                int purged = storage.purgeOwner(target.getUniqueId()); // new method
-                QuestCooldowns.setLastWeeklyClaim(target.getUniqueId(), 0L); // allow immediate re-claim
+
+                // Purge all stored bundles for this player
+                int purged = QuestProgress.purgeOwner(target.getUniqueId());
+
+                // Let them claim immediately again
+                QuestCooldowns.setLastWeeklyClaim(target.getUniqueId(), 0L);
                 QuestCooldowns.save();
-                sender.sendMessage(mini.deserialize("<yellow>Reset weekly state for</yellow> <aqua>" + target.getName() + "</aqua> <gray>(purged " + purged + " bundles)</gray>."));
+
+                // Remove any stale weekly items from their inventory and sync lore on valid ones
+                int removed = QuestProgress.removeInvalidWeeklyItems(target);
+
+                sender.sendMessage(mini.deserialize(
+                        "<yellow>Reset weekly state for</yellow> <aqua>" + target.getName() +
+                                "</aqua> <gray>(purged " + purged + " bundles, removed " + removed + " stale items)</gray>."
+                ));
                 return true;
             }
 

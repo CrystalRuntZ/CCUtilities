@@ -9,6 +9,7 @@ import java.util.Random;
 
 public class RtpHandler {
     private static final FileConfiguration config;
+    private static final Random RNG = new Random();
 
     static {
         Plugin plugin = Bukkit.getPluginManager().getPlugin("CCUtilities");
@@ -26,35 +27,29 @@ public class RtpHandler {
         int maxX = config.getInt("rtp.worlds." + type + ".max-x");
         int maxZ = config.getInt("rtp.worlds." + type + ".max-z");
 
-        // Overworld hardcap minY at 63
+        // Overworld hardcap minY at 63 to avoid caves/ocean
         int minY = type.equalsIgnoreCase("overworld")
                 ? 63
-                : config.getInt("rtp.worlds." + type + ".min-y", 0);
+                : config.getInt("rtp.worlds." + type + ".min-y", world.getMinHeight());
 
         int maxY = config.getInt("rtp.worlds." + type + ".max-y", world.getMaxHeight());
 
-        Random random = new Random();
-
-        for (int attempt = 0; attempt < 50; attempt++) {
+        // Try more times for better success, especially in Nether
+        for (int attempt = 0; attempt < 150; attempt++) {
             int x = getRandomInRange(-maxX, maxX);
             int z = getRandomInRange(-maxZ, maxZ);
 
-            // Nether: cap maxY to 126, avoid lava, ensure space above
             if (type.equalsIgnoreCase("nether")) {
-                int safeMaxY = Math.min(maxY, 126);
-                int y = random.nextInt((safeMaxY - minY) + 1) + minY;
-
-                Block block = world.getBlockAt(x, y, z);
-                Block above = world.getBlockAt(x, y + 1, z);
-                Block twoAbove = world.getBlockAt(x, y + 2, z);
-
-                if (isSafeBlockNether(block) && above.isEmpty() && twoAbove.isEmpty()) {
-                    return new Location(world, x + 0.5, y + 1.0, z + 0.5);
+                // Avoid the nether roof (bedrock at ~127). Cap search at 126.
+                int top = Math.min(maxY, 126);
+                Integer y = findSafeYInNether(world, x, z, Math.max(minY, world.getMinHeight()), top);
+                if (y != null) {
+                    return new Location(world, x + 0.5, y, z + 0.5);
                 }
                 continue;
             }
 
-            // Overworld + End
+            // Overworld + End: find first safe standing spot with headroom
             Integer y = findSafeY(world, x, z, minY, maxY, type);
             if (y != null) {
                 return new Location(world, x + 0.5, y, z + 0.5);
@@ -64,14 +59,45 @@ public class RtpHandler {
         return null; // No safe location found
     }
 
+    private static Integer findSafeYInNether(World world, int x, int z, int minY, int maxY) {
+        // Scan DOWN from maxY (<=126) to find a solid floor that is not lava, with two air blocks above.
+        for (int y = maxY; y >= minY; y--) {
+            Block floor = world.getBlockAt(x, y, z);
+            Material ft = floor.getType();
+
+            // Must be solid to stand on
+            if (!ft.isSolid()) continue;
+
+            // Avoid lava and lava cauldron floors
+            if (ft == Material.LAVA || ft == Material.LAVA_CAULDRON) continue;
+
+            // Extra guard to avoid roof plateau (standing on bedrock near the roof)
+            // If the floor is bedrock at very high Y, skip it to avoid "roof-like" placements.
+            if (ft == Material.BEDROCK && y >= 123) continue;
+
+            Block head = world.getBlockAt(x, y + 1, z);
+            Block aboveHead = world.getBlockAt(x, y + 2, z);
+
+            // Need two air spaces to avoid suffocation
+            if (head.isEmpty() && aboveHead.isEmpty()) {
+                return y + 1; // stand on top of floor
+            }
+        }
+        return null;
+    }
+
     private static Integer findSafeY(World world, int x, int z, int minY, int maxY, String type) {
         for (int y = minY; y <= maxY; y++) {
             Block block = world.getBlockAt(x, y, z);
-            if (type.equalsIgnoreCase("overworld") ? isSafeBlockOverworld(block) : isSafeBlockNether(block)) {
+            boolean goodFloor = type.equalsIgnoreCase("overworld")
+                    ? isSafeBlockOverworld(block)
+                    : isSafeBlockNether(block);
+
+            if (goodFloor) {
                 Block above = world.getBlockAt(x, y + 1, z);
                 Block twoAbove = world.getBlockAt(x, y + 2, z);
                 if (above.isEmpty() && twoAbove.isEmpty()) {
-                    return y + 1; // Stand on top of safe block
+                    return y + 1; // stand on top
                 }
             }
         }
@@ -79,23 +105,25 @@ public class RtpHandler {
     }
 
     private static boolean isSafeBlockOverworld(Block block) {
-        Material type = block.getType();
-        return type.isSolid()
-                && type != Material.LAVA
-                && type != Material.LAVA_CAULDRON
-                && type != Material.WATER
-                && type != Material.CACTUS
-                && type != Material.FIRE;
+        Material t = block.getType();
+        return t.isSolid()
+                && t != Material.LAVA
+                && t != Material.LAVA_CAULDRON
+                && t != Material.WATER
+                && t != Material.CACTUS
+                && t != Material.FIRE
+                && t != Material.CAMPFIRE
+                && t != Material.SOUL_CAMPFIRE;
     }
 
     private static boolean isSafeBlockNether(Block block) {
-        Material type = block.getType();
-        return type.isSolid()
-                && type != Material.LAVA
-                && type != Material.LAVA_CAULDRON;
+        Material t = block.getType();
+        return t.isSolid()
+                && t != Material.LAVA
+                && t != Material.LAVA_CAULDRON;
     }
 
     private static int getRandomInRange(int min, int max) {
-        return new Random().nextInt(max - min + 1) + min;
+        return RNG.nextInt(max - min + 1) + min;
     }
 }

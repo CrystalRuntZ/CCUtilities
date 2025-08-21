@@ -24,7 +24,8 @@ public class CelestialCommand implements CommandExecutor {
             return true;
         }
 
-        if (!sender.hasPermission("celestial.reload")) {
+        // Allow either celestial.reload or celestial.admin (matches your plugin.yml)
+        if (!(sender.hasPermission("celestial.reload") || sender.hasPermission("celestial.admin"))) {
             sender.sendMessage(mm.deserialize(MessageConfig.get("core.no-permission")));
             return true;
         }
@@ -32,7 +33,12 @@ public class CelestialCommand implements CommandExecutor {
         sender.sendMessage(mm.deserialize(MessageConfig.get("core.reloading")));
 
         try {
+            // Ensure config.yml is reloaded
+            main.reloadConfig();
+
+            // Your existing full reload routine
             main.reloadAll();
+
             sender.sendMessage(mm.deserialize(MessageConfig.get("core.reloaded")));
         } catch (Exception e) {
             sender.sendMessage(mm.deserialize(MessageConfig.get("core.reload-error")));

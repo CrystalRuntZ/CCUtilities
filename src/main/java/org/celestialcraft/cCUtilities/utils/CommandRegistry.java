@@ -70,6 +70,15 @@ public class CommandRegistry {
             CommandRegistrar.register(plugin, "ced", new CedCommand(dragonManager), null);
         }
 
+
+        if (ModuleManager.isEnabled("maparts")) {
+            var mapartCmd = new org.celestialcraft.cCUtilities.modules.maparts.MapArtMainCommand(
+                    plugin, // <-- pass plugin here
+                    org.celestialcraft.cCUtilities.CCUtilities.getInstance().mapArtsModule.getDataManager()
+            );
+            CommandRegistrar.register(plugin, "mapart", mapartCmd, mapartCmd);
+        }
+
         // Celestial Voting Module
         if (ModuleManager.isEnabled("celestialvoting")) {
             RewardManager rewardManager = instance.votingModule.getRewardManager();
@@ -85,9 +94,13 @@ public class CommandRegistry {
                     new EntityManagerTabCompleter());
         }
 
-        // Player Shops Module
         if (ModuleManager.isEnabled("playershops")) {
-            CommandRegistrar.register(plugin, "shops", new ShopsMainCommand(), new ShopsMainTabCompleter());
+            var shopsCmd = new ShopsMainCommand();
+            CommandRegistrar.register(plugin, "shops", shopsCmd, shopsCmd);
+
+            // Aliases
+            CommandRegistrar.register(plugin, "shop", new ShopWarpCommand(), new ShopWarpCommand());
+            CommandRegistrar.register(plugin, "setshop", new SetShopCommand(), null);
         }
 
         // Referral System

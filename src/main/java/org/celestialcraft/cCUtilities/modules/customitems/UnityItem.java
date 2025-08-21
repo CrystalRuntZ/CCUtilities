@@ -11,8 +11,11 @@ import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -25,6 +28,9 @@ public class UnityItem implements CustomItem {
     private final Map<UUID, Long> cooldownMap = new HashMap<>();
     private final Map<UUID, Long> messageCooldownMap = new HashMap<>();
     private static final NamespacedKey uuidKey = NamespacedKey.minecraft("unity_cooldown");
+
+    private static final String GRAY = "§7";
+    private static final String ACCENT = toLegacyHex();
 
     @Override
     public String getIdentifier() {
@@ -43,11 +49,25 @@ public class UnityItem implements CustomItem {
         return lore != null && !lore.isEmpty() && serializer.serialize(lore.getFirst()).equals("§7Unity Item");
     }
 
+    // Fired on some servers
     @Override
     public void onInteractEntity(PlayerInteractEntityEvent event) {
+        if (event.getHand() != EquipmentSlot.HAND) return;
         Player player = event.getPlayer();
         if (!(event.getRightClicked() instanceof Player target)) return;
+        handleUnitePrompt(player, target);
+    }
 
+    // Fired on other servers/impls (precise hitbox)
+    @Override
+    public void onInteractEntity(PlayerInteractAtEntityEvent event) {
+        if (event.getHand() != EquipmentSlot.HAND) return;
+        Player player = event.getPlayer();
+        if (!(event.getRightClicked() instanceof Player target)) return;
+        handleUnitePrompt(player, target);
+    }
+
+    private void handleUnitePrompt(Player player, Player target) {
         ItemStack item = player.getInventory().getItemInMainHand();
         if (!matches(item)) return;
 
@@ -79,10 +99,12 @@ public class UnityItem implements CustomItem {
 
     @Override
     public void onInteract(PlayerInteractEvent event) {
-        if (!event.getAction().isRightClick()) return;
+        Action action = event.getAction();
+        if (action != Action.RIGHT_CLICK_AIR && action != Action.RIGHT_CLICK_BLOCK) return;
+        if (event.getHand() != EquipmentSlot.HAND) return;
+
         Player player = event.getPlayer();
         if (!player.isSneaking()) return;
-
         if (isInCombat(player)) return;
 
         ItemStack item = player.getInventory().getItemInMainHand();
@@ -151,21 +173,40 @@ public class UnityItem implements CustomItem {
         ItemMeta meta = item.getItemMeta();
         if (meta == null) return item;
 
-        List<Component> newLore = new ArrayList<>();
-        newLore.add(Component.text("Unity Item")
-                .color(TextColor.color(0xAAAAAA))
-                .decoration(TextDecoration.ITALIC, false));
+        LegacyComponentSerializer LEGACY = LegacyComponentSerializer.legacySection();
 
-        newLore.add(Component.text("Partner: ", TextColor.color(0xAAAAAA))
-                .append(Component.text(player1).color(TextColor.fromHexString("#c1adfe")).decoration(TextDecoration.ITALIC, false))
-                .decoration(TextDecoration.ITALIC, false));
+        // Keep existing lore, only fill lines 2 & 3 (index 1,2)
+        List<Component> lore = meta.lore();
+        if (lore == null) lore = new ArrayList<>();
+        while (lore.size() < 3) lore.add(Component.empty());
 
-        newLore.add(Component.text("Partner: ", TextColor.color(0xAAAAAA))
-                .append(Component.text(player2).color(TextColor.fromHexString("#c1adfe")).decoration(TextDecoration.ITALIC, false))
-                .decoration(TextDecoration.ITALIC, false));
+        // Write partner lines in legacy colors and FORCE no italics
+        Component l2 = LEGACY.deserialize(GRAY + "Partner: " + ACCENT + player1)
+                .decoration(TextDecoration.ITALIC, false);
+        Component l3 = LEGACY.deserialize(GRAY + "Partner: " + ACCENT + player2)
+                .decoration(TextDecoration.ITALIC, false);
 
-        meta.lore(newLore);
+        lore.set(1, l2);
+        lore.set(2, l3);
+
+        // Also ensure NONE of the lore lines are italicized (preserve other styling)
+        List<Component> noItalics = new ArrayList<>(lore.size());
+        for (Component line : lore) {
+            noItalics.add((line == null ? Component.empty() : line).decoration(TextDecoration.ITALIC, false));
+        }
+
+        meta.lore(noItalics);
         item.setItemMeta(meta);
         return item;
+    }
+
+
+    private static String toLegacyHex() {
+        String h = "#c1adfe".substring(1);
+        StringBuilder sb = new StringBuilder("§x");
+        for (char ch : h.toCharArray()) {
+            sb.append('§').append(Character.toUpperCase(ch));
+        }
+        return sb.toString();
     }
 }

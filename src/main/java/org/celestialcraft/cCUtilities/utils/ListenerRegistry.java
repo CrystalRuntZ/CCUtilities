@@ -50,10 +50,15 @@ public class ListenerRegistry {
         if (ModuleManager.isEnabled("playershops")) {
             plugin.getServer().getPluginManager().registerEvents(new ShopActivityListener(), plugin);
             plugin.getServer().getPluginManager().registerEvents(new ShopBuildListener(), plugin);
-            plugin.getServer().getPluginManager().registerEvents(new ShopChestAccessListener(), plugin);
+            plugin.getServer().getPluginManager().registerEvents(new ShopChestAccessListener(plugin), plugin);
             plugin.getServer().getPluginManager().registerEvents(new ShopChestListener(), plugin);
+            plugin.getServer().getPluginManager().registerEvents(new ShopChestDragListener(), plugin); // <-- add this
             plugin.getServer().getPluginManager().registerEvents(new ShopSelectionListener(CCUtilities.getInstance().playerShopsModule), plugin);
             plugin.getServer().getPluginManager().registerEvents(new ShopWandListener(), plugin);
+            plugin.getServer().getPluginManager().registerEvents(new ShopTransferGuardListener(), plugin);
+            plugin.getServer().getPluginManager().registerEvents(new ShopBlockProtectListener(), plugin);
+            plugin.getServer().getPluginManager().registerEvents(new ShopSignProtectionListener(), plugin);
+            plugin.getServer().getPluginManager().registerEvents(new ShopHangingProtectListener(), plugin);
         }
 
         if (ModuleManager.isEnabled("joinitem")) {

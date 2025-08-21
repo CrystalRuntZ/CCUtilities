@@ -46,21 +46,21 @@ activity-reward:
 rtp:
   worlds:
     overworld:
-      name: world
-      max-x: 5000
-      max-z: 5000
+      name: wild
+      max-x: 20000
+      max-z: 20000
       min-y: 63
       max-y: 200
     nether:
-      name: world_nether
-      max-x: 2500
-      max-z: 2500
+      name: wild_nether
+      max-x: 15000
+      max-z: 15000
       min-y: 32
       max-y: 100
     end:
-      name: world_the_end
-      max-x: 3000
-      max-z: 3000
+      name: wild_the_end
+      max-x: 15000
+      max-z: 15000
       min-y: 60
       max-y: 100
 

@@ -9,7 +9,7 @@ vote-tiers:
 rewards:
   divine:
     - type: COMMAND
-      value: "crates key give %player% worldkey 1"
+      value: "crates key give %player% worldcratekey 1"
       chance: 10
       broadcast-key: cratekey
     - type: COMMAND
@@ -37,7 +37,7 @@ rewards:
       chance: 10
       broadcast-key: 30l
     - type: COMMAND
-      value: "crates key give %player decorkey 1%"
+      value: "crates key give %player% decorkey 1"
       chance: 10
       broadcast-key: decorkey
     - type: COMMAND
@@ -63,7 +63,7 @@ rewards:
 
   ethereal:
     - type: COMMAND
-      value: "crates key give %player% worldkey 1"
+      value: "crates key give %player% worldcratekey 1"
       chance: 10
       broadcast-key: cratekey
     - type: COMMAND
@@ -91,7 +91,7 @@ rewards:
       chance: 10
       broadcast-key: 25l
     - type: COMMAND
-      value: "crates key give %player decorkey 1%"
+      value: "crates key give %player% decorkey 1"
       chance: 10
       broadcast-key: decorkey
     - type: COMMAND
@@ -117,7 +117,7 @@ rewards:
 
   ascendant:
     - type: COMMAND
-      value: "crates key give %player% worldkey 1"
+      value: "crates key give %player% worldcratekey 1"
       chance: 10
       broadcast-key: cratekey
     - type: COMMAND
@@ -141,7 +141,7 @@ rewards:
       chance: 15
       broadcast-key: 20l
     - type: COMMAND
-      value: "crates key give %player decorkey 1%"
+      value: "crates key give %player% decorkey 1"
       chance: 10
       broadcast-key: decorkey
     - type: COMMAND
@@ -167,7 +167,7 @@ rewards:
 
   radiant:
     - type: COMMAND
-      value: "crates key give %player% worldkey 1"
+      value: "crates key give %player% worldcratekey 1"
       chance: 10
       broadcast-key: cratekey
     - type: COMMAND
@@ -187,7 +187,7 @@ rewards:
       chance: 15
       broadcast-key: 15l
     - type: COMMAND
-      value: "crates key give %player decorkey 1%"
+      value: "crates key give %player% decorkey 1"
       chance: 10
       broadcast-key: decorkey
     - type: COMMAND
@@ -213,7 +213,7 @@ rewards:
 
   heavenly:
     - type: COMMAND
-      value: "crates key give %player% worldkey 1"
+      value: "crates key give %player% worldcratekey 1"
       chance: 10
       broadcast-key: cratekey
     - type: COMMAND
@@ -233,7 +233,7 @@ rewards:
       chance: 15
       broadcast-key: 15l
     - type: COMMAND
-      value: "crates key give %player decorkey 1%"
+      value: "crates key give %player% decorkey 1"
       chance: 10
       broadcast-key: decorkey
     - type: COMMAND
@@ -259,7 +259,7 @@ rewards:
 
   normal:
     - type: COMMAND
-      value: "crates key give %player% worldkey 1"
+      value: "crates key give %player% worldcratekey 1"
       chance: 10
       broadcast-key: cratekey
     - type: COMMAND
@@ -279,7 +279,7 @@ rewards:
       chance: 15
       broadcast-key: 10l
     - type: COMMAND
-      value: "crates key give %player decorkey 1%"
+      value: "crates key give %player% decorkey 1"
       chance: 10
       broadcast-key: decorkey
     - type: COMMAND
@@ -306,20 +306,24 @@ rewards:
 botm-rewards:
   divine:
     - type: COMMAND
-      value: "crates key give %player% worldkey 1"
+      value: "crates key give %player% worldcratekey 1"
       chance: 25
       broadcast-key: cratekey
     - type: COMMAND
       value: "acb %player% 1000"
-      chance: 25
+      chance: 20
       broadcast-key: claimblocks1000
+    - type: COMMAND
+      value: "crates key give %player% decorkey 1"
+      chance: 10
+      broadcast-key: decorkey
     - type: COMMAND
       value: "give %player% diamond_block 1"
       chance: 10
       broadcast-key: db1
     - type: COMMAND
       value: "give %player% spawner 1"
-      chance: 20
+      chance: 15
       broadcast-key: spawner1
     - type: COMMAND
       value: "give %player% beacon 1"
@@ -336,12 +340,12 @@ botm-rewards:
 
   ethereal:
     - type: COMMAND
-      value: "crates key give %player% worldkey 1"
+      value: "crates key give %player% worldcratekey 1"
       chance: 25
       broadcast-key: cratekey
     - type: COMMAND
       value: "acb %player% 1000"
-      chance: 25
+      chance: 20
       broadcast-key: claimblocks1000
     - type: COMMAND
       value: "give %player% diamond_block 1"
@@ -349,7 +353,7 @@ botm-rewards:
       broadcast-key: db1
     - type: COMMAND
       value: "give %player% spawner 1"
-      chance: 20
+      chance: 15
       broadcast-key: spawner1
     - type: COMMAND
       value: "give %player% beacon 1"
@@ -363,15 +367,19 @@ botm-rewards:
       value: "eco give %player% 5"
       chance: 5
       broadcast-key: 5vp
+    - type: COMMAND
+      value: "crates key give %player% decorkey 1"
+      chance: 10
+      broadcast-key: decorkey
 
   ascendant:
     - type: COMMAND
-      value: "crates key give %player% worldkey 1"
+      value: "crates key give %player% worldcratekey 1"
       chance: 25
       broadcast-key: cratekey
     - type: COMMAND
       value: "acb %player% 1000"
-      chance: 25
+      chance: 20
       broadcast-key: claimblocks1000
     - type: COMMAND
       value: "give %player% diamond 7"
@@ -379,7 +387,7 @@ botm-rewards:
       broadcast-key: diamond7
     - type: COMMAND
       value: "give %player% spawner 1"
-      chance: 20
+      chance: 15
       broadcast-key: spawner1
     - type: COMMAND
       value: "give %player% beacon 1"
@@ -393,15 +401,19 @@ botm-rewards:
       value: "eco give %player% 5"
       chance: 5
       broadcast-key: 5vp
+    - type: COMMAND
+      value: "crates key give %player% decorkey 1"
+      chance: 10
+      broadcast-key: decorkey
 
   radiant:
     - type: COMMAND
-      value: "crates key give %player% worldkey 1"
+      value: "crates key give %player% worldcratekey 1"
       chance: 25
       broadcast-key: cratekey
     - type: COMMAND
       value: "acb %player% 1000"
-      chance: 25
+      chance: 20
       broadcast-key: claimblocks1000
     - type: COMMAND
       value: "give %player% diamond 7"
@@ -413,7 +425,7 @@ botm-rewards:
       broadcast-key: spawner1
     - type: COMMAND
       value: "give %player% beacon 1"
-      chance: 20
+      chance: 15
       broadcast-key: beacon1
     - type: COMMAND
       value: "give %player% netherite_ingot 1"
@@ -423,15 +435,19 @@ botm-rewards:
       value: "eco give %player% 5"
       chance: 5
       broadcast-key: 5vp
+    - type: COMMAND
+      value: "crates key give %player% decorkey 1"
+      chance: 10
+      broadcast-key: decorkey
 
   heavenly:
     - type: COMMAND
-      value: "crates key give %player% worldkey 1"
+      value: "crates key give %player% worldcratekey 1"
       chance: 25
       broadcast-key: cratekey
     - type: COMMAND
       value: "acb %player% 1000"
-      chance: 25
+      chance: 20
       broadcast-key: claimblocks1000
     - type: COMMAND
       value: "give %player% diamond 5"
@@ -443,7 +459,7 @@ botm-rewards:
       broadcast-key: spawner1
     - type: COMMAND
       value: "give %player% beacon 1"
-      chance: 20
+      chance: 15
       broadcast-key: beacon1
     - type: COMMAND
       value: "give %player% netherite_ingot 1"
@@ -453,15 +469,19 @@ botm-rewards:
       value: "eco give %player% 5"
       chance: 5
       broadcast-key: 5vp
+    - type: COMMAND
+      value: "crates key give %player% decorkey 1"
+      chance: 10
+      broadcast-key: decorkey
 
   normal:
     - type: COMMAND
-      value: "crates key give %player% worldkey 1"
+      value: "crates key give %player% worldcratekey 1"
       chance: 25
       broadcast-key: cratekey
     - type: COMMAND
       value: "acb %player% 1000"
-      chance: 25
+      chance: 20
       broadcast-key: claimblocks1000
     - type: COMMAND
       value: "give %player% diamond 5"
@@ -473,7 +493,7 @@ botm-rewards:
       broadcast-key: spawner1
     - type: COMMAND
       value: "give %player% beacon 1"
-      chance: 20
+      chance: 15
       broadcast-key: beacon1
     - type: COMMAND
       value: "give %player% netherite_ingot 1"
@@ -483,9 +503,13 @@ botm-rewards:
       value: "eco give %player% 5"
       chance: 5
       broadcast-key: 5vp
+    - type: COMMAND
+      value: "crates key give %player% decorkey 1"
+      chance: 10
+      broadcast-key: decorkey
 
 streak-reward:
   days: 7
   type: COMMAND
-  value: "crates key give %player% worldkey 1"
+  value: "crates key give %player% worldcratekey 1"
   broadcast-key: streak

@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Waterlogged;
+import org.bukkit.entity.Boat;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -14,41 +15,60 @@ import org.celestialcraft.cCUtilities.modules.quests.model.QuestType;
 import org.celestialcraft.cCUtilities.modules.quests.util.LoreUtils;
 import org.celestialcraft.cCUtilities.modules.quests.util.QuestProgress;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public class SwimListener implements Listener {
+
+    // carry over sub-1.0 distances so bobbing still counts
+    private static final Map<UUID, Double> residualByPlayer = new HashMap<>();
 
     @EventHandler
     public void onSwim(PlayerMoveEvent event) {
         if (!ModuleManager.isEnabled("quests")) return;
 
         var player = event.getPlayer();
-        var from = event.getFrom();
         var to = event.getTo();
+        var from = event.getFrom();
         if (from.getWorld() != to.getWorld()) return;
 
-        // Ignore tiny moves within the same block
-        if (from.getBlockX() == to.getBlockX()
-                && from.getBlockY() == to.getBlockY()
-                && from.getBlockZ() == to.getBlockZ()) return;
+        // exclude riding boats
+        if (player.isInsideVehicle() && player.getVehicle() instanceof Boat) return;
 
-        Block block = player.getLocation().getBlock();
-        if (!isWaterBlock(block)) return;
+        // must be in/at water (feet or eyes) to count
+        if (!isInOrAtWater(player.getLocation().getBlock())
+                && !isInOrAtWater(player.getEyeLocation().getBlock())) {
+            return;
+        }
 
-        int distance = (int) Math.max(0, from.distance(to));
-        if (distance <= 0) return;
+        // distance this tick (3D so vertical swimming/bobbing counts)
+        double delta = from.toVector().distance(to.toVector());
+        if (delta <= 0) return;
 
-        // 1) Weekly bundle first (persists + auto-syncs lore)
-        boolean handled = QuestProgress.get().addProgress(player, QuestType.SWIM_DISTANCE, distance);
+        UUID id = player.getUniqueId();
+        double sum = residualByPlayer.getOrDefault(id, 0.0) + delta;
+
+        int whole = (int) Math.floor(sum);
+        if (whole <= 0) {
+            residualByPlayer.put(id, sum);
+            return;
+        }
+        residualByPlayer.put(id, sum - whole);
+
+        // 1) Weekly bundle path first
+        boolean handled = QuestProgress.get().addProgress(player, QuestType.SWIM_DISTANCE, whole);
         if (handled) return;
 
-        // 2) Fallback: single-quest item flow (original logic)
+        // 2) Fallback: single-quest items path
         List<Quest> quests = QuestManager.getQuests(player);
         for (Quest quest : quests) {
             if (quest.getType() == QuestType.SWIM_DISTANCE && !quest.isComplete() && !quest.isExpired()) {
-                quest.setProgress(quest.getProgress() + distance);
+                quest.setProgress(quest.getProgress() + whole);
 
-                for (var item : player.getInventory().getContents()) {
+                var inv = player.getInventory();
+                for (var item : inv.getContents()) {
                     if (item == null) continue;
                     var questId = LoreUtils.getQuestId(item);
                     if (questId != null && questId.equals(quest.getId())) {
@@ -61,9 +81,9 @@ public class SwimListener implements Listener {
         }
     }
 
-    private boolean isWaterBlock(Block block) {
+    private boolean isInOrAtWater(Block block) {
         if (block.getType() == Material.WATER) return true;
         BlockData data = block.getBlockData();
-        return data instanceof Waterlogged waterlogged && waterlogged.isWaterlogged();
+        return data instanceof Waterlogged w && w.isWaterlogged();
     }
 }

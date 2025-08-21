@@ -6,7 +6,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class ShopSelectionStorage {
+public final class ShopSelectionStorage {
+    private ShopSelectionStorage() {}
+
     private static final Map<UUID, Location> pos1Map = new HashMap<>();
     private static final Map<UUID, Location> pos2Map = new HashMap<>();
 

@@ -10,6 +10,7 @@ import org.celestialcraft.cCUtilities.modules.customitems.CustomItemsModule;
 import org.celestialcraft.cCUtilities.modules.customparticles.CustomParticlesModule;
 import org.celestialcraft.cCUtilities.modules.entitymanager.EntityManagerModule;
 import org.celestialcraft.cCUtilities.modules.joinitem.JoinItemModule;
+import org.celestialcraft.cCUtilities.modules.maparts.MapArtsModule;
 import org.celestialcraft.cCUtilities.modules.modulemanager.Module;
 import org.celestialcraft.cCUtilities.modules.modulemanager.ModuleManager;
 import org.celestialcraft.cCUtilities.modules.modulemanager.ModulesConfig;
@@ -41,6 +42,7 @@ public final class CCUtilities extends JavaPlugin {
     public RandomKeysModule randomKeysModule;
     public CelestialVotingModule votingModule;
     public CustomParticlesModule particlesModule;
+    public MapArtsModule mapArtsModule;
 
     @Override
     public void onEnable() {
@@ -50,7 +52,6 @@ public final class CCUtilities extends JavaPlugin {
         MessageConfig.load(this);
         VoteStreakTracker.initialize(getDataFolder());
 
-        // Initialize and register modules
         randomKeys = new RandomKeysModule(this);
         joinItem = new JoinItemModule(this);
         wordFilter = new WordFilterModule(this);
@@ -67,7 +68,6 @@ public final class CCUtilities extends JavaPlugin {
         particlesModule = new CustomParticlesModule();
         ModuleManager.register(particlesModule);
 
-        // Fix: Register and enable custom items/enchants
         var customItemsModule = new CustomItemsModule(this);
         var customEnchantsModule = new CustomEnchantsModule(this);
         ModuleManager.register(customItemsModule);
@@ -75,8 +75,9 @@ public final class CCUtilities extends JavaPlugin {
         customItemsModule.enable();
         customEnchantsModule.enable();
 
+        mapArtsModule = new MapArtsModule(this);
+        ModuleManager.register(mapArtsModule);
 
-        // Load persisted module state
         ModulesConfig.reload();
         for (Module module : ModuleManager.getModules()) {
             if (ModulesConfig.shouldEnable(module.getName())) {
@@ -84,7 +85,6 @@ public final class CCUtilities extends JavaPlugin {
             }
         }
 
-        // Register commands and listeners
         CommandRegistry.registerAll(this);
         ListenerRegistry.registerAll(this);
 
@@ -102,8 +102,7 @@ public final class CCUtilities extends JavaPlugin {
     }
 
     public void reloadAll() {
-        reloadConfig(); // Reload config.yml
-
+        reloadConfig();
         randomKeys.enable();
         joinItem.enable();
         wordFilter.enable();
@@ -114,9 +113,7 @@ public final class CCUtilities extends JavaPlugin {
         entityManagerModule.reload();
         questModule.reload();
         cedModule.reload();
-
         MessageConfig.load(this);
-
         getLogger().info("All CCUtilities modules and configs reloaded.");
     }
 

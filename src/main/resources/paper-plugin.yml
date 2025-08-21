@@ -121,3 +121,73 @@ permissions:
     default: false
   ccutilities.rankselect.pluto:
     default: false
+
+  shops.claim:
+    description: Allows claiming a shop
+    default: false
+  shops.claim.ascendant:
+    description: Allows claiming ascendant shop regions
+    default: false
+  shops.claim.saturn:
+    description: Allows claiming saturn plots
+    default: false
+  shops.claim.divine:
+    description: Allows claiming divine shop regions
+    default: false
+  shops.define:
+    description: Allows defining shop regions (wand + /shops define)
+    default: op
+  shops.admin:
+    description: Admin controls for shops (unclaim any shop, claim a shop for another player with /shops claim <username>)
+    default: op
+  shops.chest.bypass:
+    description: Bypass shop chest and region protections
+    default: op
+  shops.info.admin:
+    description: View extra shop info (e.g., type) with /shops info
+    default: op
+
+  # Maparts module permissions
+  maparts.admin:
+    description: Administer maparts (use /mapart wand & define, bypass entry lock, build/map creation bypass, manage any trust)
+    default: op
+  mapart.admin:
+    description: Compatibility alias for maparts.admin
+    default: op
+    children:
+      maparts.admin: true
+
+  # Mapart claim count permissions (your command checks mapart.claim.<integer>)
+  mapart.claim.1:
+    description: Allows claiming up to 1 mapart platform
+    default: false
+  mapart.claim.2:
+    description: Allows claiming up to 2 mapart platforms
+    default: false
+  mapart.claim.3:
+    description: Allows claiming up to 3 mapart platforms
+    default: false
+  mapart.claim.4:
+    description: Allows claiming up to 4 mapart platforms
+    default: false
+  mapart.claim.5:
+    description: Allows claiming up to 5 mapart platforms
+    default: false
+  mapart.claim.6:
+    description: Allows claiming up to 6 mapart platforms
+    default: false
+  mapart.claim.7:
+    description: Allows claiming up to 7 mapart platforms
+    default: false
+  mapart.claim.8:
+    description: Allows claiming up to 8 mapart platforms
+    default: false
+  mapart.claim.9:
+    description: Allows claiming up to 9 mapart platforms
+    default: false
+  mapart.claim.10:
+    description: Allows claiming up to 10 mapart platforms
+    default: false
+  maparts.use:
+    description: Allows non-admin maparts actions (claim, trust, untrust, lock, info, trustlist, warp, setwarp)
+    default: true

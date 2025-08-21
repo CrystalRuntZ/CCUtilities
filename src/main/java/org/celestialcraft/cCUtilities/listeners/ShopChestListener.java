@@ -3,104 +3,148 @@ package org.celestialcraft.cCUtilities.listeners;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.DoubleChest;
-import org.bukkit.block.data.Directional;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.Chest;
+import org.bukkit.block.Container;
+import org.bukkit.block.Sign;
+import org.bukkit.block.sign.Side;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.SignChangeEvent;
 import org.celestialcraft.cCUtilities.MessageConfig;
 import org.celestialcraft.cCUtilities.modules.modulemanager.ModuleManager;
 import org.celestialcraft.cCUtilities.modules.playershops.data.ShopDataManager;
+import org.celestialcraft.cCUtilities.modules.playershops.data.ShopRegion;
+import org.celestialcraft.cCUtilities.utils.ShopUtils;
 
-import java.util.Objects;
-import java.util.Set;
+import java.util.regex.Pattern;
 
 public class ShopChestListener implements Listener {
     private final MiniMessage mm = MiniMessage.miniMessage();
     private final PlainTextComponentSerializer plain = PlainTextComponentSerializer.plainText();
 
-    private final Set<String> validCurrencies = Set.of(
-            "DIAMOND", "DIAMONDBLOCK", "EMERALD", "EMERALDBLOCK",
-            "IRONINGOT", "IRONBLOCK", "GOLDINGOT", "GOLDBLOCK",
-            "NETHERITEINGOT", "NETHERITEBLOCK", "AMETHYST",
-            "COPPERINGOT", "COPPERBLOCK", "COAL", "COALBLOCK",
-            "REDSTONE", "REDSTONEBLOCK", "LAPIS", "LAPISBLOCK"
-    );
-
     @EventHandler
     public void onSignChange(SignChangeEvent event) {
         if (!ModuleManager.isEnabled("playershops")) return;
 
-        var player = event.getPlayer();
-        var block = event.getBlock();
-        Block attached = getAttachedBlock(block);
-        if (attached == null) return;
+        Player player = event.getPlayer();
+        Block signBlock = event.getBlock();
 
-        boolean isValidBlock = switch (attached.getType()) {
-            case CHEST, TRAPPED_CHEST, BARREL,
-                 SHULKER_BOX, BLACK_SHULKER_BOX, BLUE_SHULKER_BOX, BROWN_SHULKER_BOX,
-                 CYAN_SHULKER_BOX, GRAY_SHULKER_BOX, GREEN_SHULKER_BOX, LIGHT_BLUE_SHULKER_BOX,
-                 LIGHT_GRAY_SHULKER_BOX, LIME_SHULKER_BOX, MAGENTA_SHULKER_BOX, ORANGE_SHULKER_BOX,
-                 PINK_SHULKER_BOX, PURPLE_SHULKER_BOX, RED_SHULKER_BOX, WHITE_SHULKER_BOX, YELLOW_SHULKER_BOX -> true;
-            default -> false;
-        };
-
-        if (!isValidBlock) return;
-
-        if (attached.getState() instanceof DoubleChest) {
-            player.sendMessage(mm.deserialize(MessageConfig.get("playershops.message-no-double-chests")));
-            return;
+        // --- Normalize line 1 to styled PRICE tag ---
+        Component l0 = event.line(0);
+        String l0Plain = compToString(l0);
+        if (l0Plain != null) {
+            String s = l0Plain.trim()
+                    .replace("§", "")
+                    .replace("<", "")
+                    .replace(">", "");
+            boolean isPriceWord = s.equalsIgnoreCase("price");
+            // Removed redundant escape for closing bracket
+            boolean isBracketedPrice = Pattern.compile("\\[\\s*price\\s*]", Pattern.CASE_INSENSITIVE).matcher(s).matches();
+            if (isPriceWord || isBracketedPrice) {
+                event.line(0, mm.deserialize("<gray>[</gray><#c1adfe>PRICE</#c1adfe><gray>]</gray>"));
+            }
         }
 
-        String line1 = event.line(0) != null ? plain.serialize(Objects.requireNonNull(event.line(0))).trim() : null;
-        String line2 = event.line(1) != null ? plain.serialize(Objects.requireNonNull(event.line(1))).trim() : null;
-        String line3 = event.line(2) != null ? plain.serialize(Objects.requireNonNull(event.line(2))).trim().toUpperCase() : null;
+        // If this is editing an existing shop sign, enforce owner/bypass
+        if (signBlock.getState() instanceof Sign existing) {
+            Component first = existing.getSide(Side.FRONT).line(0);
+            if ("[PRICE]".equalsIgnoreCase(plain.serialize(first).trim())) {
+                String currentOwner = plain.serialize(existing.getSide(Side.FRONT).line(3)).trim();
+                boolean ownerOrBypass = player.getName().equalsIgnoreCase(currentOwner) || player.hasPermission("shops.chest.bypass");
+                if (!ownerOrBypass) {
+                    event.setCancelled(true);
+                    player.sendMessage(mm.deserialize(MessageConfig.get("playershops.message-not-owner")));
+                    return;
+                }
+            }
+        }
+
+        // Find the block the sign is attached to
+        Block attached = getAttachedBlock(signBlock);
+        if (!(attached.getState() instanceof Container)) return;
+
+        // Disallow double chests (single chest size is 27)
+        if (attached.getState() instanceof Chest chest) {
+            if (chest.getInventory().getSize() > 27) {
+                player.sendMessage(mm.deserialize(MessageConfig.get("playershops.message-no-double-chests")));
+                cancelIfPossible(event);
+                return;
+            }
+        }
+
+        // Parse new sign lines (front side)
+        String line1 = compToString(event.line(0));
+        String line2 = compToString(event.line(1));
+        String line3 = compToString(event.line(2));
 
         if (line1 == null || line2 == null || line3 == null) return;
-        if (!line1.equals("[PRICE]")) return;
+        // Remove duplicate condition — plain text serializer yields "[PRICE]" for our styled tag
+        if (!line1.equalsIgnoreCase("[PRICE]")) return;
 
         int amount;
         try {
-            amount = Integer.parseInt(line2);
+            amount = Integer.parseInt(line2.trim());
         } catch (NumberFormatException e) {
             player.sendMessage(mm.deserialize(MessageConfig.get("playershops.message-invalid-amount")));
+            cancelIfPossible(event);
             return;
         }
-
         if (amount < 1 || amount > 64) {
             player.sendMessage(mm.deserialize(MessageConfig.get("playershops.message-invalid-amount")));
+            cancelIfPossible(event);
             return;
         }
 
-        if (!validCurrencies.contains(line3)) {
+        Material currency = ShopUtils.parseCurrency(line3);
+        if (currency == null) {
             player.sendMessage(mm.deserialize(MessageConfig.get("playershops.message-invalid-currency")));
+            cancelIfPossible(event);
             return;
         }
 
-        var region = ShopDataManager.getRegionAt(block.getLocation());
+        // Must be inside a defined region the player owns or is trusted in
+        ShopRegion region = ShopDataManager.getRegionAt(attached.getLocation());
         if (region == null) {
             player.sendMessage(mm.deserialize(MessageConfig.get("playershops.message-not-in-region")));
+            cancelIfPossible(event);
             return;
         }
 
-        var owner = ShopDataManager.getClaim(player.getUniqueId());
-        boolean isTrusted = ShopDataManager.getTrusted(region.name()).contains(player.getUniqueId());
-
-        if (!region.name().equals(owner) && !isTrusted) {
+        String ownerShop = ShopDataManager.getClaim(player.getUniqueId());
+        boolean isTrusted = ShopDataManager.isTrusted(region.name(), player.getUniqueId());
+        if (!region.name().equalsIgnoreCase(ownerShop) && !isTrusted) {
             player.sendMessage(mm.deserialize(MessageConfig.get("playershops.message-not-owner")));
+            cancelIfPossible(event);
             return;
         }
 
+        // Stamp owner name on line 4 and bump activity
         event.line(3, Component.text(player.getName()));
+        ShopDataManager.setLastUpdated(region.name(), System.currentTimeMillis());
         player.sendMessage(mm.deserialize(MessageConfig.get("playershops.message-chest-created")));
     }
 
-    private Block getAttachedBlock(Block sign) {
-        var data = sign.getBlockData();
-        if (data instanceof Directional directional) {
-            return sign.getRelative(directional.getFacing().getOppositeFace());
-        }
-        return null;
+    private String compToString(Component c) {
+        return c != null ? PlainTextComponentSerializer.plainText().serialize(c).trim() : null;
+    }
+
+    private void cancelIfPossible(SignChangeEvent e) {
+        if (e instanceof Cancellable c) c.setCancelled(true);
+    }
+
+    /** Returns the block a sign is attached to. Wall signs: opposite of facing; standing signs: below. */
+    private static Block getAttachedBlock(Block signBlock) {
+        var data = signBlock.getBlockData();
+        try {
+            if (data instanceof org.bukkit.block.data.type.WallSign wall) {
+                return signBlock.getRelative(wall.getFacing().getOppositeFace());
+            }
+        } catch (NoClassDefFoundError ignored) { }
+        return signBlock.getRelative(BlockFace.DOWN);
     }
 }
