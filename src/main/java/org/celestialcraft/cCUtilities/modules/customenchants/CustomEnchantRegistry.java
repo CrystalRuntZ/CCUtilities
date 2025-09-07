@@ -6,14 +6,20 @@ public class CustomEnchantRegistry {
     private static final Map<String, CustomEnchant> enchants = new HashMap<>();
 
     public static void register(CustomEnchant enchant) {
-        enchants.put(enchant.getIdentifier(), enchant);
+        String id = enchant.getIdentifier().toLowerCase(Locale.ROOT);
+        if (enchants.containsKey(id)) {
+            throw new IllegalArgumentException("Duplicate CustomEnchant id: " + id);
+        }
+        enchants.put(id, enchant);
     }
 
     public static Collection<CustomEnchant> getAll() {
-        return enchants.values();
+        return Collections.unmodifiableCollection(enchants.values());
     }
 
     public static Optional<CustomEnchant> getById(String id) {
-        return Optional.ofNullable(enchants.get(id));
+        return Optional.ofNullable(enchants.get(id.toLowerCase(Locale.ROOT)));
     }
+
+    public static void clear() { enchants.clear(); } // if you ever hot-reload
 }

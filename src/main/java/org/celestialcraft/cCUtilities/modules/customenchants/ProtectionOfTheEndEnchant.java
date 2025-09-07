@@ -1,136 +1,58 @@
 package org.celestialcraft.cCUtilities.modules.customenchants;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.player.PlayerItemHeldEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
-
-import java.util.*;
+import org.celestialcraft.cCUtilities.util.LoreUtil;
 
 public class ProtectionOfTheEndEnchant implements CustomEnchant {
-    private static final String loreLine = "§7Protection of the End";
-    private final LegacyComponentSerializer serializer = LegacyComponentSerializer.legacySection();
-    private final Map<UUID, Integer> activeTasks = new HashMap<>();
-    private JavaPlugin plugin;
 
-    @Override
-    public String getIdentifier() {
-        return "protection_of_the_end";
-    }
+    private static final String RAW_LORE = "&7Protection of the End";
 
-    public void setPlugin(JavaPlugin plugin) {
-        this.plugin = plugin;
-    }
+    @Override public String getIdentifier() { return "protection_of_the_end"; }
+    @Override public String getLoreLine()   { return RAW_LORE; }
 
     @Override
     public boolean appliesTo(ItemStack item) {
         if (item == null || item.getType() == Material.AIR) return false;
-        String name = item.getType().name();
-        return name.endsWith("_HELMET") || name.endsWith("_CHESTPLATE") || name.endsWith("_LEGGINGS") || name.endsWith("_BOOTS");
+        String n = item.getType().name();
+        return n.endsWith("_HELMET") || n.endsWith("_CHESTPLATE")
+                || n.endsWith("_LEGGINGS") || n.endsWith("_BOOTS");
     }
 
     @Override
     public boolean hasEnchant(ItemStack item) {
-        if (item == null || !item.hasItemMeta()) return false;
-        List<Component> lore = item.getItemMeta().lore();
-        if (lore == null) return false;
-        for (Component line : lore) {
-            if (serializer.serialize(line).equals(loreLine)) return true;
-        }
-        return false;
+        return LoreUtil.itemHasLore(item, RAW_LORE);
     }
 
+    @Override
+    public ItemStack applyTo(ItemStack item) {
+        if (item == null || !appliesTo(item)) return item;
+        LoreUtil.ensureLoreAtTop(item, RAW_LORE);
+        return item;
+    }
+
+    /** Damage reduction in THE_END; scales by number of enchanted armor pieces. */
     @Override
     public void applyEffect(EntityDamageByEntityEvent event) {
         if (!(event.getEntity() instanceof Player player)) return;
         if (player.getWorld().getEnvironment() != World.Environment.THE_END) return;
 
-        int piecesWithEnchant = 0;
+        int pieces = 0;
         for (ItemStack armor : player.getInventory().getArmorContents()) {
-            if (hasEnchant(armor)) piecesWithEnchant++;
+            if (hasEnchant(armor)) pieces++;
         }
+        if (pieces <= 0) return;
 
-        double multiplier = switch (piecesWithEnchant) {
-            case 1 -> 0.75;
-            case 2 -> 0.57;
-            case 3 -> 0.43;
-            case 4 -> 0.33;
+        double mul = switch (pieces) {
+            case 1 -> 0.75;  // 25% reduction
+            case 2 -> 0.57;  // ~43%
+            case 3 -> 0.43;  // ~57%
+            case 4 -> 0.33;  // ~67%
             default -> 1.0;
         };
-
-        event.setDamage(event.getDamage() * multiplier);
-    }
-
-    @Override
-    public ItemStack applyTo(ItemStack item) {
-        if (!appliesTo(item) || hasEnchant(item)) return item;
-        var meta = item.getItemMeta();
-        List<Component> existingLore = meta.lore();
-        List<Component> lore = (existingLore != null) ? new ArrayList<>(existingLore) : new ArrayList<>();
-        lore.add(serializer.deserialize(loreLine));
-        meta.lore(lore);
-        item.setItemMeta(meta);
-        return item;
-    }
-
-    @Override
-    public String getLoreLine() {
-        return "&7Protection of the End";
-    }
-
-    @Override
-    public void onJoin(PlayerJoinEvent event) {
-        startEnchantCheck(event.getPlayer());
-    }
-
-    @Override
-    public void onQuit(PlayerQuitEvent event) {
-        stopEnchantCheck(event.getPlayer());
-    }
-
-    @Override
-    public void onHeld(PlayerItemHeldEvent event) {
-        Bukkit.getScheduler().runTaskLater(plugin, () -> startEnchantCheck(event.getPlayer()), 1L);
-    }
-
-    @Override
-    public void onHandSwap(Player player) {
-        Bukkit.getScheduler().runTaskLater(plugin, () -> startEnchantCheck(player), 1L);
-    }
-
-    private void startEnchantCheck(Player player) {
-        stopEnchantCheck(player);
-        UUID uuid = player.getUniqueId();
-
-        int task = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-            if (!hasEnchantAnywhere(player)) {
-                stopEnchantCheck(player);
-            }
-        }, 0L, 40L).getTaskId();
-
-        activeTasks.put(uuid, task);
-    }
-
-    private void stopEnchantCheck(Player player) {
-        UUID uuid = player.getUniqueId();
-        Integer task = activeTasks.remove(uuid);
-        if (task != null) {
-            Bukkit.getScheduler().cancelTask(task);
-        }
-    }
-
-    private boolean hasEnchantAnywhere(Player player) {
-        for (ItemStack armor : player.getInventory().getArmorContents()) {
-            if (hasEnchant(armor)) return true;
-        }
-        return false;
+        event.setDamage(event.getDamage() * mul);
     }
 }

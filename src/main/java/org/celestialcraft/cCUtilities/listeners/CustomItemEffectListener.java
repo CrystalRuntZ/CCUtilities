@@ -37,6 +37,7 @@ public class CustomItemEffectListener implements Listener {
     public void onLeftClick(PlayerInteractEvent event) {
         if (!ModuleManager.isEnabled("customitems")) return;
         if (event.getHand() != EquipmentSlot.HAND) return;
+
         ItemStack item = event.getItem();
         CustomItem custom = CustomItemRegistry.get(item);
         if (custom != null) {
@@ -55,7 +56,6 @@ public class CustomItemEffectListener implements Listener {
             item.onEntityTarget(event);
         }
     }
-
 
     @EventHandler
     public void onPlayerInteractAtEntity(PlayerInteractAtEntityEvent event) {
@@ -84,7 +84,6 @@ public class CustomItemEffectListener implements Listener {
         }
     }
 
-
     @EventHandler
     public void onProjectileHit(ProjectileHitEvent event) {
         if (!ModuleManager.isEnabled("customitems")) return;
@@ -92,8 +91,6 @@ public class CustomItemEffectListener implements Listener {
             item.onProjectileHit(event);
         }
     }
-
-
 
     @EventHandler
     public void onItemConsume(PlayerItemConsumeEvent event) {
@@ -149,10 +146,10 @@ public class CustomItemEffectListener implements Listener {
 
         for (CustomItem item : CustomItemRegistry.getAll()) {
             item.onCombat(event);
-            item.onEntityDamage(event);
+            // Avoid duplicate onEntityDamage for the in-hand item:
+            // item.onEntityDamage(event);
         }
     }
-
 
     @EventHandler
     public void onProjectileLaunch(ProjectileLaunchEvent event) {
@@ -217,7 +214,6 @@ public class CustomItemEffectListener implements Listener {
         if (!ModuleManager.isEnabled("customitems")) return;
         Player player = event.getPlayer();
         ItemStack newItem = event.getNewItem();
-
         for (CustomItem item : CustomItemRegistry.getAll()) {
             item.onArmorChange(player, newItem);
         }
@@ -241,7 +237,6 @@ public class CustomItemEffectListener implements Listener {
         }
     }
 
-
     @EventHandler
     public void onSwapHands(PlayerSwapHandItemsEvent event) {
         if (!ModuleManager.isEnabled("customitems")) return;
@@ -257,7 +252,6 @@ public class CustomItemEffectListener implements Listener {
             item.onEntityDamageByEntity(event);
         }
     }
-
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {

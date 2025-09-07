@@ -8,6 +8,7 @@ import org.celestialcraft.cCUtilities.modules.celestialvoting.VoteStreakTracker;
 import org.celestialcraft.cCUtilities.modules.customenchants.CustomEnchantsModule;
 import org.celestialcraft.cCUtilities.modules.customitems.CustomItemsModule;
 import org.celestialcraft.cCUtilities.modules.customparticles.CustomParticlesModule;
+import org.celestialcraft.cCUtilities.modules.customparticles.ParticleManager;
 import org.celestialcraft.cCUtilities.modules.entitymanager.EntityManagerModule;
 import org.celestialcraft.cCUtilities.modules.joinitem.JoinItemModule;
 import org.celestialcraft.cCUtilities.modules.maparts.MapArtsModule;
@@ -48,6 +49,9 @@ public final class CCUtilities extends JavaPlugin {
     public void onEnable() {
         instance = this;
         saveDefaultConfig();
+
+        // Initialize particle manager so particle tasks can be scheduled safely.
+        ParticleManager.init(this);
 
         MessageConfig.load(this);
         VoteStreakTracker.initialize(getDataFolder());
@@ -94,6 +98,9 @@ public final class CCUtilities extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        // Ensure particle task is cancelled and state cleared on shutdown/reload.
+        ParticleManager.shutdown();
+
         if (questModule != null) questModule.disable();
         if (randomKeys != null) randomKeys.disable();
         if (referralModule != null) referralModule.disable();

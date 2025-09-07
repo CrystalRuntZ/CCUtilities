@@ -11,6 +11,11 @@ import org.celestialcraft.cCUtilities.modules.celestialvoting.RewardManager;
 import org.celestialcraft.cCUtilities.modules.entitymanager.EntityManagerModule;
 import org.celestialcraft.cCUtilities.modules.modulemanager.ModuleManager;
 
+// NEW: resource regions (maparts)
+import org.celestialcraft.cCUtilities.modules.maparts.ResourceRegionManager;
+import org.celestialcraft.cCUtilities.modules.maparts.ResourceRegionListener;
+import org.celestialcraft.cCUtilities.modules.maparts.ResourceRegionCommand;
+
 public class CommandRegistry {
 
     public static void registerAll(JavaPlugin plugin) {
@@ -70,13 +75,20 @@ public class CommandRegistry {
             CommandRegistrar.register(plugin, "ced", new CedCommand(dragonManager), null);
         }
 
-
+        // MapArts + Resource Regions
         if (ModuleManager.isEnabled("maparts")) {
             var mapartCmd = new org.celestialcraft.cCUtilities.modules.maparts.MapArtMainCommand(
-                    plugin, // <-- pass plugin here
+                    plugin,
                     org.celestialcraft.cCUtilities.CCUtilities.getInstance().mapArtsModule.getDataManager()
             );
             CommandRegistrar.register(plugin, "mapart", mapartCmd, mapartCmd);
+
+            // NEW: Resource Regions (/mapres) registration + listener
+            ResourceRegionManager rrManager = new ResourceRegionManager(plugin);
+            plugin.getServer().getPluginManager().registerEvents(new ResourceRegionListener(rrManager), plugin);
+
+            var mapresCmd = new ResourceRegionCommand(rrManager);
+            CommandRegistrar.register(plugin, "mapres", mapresCmd, mapresCmd);
         }
 
         // Celestial Voting Module

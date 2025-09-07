@@ -1,7 +1,5 @@
 package org.celestialcraft.cCUtilities.modules.customenchants;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -13,114 +11,92 @@ import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.celestialcraft.cCUtilities.CCUtilities;
+import org.celestialcraft.cCUtilities.util.LoreUtil;
 
 import java.util.*;
 
 public class CyberParticlesEnchant implements CustomEnchant {
 
-    private static final String loreLine = "§7Cyber Particles";
-    private final LegacyComponentSerializer serializer = LegacyComponentSerializer.legacySection();
+    private static final String RAW_LORE  = "&7Cyber Particles";
     private final Map<UUID, Integer> activeTasks = new HashMap<>();
-    private JavaPlugin plugin;
 
-    @Override
-    public String getIdentifier() {
-        return "cyber_particles";
-    }
-
-    public void setPlugin(JavaPlugin plugin) {
-        this.plugin = plugin;
-    }
+    @Override public String getIdentifier() { return "cyber_particles"; }
+    @Override public String getLoreLine()   { return RAW_LORE; }
 
     @Override
     public boolean appliesTo(ItemStack item) {
+        // Allow on anything that isn't air
         return item != null && item.getType() != Material.AIR;
     }
 
     @Override
-    public boolean hasEnchant(ItemStack item) {
-        if (item == null || !item.hasItemMeta()) return false;
-        List<Component> lore = item.getItemMeta().lore();
-        if (lore == null) return false;
-        for (Component line : lore) {
-            if (serializer.serialize(line).equals(loreLine)) return true;
-        }
-        return false;
+    public boolean canApplyToAnyItem() {
+        // Mark this enchant as truly any-item (paper, sugarcane, etc.)
+        return true;
     }
 
     @Override
+    public boolean hasEnchant(ItemStack item) {
+        return LoreUtil.itemHasLore(item, RAW_LORE);
+    }
+
+    // Back-compat path
+    @Override
     public ItemStack applyTo(ItemStack item) {
-        if (!appliesTo(item) || hasEnchant(item)) return item;
-        var meta = item.getItemMeta();
-        List<Component> existingLore = meta.lore();
-        List<Component> lore = (existingLore != null) ? new ArrayList<>(existingLore) : new ArrayList<>();
-        lore.add(serializer.deserialize(loreLine));
-        meta.lore(lore);
-        item.setItemMeta(meta);
+        LoreUtil.ensureLoreAfterTagBlock(item, RAW_LORE);
+        return applyTo(item, false);
+    }
+
+    // Force-apply path (anvil uses this when allowed)
+    @Override
+    public ItemStack applyTo(ItemStack item, boolean force) {
+        if (item == null) return null;
+        if (!force && !appliesTo(item)) return item;
+        // Write lore non-italic so it renders exactly as input
+        LoreUtil.ensureLoreAtTop(item, RAW_LORE);
         return item;
     }
 
-    @Override
-    public String getLoreLine() {
-        return "&7Cyber Particles";
-    }
+    @Override public void applyEffect(EntityDamageByEntityEvent event) { /* none */ }
 
-    @Override
-    public void onJoin(PlayerJoinEvent event) {
-        startEnchantCheck(event.getPlayer());
-    }
-
-    @Override
-    public void onQuit(PlayerQuitEvent event) {
-        stopEnchantCheck(event.getPlayer());
-    }
+    @Override public void onJoin(PlayerJoinEvent event) { startEnchantCheck(event.getPlayer()); }
+    @Override public void onQuit(PlayerQuitEvent event) { stopEnchantCheck(event.getPlayer()); }
 
     @Override
     public void onHeld(PlayerItemHeldEvent event) {
-        Bukkit.getScheduler().runTaskLater(plugin, () -> startEnchantCheck(event.getPlayer()), 1L);
+        Bukkit.getScheduler().runTaskLater(CCUtilities.getInstance(), () -> startEnchantCheck(event.getPlayer()), 1L);
     }
 
     @Override
     public void onHandSwap(Player player) {
-        Bukkit.getScheduler().runTaskLater(plugin, () -> startEnchantCheck(player), 1L);
-    }
-
-    @Override
-    public void applyEffect(EntityDamageByEntityEvent event) {
-        // No damage effects for this enchant
+        Bukkit.getScheduler().runTaskLater(CCUtilities.getInstance(), () -> startEnchantCheck(player), 1L);
     }
 
     private void startEnchantCheck(Player player) {
         stopEnchantCheck(player);
-        UUID uuid = player.getUniqueId();
+        if (!player.isOnline()) return;
 
-        int task = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+        int task = Bukkit.getScheduler().runTaskTimer(CCUtilities.getInstance(), () -> {
             if (!hasEnchantAnywhere(player)) {
                 stopEnchantCheck(player);
                 return;
             }
-
-            double angle = Math.toRadians((System.currentTimeMillis() / 30) % 360);
+            double angle = Math.toRadians(((double) System.currentTimeMillis() / 30) % 360);
             spawnParticles(player, angle);
-
         }, 0L, 2L).getTaskId();
 
-        activeTasks.put(uuid, task);
+        activeTasks.put(player.getUniqueId(), task);
     }
 
     private void stopEnchantCheck(Player player) {
-        UUID uuid = player.getUniqueId();
-        Integer task = activeTasks.remove(uuid);
-        if (task != null) {
-            Bukkit.getScheduler().cancelTask(task);
-        }
+        Integer task = activeTasks.remove(player.getUniqueId());
+        if (task != null) Bukkit.getScheduler().cancelTask(task);
     }
 
     private boolean hasEnchantAnywhere(Player player) {
-        ItemStack main = player.getInventory().getItemInMainHand();
-        ItemStack off = player.getInventory().getItemInOffHand();
-        if (hasEnchant(main) || hasEnchant(off)) return true;
+        if (hasEnchant(player.getInventory().getItemInMainHand())) return true;
+        if (hasEnchant(player.getInventory().getItemInOffHand()))  return true;
         for (ItemStack armor : player.getInventory().getArmorContents()) {
             if (hasEnchant(armor)) return true;
         }

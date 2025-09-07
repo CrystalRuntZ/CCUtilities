@@ -1,94 +1,46 @@
 package org.celestialcraft.cCUtilities.modules.customparticles;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.celestialcraft.cCUtilities.modules.customenchants.CustomEnchant;
-
-import java.util.List;
+import org.celestialcraft.cCUtilities.util.EnchantUtil;
+import org.celestialcraft.cCUtilities.util.LoreUtil;
 
 public class FlameRingEnchant implements CustomEnchant {
 
-    private static final String LORE_LINE = "§7Flame Ring Particles";
-    private static final LegacyComponentSerializer legacy = LegacyComponentSerializer.legacySection();
-    private JavaPlugin plugin;
+    private static final String RAW_LORE  = "&7Flame Ring Particles";
 
-    @Override
-    public String getIdentifier() {
-        return "flame_ring_particles";
-    }
+    @Override public String getIdentifier() { return "flame_ring_particles"; }
+    @Override public String getLoreLine()   { return RAW_LORE; }
 
     @Override
     public boolean appliesTo(ItemStack item) {
-        return hasEnchant(item);
+        return item != null && item.getType() != Material.AIR;
     }
 
     @Override
     public boolean hasEnchant(ItemStack item) {
-        if (item == null || !item.hasItemMeta()) return false;
-        ItemMeta meta = item.getItemMeta();
-        if (!meta.hasLore()) return false;
-
-        List<Component> lore = meta.lore();
-        if (lore == null) return false;
-
-        return lore.stream().anyMatch(component ->
-                legacy.serialize(component).equalsIgnoreCase(LORE_LINE));
+        return EnchantUtil.hasTag(item, getIdentifier()) || LoreUtil.itemHasLore(item, RAW_LORE);
     }
 
-    @Override
-    public void applyEffect(EntityDamageByEntityEvent event) {
-    }
+    @Override public void applyEffect(EntityDamageByEntityEvent event) { /* none */ }
 
     @Override
     public ItemStack applyTo(ItemStack item) {
-        return null;
+        if (item == null || !appliesTo(item) || hasEnchant(item)) return item;
+        LoreUtil.ensureLoreAtTop(item, RAW_LORE);
+        EnchantUtil.setTag(item, getIdentifier());
+        return item;
     }
 
-    public void setPlugin(JavaPlugin plugin) {
-        this.plugin = plugin;
-    }
-
-    @Override
-    public String getLoreLine() {
-        return "&7Flame Ring Particles";
-    }
-
-    @Override
-    public void onHeld(PlayerItemHeldEvent event) {
-        ParticleManager.register(event.getPlayer(), ParticleEffectType.FLAME_RING);
-    }
-
-    @Override
-    public void onHandSwap(Player player) {
-        ParticleManager.register(player, ParticleEffectType.FLAME_RING);
-    }
-
-    @Override
-    public void onPlayerMove(Player player) {
-        boolean hasEffect = hasEnchant(player.getInventory().getItemInMainHand())
-                || hasEnchant(player.getInventory().getItemInOffHand());
-
-        for (ItemStack armor : player.getInventory().getArmorContents()) {
-            if (hasEnchant(armor)) {
-                hasEffect = true;
-                break;
-            }
-        }
-
-        if (hasEffect) {
-            ParticleManager.register(player, ParticleEffectType.FLAME_RING);
-        } else {
-            ParticleManager.unregister(player, ParticleEffectType.FLAME_RING);
-        }
-    }
-
-    public JavaPlugin getPlugin() {
-        return plugin;
-    }
+    // Central listener handles equip/unequip detection; keep hooks as no-ops
+    @Override public void onHeld(PlayerItemHeldEvent event) { /* no-op */ }
+    @Override public void onHandSwap(Player player)         { /* no-op */ }
+    @Override public void onJoin(PlayerJoinEvent event)      { /* no-op */ }
+    @Override public void onQuit(PlayerQuitEvent event)      { /* no-op */ }
 }

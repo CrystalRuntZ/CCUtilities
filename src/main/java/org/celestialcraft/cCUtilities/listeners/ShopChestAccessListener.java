@@ -121,7 +121,7 @@ public class ShopChestAccessListener implements Listener {
         }
     }
 
-    // Purchase flow (allow click-to-buy)
+    // Purchase flow: pay the configured PRICE (line 2), take the ENTIRE clicked stack, replace that slot with a stack of PRICE currency (line 3)
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         if (!ModuleManager.isEnabled("playershops")) return;
@@ -129,7 +129,7 @@ public class ShopChestAccessListener implements Listener {
 
         Inventory top = event.getView().getTopInventory();
         InventoryHolder holder = top.getHolder();
-        if (!(holder instanceof Container)) return; // shop creation forbids double chests
+        if (!(holder instanceof Container)) return;
         if (!ShopUtils.isShopChest(holder)) return;
 
         // Owner/bypass can manage freely
@@ -138,9 +138,8 @@ public class ShopChestAccessListener implements Listener {
         String owner = plain.serialize(sign.getSide(Side.FRONT).line(3)).trim();
 
         boolean ownerOrBypass = player.getName().equalsIgnoreCase(owner) || player.hasPermission("shops.chest.bypass");
-
-        // For non-owners: block management style interactions (shift-moves, swaps, collects, etc.)
         if (!ownerOrBypass) {
+            // For non-owners: block management style interactions (shift-moves, swaps, collects, etc.)
             InventoryAction action = event.getAction();
             switch (action) {
                 case MOVE_TO_OTHER_INVENTORY,
@@ -178,74 +177,79 @@ public class ShopChestAccessListener implements Listener {
         int raw = event.getRawSlot();
         if (raw < 0 || raw >= top.getSize()) return;
 
-        // Need an item to buy
         ItemStack clicked = event.getCurrentItem();
         if (clicked == null || clicked.getType().isAir()) return;
 
-        // Parse sign: line1 price (int), line2 currency (material key/alias)
+        // Parse sign: line 2 = price (1–64), line 3 = currency
         String priceLine = safeLine(sign, 1);
         String currencyLine = safeLine(sign, 2);
 
         Integer price = tryParseInt(priceLine);
-        if (price == null || price < 1) return;
+        if (price == null || price < 1 || price > 64) {
+            // Invalid price on sign; treat as non-purchasable
+            event.setCancelled(true);
+            return;
+        }
 
         Material currencyType = ShopUtils.parseCurrency(currencyLine);
-        if (currencyType == null) return;
+        if (currencyType == null) {
+            event.setCancelled(true);
+            return;
+        }
 
         // If owner/bypass, let them manage normally
         if (ownerOrBypass) return;
 
-        // Ensure the player isn’t holding something on the cursor (avoid weird swaps)
+        // Prevent buying the currency item itself from the slot (avoids circular/abuse)
+        if (clicked.getType() == currencyType) {
+            event.setCancelled(true);
+            return;
+        }
+
+        // Avoid cursor weirdness
         ItemStack cursor = event.getCursor();
         if (!cursor.getType().isAir()) {
             event.setCancelled(true);
             return;
         }
 
-        // Non-owner purchase flow: pay N currency into chest, receive 1 of clicked item
+        // Ensure the player has enough currency to pay 'price'
         if (ShopUtils.countItems(player.getInventory(), currencyType) < price) {
-            // silent fail: just cancel the click without sending a message
+            // silent fail (consistent with earlier behavior)
             event.setCancelled(true);
             return;
         }
 
-        ItemStack one = clicked.clone();
-        one.setAmount(1);
+        // Ensure the clicked slot can hold a stack of 'price' currency
+        int maxStack = new ItemStack(currencyType, 1).getMaxStackSize();
+        if (price > maxStack) {
+            // Price exceeds max stack size for this currency; block purchase (silent)
+            event.setCancelled(true);
+            return;
+        }
 
-        if (!ShopUtils.canFit(player.getInventory(), one)) {
-            // keep these messages (not requested to remove)
+        // Player must be able to fit the ENTIRE clicked stack
+        ItemStack fullStack = clicked.clone();
+        if (!ShopUtils.canFit(player.getInventory(), fullStack)) {
             player.sendMessage(mm.deserialize(MessageConfig.get("playershops.message-inventory-full")));
             event.setCancelled(true);
             return;
         }
 
-        ItemStack payment = new ItemStack(currencyType, price);
-        if (!ShopUtils.canFit(top, payment)) {
-            // keep these messages (not requested to remove)
-            player.sendMessage(mm.deserialize(MessageConfig.get("playershops.message-chest-full")));
-            event.setCancelled(true);
-            return;
-        }
-
-        // Perform transaction (cancel default move and do it manually)
+        // Perform transaction
         event.setCancelled(true);
 
-        // 1) Decrement the chest slot by 1
-        clicked.setAmount(clicked.getAmount() - 1);
-        if (clicked.getAmount() <= 0) {
-            top.clear(raw);
-        } else {
-            top.setItem(raw, clicked);
-        }
-
-        // 2) Remove payment from player, add to chest
+        // 1) Remove exactly 'price' currency items from the player
         ShopUtils.removeItems(player.getInventory(), currencyType, price);
-        top.addItem(payment);
 
-        // 3) Give item to player
-        player.getInventory().addItem(one);
+        // 2) Replace the chest slot with a stack of 'price' currency
+        ItemStack paymentStack = new ItemStack(currencyType, price);
+        top.setItem(raw, paymentStack);
 
-        // no success message (removed per request)
+        // 3) Give the entire original stack to the player
+        player.getInventory().addItem(fullStack);
+        player.updateInventory();
+        // no success message (kept consistent with existing behavior)
     }
 
     private String safeLine(Sign sign, int idx) {

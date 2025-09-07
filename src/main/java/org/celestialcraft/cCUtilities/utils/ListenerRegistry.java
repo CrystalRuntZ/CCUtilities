@@ -34,9 +34,9 @@ public class ListenerRegistry {
         }
 
         if (ModuleManager.isEnabled("customenchants")) {
-            plugin.getServer().getPluginManager().registerEvents(new CustomEnchantAnvilListener(), plugin);
-            plugin.getServer().getPluginManager().registerEvents(new CustomEnchantAnvilClickListener(), plugin);
+            plugin.getServer().getPluginManager().registerEvents(new CustomEnchantAnvilStackingListener(), plugin);
             plugin.getServer().getPluginManager().registerEvents(new CustomEnchantEffectListener(), plugin);
+            plugin.getServer().getPluginManager().registerEvents(new VoidSafetyListener(), plugin);
         }
 
         if (ModuleManager.isEnabled("customitems")) {

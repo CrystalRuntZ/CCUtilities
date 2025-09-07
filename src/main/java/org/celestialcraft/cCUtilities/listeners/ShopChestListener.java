@@ -5,14 +5,13 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
 import org.bukkit.block.Container;
 import org.bukkit.block.Sign;
 import org.bukkit.block.sign.Side;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Cancellable;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.SignChangeEvent;
 import org.celestialcraft.cCUtilities.MessageConfig;
@@ -34,7 +33,7 @@ public class ShopChestListener implements Listener {
         Player player = event.getPlayer();
         Block signBlock = event.getBlock();
 
-        // --- Normalize line 1 to styled PRICE tag ---
+        // --- Normalize line 1 to styled PRICE tag (visual sugar only) ---
         Component l0 = event.line(0);
         String l0Plain = compToString(l0);
         if (l0Plain != null) {
@@ -43,14 +42,13 @@ public class ShopChestListener implements Listener {
                     .replace("<", "")
                     .replace(">", "");
             boolean isPriceWord = s.equalsIgnoreCase("price");
-            // Removed redundant escape for closing bracket
             boolean isBracketedPrice = Pattern.compile("\\[\\s*price\\s*]", Pattern.CASE_INSENSITIVE).matcher(s).matches();
             if (isPriceWord || isBracketedPrice) {
                 event.line(0, mm.deserialize("<gray>[</gray><#c1adfe>PRICE</#c1adfe><gray>]</gray>"));
             }
         }
 
-        // If this is editing an existing shop sign, enforce owner/bypass
+        // If editing an existing shop sign, enforce owner/bypass
         if (signBlock.getState() instanceof Sign existing) {
             Component first = existing.getSide(Side.FRONT).line(0);
             if ("[PRICE]".equalsIgnoreCase(plain.serialize(first).trim())) {
@@ -64,9 +62,23 @@ public class ShopChestListener implements Listener {
             }
         }
 
-        // Find the block the sign is attached to
-        Block attached = getAttachedBlock(signBlock);
-        if (!(attached.getState() instanceof Container)) return;
+        // ---- Read lines and early-out if not a shop sign ----
+        String line1 = compToString(event.line(0));
+        String line2 = compToString(event.line(1));
+        String line3 = compToString(event.line(2));
+        if (line1 == null || line2 == null || line3 == null) return;
+
+        if (!line1.equalsIgnoreCase("[PRICE]")) {
+            // Not a shop sign → do not run container/double-chest logic at all
+            return;
+        }
+
+        // ---- From here on: treat as shop sign ONLY if attached WALL sign to a container ----
+        Block attached = getAttachedBlock(signBlock); // wall-sign only
+        if (attached == null || !(attached.getState() instanceof Container)) {
+            // Not attached to a container → not a valid shop setup; do nothing (don’t cancel)
+            return;
+        }
 
         // Disallow double chests (single chest size is 27)
         if (attached.getState() instanceof Chest chest) {
@@ -77,15 +89,7 @@ public class ShopChestListener implements Listener {
             }
         }
 
-        // Parse new sign lines (front side)
-        String line1 = compToString(event.line(0));
-        String line2 = compToString(event.line(1));
-        String line3 = compToString(event.line(2));
-
-        if (line1 == null || line2 == null || line3 == null) return;
-        // Remove duplicate condition — plain text serializer yields "[PRICE]" for our styled tag
-        if (!line1.equalsIgnoreCase("[PRICE]")) return;
-
+        // Parse amount
         int amount;
         try {
             amount = Integer.parseInt(line2.trim());
@@ -100,6 +104,7 @@ public class ShopChestListener implements Listener {
             return;
         }
 
+        // Parse currency
         Material currency = ShopUtils.parseCurrency(line3);
         if (currency == null) {
             player.sendMessage(mm.deserialize(MessageConfig.get("playershops.message-invalid-currency")));
@@ -123,7 +128,7 @@ public class ShopChestListener implements Listener {
             return;
         }
 
-        // Stamp owner name on line 4 and bump activity
+        // Stamp owner on line 4 and bump activity
         event.line(3, Component.text(player.getName()));
         ShopDataManager.setLastUpdated(region.name(), System.currentTimeMillis());
         player.sendMessage(mm.deserialize(MessageConfig.get("playershops.message-chest-created")));
@@ -137,14 +142,13 @@ public class ShopChestListener implements Listener {
         if (e instanceof Cancellable c) c.setCancelled(true);
     }
 
-    /** Returns the block a sign is attached to. Wall signs: opposite of facing; standing signs: below. */
+    /** Returns the block a sign is attached to. Only WALL signs are treated as attached; standing signs return null. */
     private static Block getAttachedBlock(Block signBlock) {
         var data = signBlock.getBlockData();
-        try {
-            if (data instanceof org.bukkit.block.data.type.WallSign wall) {
-                return signBlock.getRelative(wall.getFacing().getOppositeFace());
-            }
-        } catch (NoClassDefFoundError ignored) { }
-        return signBlock.getRelative(BlockFace.DOWN);
+        if (data instanceof org.bukkit.block.data.type.WallSign wall) {
+            return signBlock.getRelative(wall.getFacing().getOppositeFace());
+        }
+        // Standing signs are NOT considered attached to containers for shop logic
+        return null;
     }
 }

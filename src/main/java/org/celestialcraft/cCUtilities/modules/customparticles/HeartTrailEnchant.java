@@ -1,100 +1,46 @@
 package org.celestialcraft.cCUtilities.modules.customparticles;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
-import org.bukkit.event.player.PlayerSwapHandItemsEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.celestialcraft.cCUtilities.modules.customenchants.CustomEnchant;
-
-import java.util.List;
+import org.celestialcraft.cCUtilities.util.EnchantUtil;
+import org.celestialcraft.cCUtilities.util.LoreUtil;
 
 public class HeartTrailEnchant implements CustomEnchant {
 
-    private static final String LORE_IDENTIFIER = "&7Heart Trail Particles";
-    private final LegacyComponentSerializer legacy = LegacyComponentSerializer.legacySection();
-    private JavaPlugin plugin;
+    private static final String RAW_LORE  = "&7Heart Trail Particles";
 
-
-    @Override
-    public String getIdentifier() {
-        return "heart_trail_particles";
-    }
+    @Override public String getIdentifier() { return "heart_trail_particles"; }
+    @Override public String getLoreLine()   { return RAW_LORE; }
 
     @Override
     public boolean appliesTo(ItemStack item) {
-        if (item == null || !item.hasItemMeta()) return false;
-        ItemMeta meta = item.getItemMeta();
-        List<Component> lore = meta.lore();
-        if (lore == null) return false;
-        String formatted = LORE_IDENTIFIER.replace("&", "§");
-        for (Component line : lore) {
-            if (legacy.serialize(line).equalsIgnoreCase(formatted)) {
-                return true;
-            }
-        }
-        return false;
+        return item != null && item.getType() != Material.AIR;
     }
 
     @Override
     public boolean hasEnchant(ItemStack item) {
-        return false;
+        return EnchantUtil.hasTag(item, getIdentifier()) || LoreUtil.itemHasLore(item, RAW_LORE);
     }
 
-    @Override
-    public void applyEffect(EntityDamageByEntityEvent event) {
-
-    }
+    @Override public void applyEffect(EntityDamageByEntityEvent event) { /* none */ }
 
     @Override
     public ItemStack applyTo(ItemStack item) {
-        return null;
+        if (item == null || !appliesTo(item) || hasEnchant(item)) return item;
+        LoreUtil.ensureLoreAtTop(item, RAW_LORE);
+        EnchantUtil.setTag(item, getIdentifier());
+        return item;
     }
 
-    @Override
-    public String getLoreLine() {
-        return "&7Heart Trail Particles";
-    }
-
-    public void setPlugin(JavaPlugin plugin) {
-        this.plugin = plugin;
-    }
-
-    @Override
-    public void onHeld(PlayerItemHeldEvent event) {
-        Player player = event.getPlayer();
-        ParticleManager.register(player, ParticleEffectType.HEART_TRAIL);
-    }
-
-    public void onHandSwap(PlayerSwapHandItemsEvent event) {
-        Player player = event.getPlayer();
-        ParticleManager.register(player, ParticleEffectType.HEART_TRAIL);
-    }
-
-    @Override
-    public void onPlayerMove(Player player) {
-        boolean hasItem = appliesTo(player.getInventory().getItemInMainHand()) ||
-                appliesTo(player.getInventory().getItemInOffHand());
-
-        for (ItemStack armor : player.getInventory().getArmorContents()) {
-            if (appliesTo(armor)) {
-                hasItem = true;
-                break;
-            }
-        }
-
-        if (hasItem) {
-            ParticleManager.register(player, ParticleEffectType.HEART_TRAIL);
-        } else {
-            ParticleManager.unregister(player, ParticleEffectType.HEART_TRAIL);
-        }
-    }
-
-    public JavaPlugin getPlugin() {
-        return plugin;
-    }
+    // Central listener handles equip/unequip detection; keep hooks as no-ops
+    @Override public void onHeld(PlayerItemHeldEvent event) { /* no-op */ }
+    @Override public void onHandSwap(Player player)         { /* no-op */ }
+    @Override public void onJoin(PlayerJoinEvent event)      { /* no-op */ }
+    @Override public void onQuit(PlayerQuitEvent event)      { /* no-op */ }
 }

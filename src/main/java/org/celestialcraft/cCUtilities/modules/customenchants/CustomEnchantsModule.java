@@ -2,11 +2,9 @@ package org.celestialcraft.cCUtilities.modules.customenchants;
 
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.celestialcraft.cCUtilities.listeners.CustomEnchantAnvilListener;
+import org.celestialcraft.cCUtilities.listeners.CustomEnchantAnvilStackingListener;
 import org.celestialcraft.cCUtilities.listeners.CustomEnchantEffectListener;
-import org.celestialcraft.cCUtilities.modules.customparticles.FlameRingEnchant;
-import org.celestialcraft.cCUtilities.modules.customparticles.HeartTrailEnchant;
-import org.celestialcraft.cCUtilities.modules.customparticles.RainbowParticlesEnchant;
+import org.celestialcraft.cCUtilities.modules.customparticles.*;
 import org.celestialcraft.cCUtilities.modules.modulemanager.Module;
 import org.celestialcraft.cCUtilities.modules.modulemanager.ModuleManager;
 
@@ -43,46 +41,26 @@ public class CustomEnchantsModule implements Module {
     }
 
     public static void registerAll(JavaPlugin plugin) {
-        StrengthOfTheEndEnchant strength = new StrengthOfTheEndEnchant();
-        strength.setPlugin(plugin);
-        CustomEnchantRegistry.register(strength);
-
-        DestroyerOfTheEndEnchant destroyer = new DestroyerOfTheEndEnchant();
-        destroyer.setPlugin(plugin);
-        CustomEnchantRegistry.register(destroyer);
+        // --- Existing combat/utility enchants you already had ---
+        CustomEnchantRegistry.register(new StrengthOfTheEndEnchant());
 
         LuckEnchant luck = new LuckEnchant();
         luck.setPlugin(plugin);
         CustomEnchantRegistry.register(luck);
 
-        ProtectionOfTheEndEnchant protection = new ProtectionOfTheEndEnchant();
-        protection.setPlugin(plugin);
-        CustomEnchantRegistry.register(protection);
+        // --- Particle Enchants (all anvil-compatible) ---
+        CustomEnchantRegistry.register(new FlameRingEnchant());
+        CustomEnchantRegistry.register(new HeartTrailEnchant());
+        CustomEnchantRegistry.register(new RainbowParticlesEnchant());
+        CustomEnchantRegistry.register(new WingBurstEnchant());
+        CustomEnchantRegistry.register(new StarTrailEnchant());
+        CustomEnchantRegistry.register(new CloudAuraEnchant());
+        CustomEnchantRegistry.register(new DragonFireEnchant());
+        CustomEnchantRegistry.register(new WaterSplashEnchant());
+        CustomEnchantRegistry.register(new LightningArcEnchant());
+        CustomEnchantRegistry.register(new CherryWingEnchant());
 
-        BleedEnchant bleed = new BleedEnchant();
-        bleed.setPlugin(plugin);
-        CustomEnchantRegistry.register(bleed);
-
-        CripplingEnchant crippling = new CripplingEnchant();
-        crippling.setPlugin(plugin);
-        CustomEnchantRegistry.register(crippling);
-
-        CyberParticlesEnchant cyber = new CyberParticlesEnchant();
-        cyber.setPlugin(plugin);
-        CustomEnchantRegistry.register(cyber);
-
-        FlameRingEnchant flameRing = new FlameRingEnchant();
-        flameRing.setPlugin(plugin);
-        CustomEnchantRegistry.register(flameRing);
-
-        HeartTrailEnchant heartTrail = new HeartTrailEnchant();
-        heartTrail.setPlugin(plugin);
-        CustomEnchantRegistry.register(heartTrail);
-
-        RainbowParticlesEnchant rainbowParticles = new RainbowParticlesEnchant();
-        rainbowParticles.setPlugin(plugin);
-        CustomEnchantRegistry.register(rainbowParticles);
-
+        // --- Your existing registrations ---
         TunnelingEnchant tunneling = new TunnelingEnchant();
         CustomEnchantRegistry.register(tunneling);
 
@@ -94,9 +72,37 @@ public class CustomEnchantsModule implements Module {
 
         CustomEnchantRegistry.register(new InvisibilityEffectEnchant());
 
-        PluginManager pm = plugin.getServer().getPluginManager();
-        pm.registerEvents(new CustomEnchantAnvilListener(), plugin);
-        pm.registerEvents(new CustomEnchantEffectListener(), plugin);
-    }
+        // --- NEW enchants from your request ---
+        CustomEnchantRegistry.register(new PhantomRepellantEnchant());     // any item
+        CustomEnchantRegistry.register(new MidasPlightEnchant());          // pickaxes
+        CustomEnchantRegistry.register(new GreenThumbEnchant());           // hoes
+        CustomEnchantRegistry.register(new AutosmeltEnchant());            // pickaxes
+        CustomEnchantRegistry.register(new DragonbreathImmunityEnchant()); // any item
+        CustomEnchantRegistry.register(new UnbreakableEnchant());          // any item
+        CustomEnchantRegistry.register(new DoubleXPEnchant());             // pickaxes/swords/axes
+        CustomEnchantRegistry.register(new SpeedTwoEnchant());             // any item
+        CustomEnchantRegistry.register(new JumpBoostTwoEnchant());         // any item
+        CustomEnchantRegistry.register(new SlownessImmunityEnchant());     // any item
+        CustomEnchantRegistry.register(new SatietyEffectEnchant());        // any item
+        CustomEnchantRegistry.register(new MobSlayerCounterEnchant());     // swords/axes
+        CustomEnchantRegistry.register(new OreMinerCounterEnchant());      // pickaxes
+        CustomEnchantRegistry.register(new NightVisionEnchant());          // any item
+        CustomEnchantRegistry.register(new RainbowGlowEffectEnchant());
+        CustomEnchantRegistry.register(new RandomEfficiencyEnchant());
+        CustomEnchantRegistry.register(new DestroyerOfTheEndEnchant());
+        CustomEnchantRegistry.register(new CyberParticlesEnchant());
+        CustomEnchantRegistry.register(new CripplingEnchant());
+        CustomEnchantRegistry.register(new BleedEnchant());
+        CustomEnchantRegistry.register(new ProtectionOfTheEndEnchant());
+        CustomEnchantRegistry.register(new EndermanPleaserEnchant());
+        CustomEnchantRegistry.register(new LevitationImmunityEnchant());
+        CustomEnchantRegistry.register(new VoidSafetyEnchant());
 
+        // --- Listeners ---
+        PluginManager pm = plugin.getServer().getPluginManager();
+        pm.registerEvents(new CustomEnchantAnvilStackingListener(), plugin);
+        pm.registerEvents(new CustomEnchantEffectListener(), plugin);
+        // NOTE: some of the new enchants respond to BlockBreak/EntityDeath/BlockExp/ItemDamage events.
+        // If you don't already have a forwarder for those, I can add a fan-out listener next.
+    }
 }

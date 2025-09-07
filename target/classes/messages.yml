@@ -97,78 +97,71 @@ entitymanager:
 
 
 playershops:
-  # --- General / errors ---
-  only-players: "<red>Only players can use this command.</red>"
-  unknown-subcommand: "<red>Unknown subcommand.</red> <gray>Usage:</gray> <yellow>/shops <trust|untrust|claim|unclaim|define|info|setwarp|warp|wand|delete></yellow>"
-  action-failed: "<red>That action failed. Please try again.</red>"
-
-  # --- Wand / selection ---
-  wand-given: "<green>Selection wand given.</green>"
-
-  # --- Trust / Untrust ---
-  trust-not-owner-region: "<red>You must be the owner of this shop region to manage trust.</red>"
-  trust-list-empty: "<gray>No one is currently trusted in this shop.</gray>"
-  trust-list-header: "<#c1adfe>Trusted players:</#c1adfe>"
-  trust-list-entry: "<gray>-</gray> <white>%player%</white>"
-  trust-divine-permission: "<red>That player doesn't have permission to build in a <yellow>divine</yellow> shop.</red>"
-  player-not-online: "<red>Player '<white>%player%</white>' has never joined or isn't known.</red>"
-
-  trust-already: "<yellow>%player%</yellow> is already trusted in this shop."
-  trust-success: "<green>%player%</green> is now trusted in this shop."
-
-  untrust-usage: "<gray>Usage:</gray> <yellow>/shops untrust <player></yellow>"
-  untrust-success: "<green>Removed <white>%player%</white> from the trusted list.</green>"
-  untrust-fail: "<red><white>%player%</white> is not trusted in this shop.</red>"
-
-  # --- Info ---
-  info-not-in-claimed-region: "<red>You are not inside a defined shop region.</red>"
-  info-header: "<#c1adfe>Shop Info</#c1adfe>"
-  info-owner: "<#c1adfe>Owner:</#c1adfe> <white>%owner%</white>"
-  info-last-updated: "<#c1adfe>Last Updated:</#c1adfe> <white>%time%</white>"
-  # %type% will be: plot/divine/saturn/ascendant (legacy jupiter shown as saturn in code)
+  only-players: "<red>Only players can use this."
+  unknown-subcommand: "<red>Unknown subcommand."
+  no-build-permission: "<red>You don't have permission to build in this shop."
+  wand-given: "<green>Selection wand given."
+  player-not-online: "<red>%player% is not online."
+  action-failed: "<red>Action failed."
+  message-chest-created: "<gray>[</gray><#c1adfe>SHOPS</#c1adfe><gray>]</gray> <green>Shop chest created.</green>"
+  position-set-1: "<gray>[</gray><#c1adfe>SHOPS</#c1adfe><gray>]</gray> <green>Position 1 set.</green>"
+  position-set-2: "<gray>[</gray><#c1adfe>SHOPS</#c1adfe><gray>]</gray> <green>Position 2 set.</green>"
   info-type: "<#c1adfe>Type:</#c1adfe> <gray>%type%</gray>"
 
-  # --- Claim / Unclaim ---
-  claim-not-in-region: "<red>You are not inside a defined shop region.</red>"
-  claim-no-permission: "<red>You don't have permission to claim shops.</red>"
-  claim-already-own: "<red>You have already claimed a shop.</red>"
-  claim-already: "<red>This shop is already claimed.</red>"
-  claim-success: "<green>Shop <white>%name%</white> claimed successfully.</green>"
+  # Define
+  region-define-no-permission: "<red>You must be OP to define regions."
+  region-define-missing: "<red>Select two corners first."
+  region-define-overlap: "<red>That region overlaps an existing shop."
+  region-define-success: "<green>Defined <#c1adfe>%name%</#c1adfe> at <gray>(%x1%, %y1%, %z1%) → (%x2%, %y2%, %z2%)</gray>."
 
-  claim-divine-no-permission: "<red>You don't have permission to claim a <yellow>divine</yellow> shop.</red>"
-  # New: saturn permission gate
-  claim-saturn-no-permission: "<red>You don't have permission to claim a <yellow>Saturn</yellow> shop.</red>"
-  # Legacy key (safe to keep if any old code still references it)
-  claim-jupiter-no-permission: "<red>You don't have permission to claim a <yellow>Saturn</yellow> shop.</red>"
+  # Delete (new)
+  region-delete-no-permission: "<red>You must be OP to delete shop regions."
+  region-delete-not-in-region: "<red>You are not standing in a defined shop region."
+  region-delete-success: "<green>Deleted shop region <#c1adfe>%name%</#c1adfe>."
+  region-delete-fail: "<red>Failed to delete this shop region."
 
-  claim-ascendant-no-permission: "<red>You don't have permission to claim an <yellow>Ascendant</yellow> shop.</red>"
+  # Claim / Unclaim
+  claim-not-in-region: "<red>You are not standing in a shop region."
+  claim-no-permission: "<red>You don't have permission to claim a shop."
+  claim-already-own: "<red>You already own a shop."
+  claim-already: "<red>This shop is already claimed."
+  claim-divine-no-permission: "<red>You need <#c1adfe>shops.claim.divine</#c1adfe> to claim this plot."
+  claim-saturn-no-permission: "<red>You don’t have permission to claim a Saturn plot.</red>"
+  claim-success: "<green>You claimed <#c1adfe>%name%</#c1adfe>."
 
-  unclaim-fail: "<red>You are not in a claimed shop.</red>"
-  unclaim-no-permission: "<red>You must be the owner (or have admin) to unclaim this shop.</red>"
-  unclaim-success: "<green>Shop unclaimed and plot reset.</green>"
+  unclaim-no-permission: "<red>You don't have permission to unclaim shops."
+  unclaim-fail: "<red>No claimed shop here."
+  unclaim-success: "<green>Shop unclaimed."
 
-  # --- Define / Delete regions ---
-  region-define-no-permission: "<red>You don't have permission to define shop regions.</red>"
-  region-define-missing: "<red>Missing selection.</red> <gray>Use the wand to set two corners first.</gray>"
-  region-define-overlap: "<red>Your selection overlaps an existing shop region.</red>"
-  # %name%, %x1%, %y1%, %z1%, %x2%, %y2%, %z2%
-  region-define-success: "<green>Defined shop <white>%name%</white> from <white>(%x1%, %y1%, %z1%)</white> to <white>(%x2%, %y2%, %z2%)</white>.</green>"
+  # Trust
+  trust-not-owner-region: "<red>You must be the owner and inside your shop to manage trust."
+  trust-list-empty: "<gray>No trusted players.</gray>"
+  trust-list-header: "<#c1adfe>Trusted Players</#c1adfe>"
+  trust-list-entry: "<gray>-</gray> <#c1adfe>%player%</#c1adfe>"
+  trust-divine-permission: "<red>That player cannot build in divine plots."
+  trust-already: "<red>%player% is already trusted."
+  trust-success: "<green>Trusted <#c1adfe>%player%</#c1adfe>."
 
-  region-delete-no-permission: "<red>You don't have permission to delete shop regions.</red>"
-  region-delete-not-in-region: "<red>You are not inside a defined shop region.</red>"
-  region-delete-success: "<green>Deleted shop region <white>%name%</white>.</green>"
-  region-delete-fail: "<red>Failed to delete that shop region.</red>"
+  untrust-usage: "<red>Usage: /shops untrust <player>"
+  untrust-success: "<green>Untrusted <#c1adfe>%player%</#c1adfe>."
+  untrust-fail: "<red>%player% is not trusted."
 
-  # --- Warps ---
-  setwarp-missing-claim: "<red>You must be inside your own claimed shop to set a warp.</red>"
-  setwarp-success: "<green>Shop warp set.</green>"
+  # Info
+  info-not-in-claimed-region: "<red>You are not inside a claimed shop."
+  info-header: "<#c1adfe>Shop Info</#c1adfe>"
+  info-owner: "<gray>Owner:</gray> <#c1adfe>%owner%</#c1adfe>"
+  info-last-updated: "<gray>Last updated:</gray> <#c1adfe>%time%</#c1adfe>"
 
-  warp-random-none-active: "<red>No active shops found recently.</red>"
-  warp-random-success: "<green>Teleported to a random active shop!</green>"
-  warp-usage: "<gray>Usage:</gray> <yellow>/shops warp <player|random></yellow>"
-  warp-no-claim: "<red><white>%player%</white> does not own a shop.</red>"
-  warp-no-warp: "<red><white>%player%</white> has not set a shop warp.</red>"
-  warp-success: "<green>Teleported to <white>%player%</white>'s shop.</green>"
+  # Warp
+  setwarp-missing-claim: "<red>You must be in your shop to set its warp."
+  setwarp-success: "<green>Shop warp set."
+
+  warp-usage: "<red>Usage: /shops warp <player|random>"
+  warp-no-claim: "<red>%player% does not own a shop."
+  warp-no-warp: "<red>%player% has not set a shop warp."
+  warp-random-none-active: "<red>No active shop warps."
+  warp-random-success: "<green>Teleported to a random active shop."
+  warp-success: "<green>Teleported to <#c1adfe>%player%</#c1adfe>'s shop."
 
 ced:
   damage-dealt: "<green>You dealt <white>{amount}</white> damage to the dragon!"
@@ -346,3 +339,5 @@ mapart:
   no-permission-use: "<red>You lack permission to use maparts.</red>"
   setclaims-usage: "<gray>/mapart setclaims <player> <count></gray>"
   auto-none: "<red>No unclaimed mapart regions are available.</red>"
+  warp-random-none: "<red>No mapart platform warps are available.</red>"
+  warp-random-success: "<green>Teleported to a random mapart platform!</green>"
