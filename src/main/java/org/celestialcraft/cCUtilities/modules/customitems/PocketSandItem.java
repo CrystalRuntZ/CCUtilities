@@ -51,7 +51,12 @@ public class PocketSandItem implements CustomItem {
         UUID uuid = player.getUniqueId();
         long now = System.currentTimeMillis();
 
-        if (cooldowns.containsKey(uuid) && now - cooldowns.get(uuid) < COOLDOWN_MS) return;
+        if (cooldowns.containsKey(uuid) && now - cooldowns.get(uuid) < COOLDOWN_MS) {
+            long secondsLeft = (COOLDOWN_MS - (now - cooldowns.get(uuid))) / 1000;
+            player.sendActionBar(Component.text("§cPocket Sand recharging: " + secondsLeft + "s"));
+            event.setCancelled(true);
+            return;
+        }
         cooldowns.put(uuid, now);
 
         player.getWorld().spawnParticle(

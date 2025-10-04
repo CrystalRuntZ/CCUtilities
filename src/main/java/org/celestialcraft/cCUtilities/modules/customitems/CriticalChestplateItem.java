@@ -3,6 +3,7 @@ package org.celestialcraft.cCUtilities.modules.customitems;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
@@ -37,21 +38,28 @@ public class CriticalChestplateItem implements CustomItem {
 
     @Override
     public void onAttack(EntityDamageByEntityEvent event) {
+        if (event.isCancelled()) return;
         if (!(event.getDamager() instanceof Player attacker)) return;
 
-        // Check critical hit-like conditions
-        if (!attacker.isOnGround() &&
-                attacker.getFallDistance() > 0 &&
-                !attacker.isSprinting() &&
-                !attacker.isInsideVehicle() &&
-                attacker.getVelocity().getY() < 0) {
+        if (attacker.isOnGround()) return;
+        if (attacker.getFallDistance() <= 0) return;
+        if (attacker.isSprinting()) return;
+        if (attacker.isInsideVehicle()) return;
+        if (attacker.getVelocity().getY() >= 0) return;
 
-            ItemStack chestplate = attacker.getInventory().getChestplate();
-            if (!matches(chestplate)) return;
+        ItemStack chestplate = attacker.getInventory().getChestplate();
+        if (chestplate == null || !matches(chestplate)) return;
 
-            double original = event.getDamage();
-            double boosted = original * 1.2; // +20% damage
-            event.setDamage(boosted);
-        }
+        double originalDamage = event.getDamage();
+        double boostedDamage = originalDamage * 1.2;
+        event.setDamage(boostedDamage);
+
+        attacker.getWorld().spawnParticle(
+                Particle.CRIT,
+                attacker.getLocation().add(0, 1.0, 0),
+                10,
+                0.3, 0.3, 0.3,
+                0.1
+        );
     }
 }

@@ -1,6 +1,7 @@
 package org.celestialcraft.cCUtilities.modules.customitems;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
@@ -8,14 +9,16 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.time.Duration;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public class CelestialLocatorItem implements CustomItem {
 
-    private static final String LORE_IDENTIFIER = "&7Celestial Locator";
+    private static final String LORE_IDENTIFIER = "§7Celestial Locator";
     private static final long COOLDOWN_MS = 10_000;
     private final Map<UUID, Long> cooldowns = new HashMap<>();
     private final LegacyComponentSerializer legacy = LegacyComponentSerializer.legacySection();
@@ -28,12 +31,10 @@ public class CelestialLocatorItem implements CustomItem {
     @Override
     public boolean matches(ItemStack item) {
         if (item == null || !item.hasItemMeta()) return false;
-        ItemMeta meta = item.getItemMeta();
-        List<Component> lore = meta.lore();
+        List<Component> lore = item.getItemMeta().lore();
         if (lore == null) return false;
-        String formatted = LORE_IDENTIFIER.replace("&", "§");
         for (Component line : lore) {
-            if (legacy.serialize(line).equalsIgnoreCase(formatted)) {
+            if (legacy.serialize(line).equals(LORE_IDENTIFIER)) {
                 return true;
             }
         }
@@ -53,6 +54,8 @@ public class CelestialLocatorItem implements CustomItem {
         UUID uuid = player.getUniqueId();
         long now = System.currentTimeMillis();
         if (cooldowns.containsKey(uuid) && (now - cooldowns.get(uuid) < COOLDOWN_MS)) {
+            long remaining = (COOLDOWN_MS - (now - cooldowns.get(uuid))) / 1000;
+            player.sendActionBar(Component.text("Cooldown active: " + remaining + "s").color(TextColor.color(0xFF5555)));
             return;
         }
         cooldowns.put(uuid, now);
@@ -80,11 +83,11 @@ public class CelestialLocatorItem implements CustomItem {
         Component title;
         Component subtitle;
         if (nearest != null) {
-            title = Component.text("§7" + nearest.getName());
-            subtitle = Component.text("§x§C§1§A§D§F§E" + ((int) nearestDistance) + " blocks");
+            title = Component.text(nearest.getName()).color(TextColor.color(0xAAAAAA));
+            subtitle = Component.text(((int) nearestDistance) + " blocks").color(TextColor.color(0xC11AFE));
         } else {
-            title = Component.text("§7No players nearby");
-            subtitle = Component.text("");
+            title = Component.text("No players nearby").color(TextColor.color(0xAAAAAA));
+            subtitle = Component.empty();
         }
         player.showTitle(Title.title(title, subtitle, times));
     }

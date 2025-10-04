@@ -1,5 +1,7 @@
 package org.celestialcraft.cCUtilities.modules.customitems;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -35,19 +37,24 @@ public class CapybaraSpawnEggItem implements CustomItem {
 
         if (item == null || !matches(item)) return;
 
-        // Check if player already has the permission
         if (player.hasPermission("pet.capybara")) {
-            player.sendMessage("§c⚠ You may only have 1 capybara pet!");
+            player.sendMessage(Component.text("⚠ You may only have 1 capybara pet!")
+                    .color(TextColor.color(0xFF5555)));
             return;
         }
 
-        // Grant permission via console command (works with any perm plugin)
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
                 "lp user " + player.getName() + " permission set pet.capybara true");
 
-        // Consume exactly one item
-        item.setAmount(item.getAmount() - 1);
+        int newAmount = item.getAmount() - 1;
+        if (newAmount <= 0) {
+            player.getInventory().setItemInMainHand(null);
+        } else {
+            item.setAmount(newAmount);
+            player.getInventory().setItemInMainHand(item);
+        }
 
-        player.sendMessage("§aYou have unlocked your Capybara pet!");
+        player.sendMessage(Component.text("You have unlocked your Capybara pet!")
+                .color(TextColor.color(0x55FF55)));
     }
 }

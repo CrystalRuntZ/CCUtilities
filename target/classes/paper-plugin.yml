@@ -51,6 +51,10 @@ permissions:
     description: Allows teleporting to the active dragon fight with /ced fight
     default: true
 
+  customenderdragon.clearisland:
+    description: Allow /ced clearisland (clears non-player, non-XP entities on the End main island)
+    default: op
+
   quests.use:
     description: Allows using the /quests command
     default: true
@@ -191,3 +195,7 @@ permissions:
   maparts.use:
     description: Allows non-admin maparts actions (claim, trust, untrust, lock, info, trustlist, warp, setwarp)
     default: true
+
+  celestial.backpack.use:
+    description: Allows non-OPs to use /backpack
+    default: op

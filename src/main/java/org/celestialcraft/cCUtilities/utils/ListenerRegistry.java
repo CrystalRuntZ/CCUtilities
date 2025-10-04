@@ -9,6 +9,7 @@ import org.celestialcraft.cCUtilities.modules.activity.PlayerActivityTracker;
 import org.celestialcraft.cCUtilities.modules.ced.*;
 import org.celestialcraft.cCUtilities.modules.ced.listeners.DragonDeathListener;
 import org.celestialcraft.cCUtilities.modules.ced.listeners.*;
+import org.celestialcraft.cCUtilities.modules.customparticles.CustomParticlesListener;
 import org.celestialcraft.cCUtilities.modules.joinitem.JoinItemModule;
 import org.celestialcraft.cCUtilities.modules.modulemanager.ModuleManager;
 import org.celestialcraft.cCUtilities.modules.quests.listeners.*;
@@ -33,14 +34,23 @@ public class ListenerRegistry {
             plugin.getServer().getPluginManager().registerEvents(new EntityLimiterListener(), plugin);
         }
 
-        if (ModuleManager.isEnabled("customenchants")) {
-            plugin.getServer().getPluginManager().registerEvents(new CustomEnchantAnvilStackingListener(), plugin);
-            plugin.getServer().getPluginManager().registerEvents(new CustomEnchantEffectListener(), plugin);
-            plugin.getServer().getPluginManager().registerEvents(new VoidSafetyListener(), plugin);
-        }
+        if (ModuleManager.isEnabled("customenchants") || ModuleManager.isEnabled("customitems")) {
+            var spiderBackpackItem = new org.celestialcraft.cCUtilities.modules.customitems.SpiderBackpackItem(plugin);
+            var blackCatSpawnEggItem = new org.celestialcraft.cCUtilities.modules.customitems.BlackCatSpawnEggItem();
+            var witchDisguiseItem = new org.celestialcraft.cCUtilities.modules.customitems.WitchDisguiseItem(plugin);
 
-        if (ModuleManager.isEnabled("customitems")) {
-            plugin.getServer().getPluginManager().registerEvents(new CustomItemEffectListener(), plugin);
+            // Register your custom items
+            org.celestialcraft.cCUtilities.modules.customitems.CustomItemRegistry.register(spiderBackpackItem);
+            org.celestialcraft.cCUtilities.modules.customitems.CustomItemRegistry.register(blackCatSpawnEggItem);
+            org.celestialcraft.cCUtilities.modules.customitems.CustomItemRegistry.register(witchDisguiseItem);
+
+            // Register combined listener handling enchants and items
+            CustomEffectsListener combinedListener = new CustomEffectsListener(spiderBackpackItem);
+            plugin.getServer().getPluginManager().registerEvents(combinedListener, plugin);
+
+            // Also register custom items if they implement Listener themselves
+            plugin.getServer().getPluginManager().registerEvents(spiderBackpackItem, plugin);
+            plugin.getServer().getPluginManager().registerEvents(blackCatSpawnEggItem, plugin);
         }
 
         if (ModuleManager.isEnabled("orewatcher")) {
@@ -52,13 +62,19 @@ public class ListenerRegistry {
             plugin.getServer().getPluginManager().registerEvents(new ShopBuildListener(), plugin);
             plugin.getServer().getPluginManager().registerEvents(new ShopChestAccessListener(plugin), plugin);
             plugin.getServer().getPluginManager().registerEvents(new ShopChestListener(), plugin);
-            plugin.getServer().getPluginManager().registerEvents(new ShopChestDragListener(), plugin); // <-- add this
+            plugin.getServer().getPluginManager().registerEvents(new ShopChestDragListener(), plugin);
             plugin.getServer().getPluginManager().registerEvents(new ShopSelectionListener(CCUtilities.getInstance().playerShopsModule), plugin);
             plugin.getServer().getPluginManager().registerEvents(new ShopWandListener(), plugin);
             plugin.getServer().getPluginManager().registerEvents(new ShopTransferGuardListener(), plugin);
             plugin.getServer().getPluginManager().registerEvents(new ShopBlockProtectListener(), plugin);
             plugin.getServer().getPluginManager().registerEvents(new ShopSignProtectionListener(), plugin);
             plugin.getServer().getPluginManager().registerEvents(new ShopHangingProtectListener(), plugin);
+        }
+
+        if (ModuleManager.isEnabled("customparticles")) {
+            plugin.getServer().getPluginManager().registerEvents(
+                    new CustomParticlesListener(), plugin
+            );
         }
 
         if (ModuleManager.isEnabled("joinitem")) {

@@ -18,6 +18,10 @@ public class ArchaeologyShovelItem implements CustomItem {
     private static final LegacyComponentSerializer serializer = LegacyComponentSerializer.legacySection();
     private static final Random random = new Random();
 
+    private static final Set<String> ALLOWED_WORLDS = new HashSet<>(Arrays.asList(
+            "wild", "wild_nether"
+    ));
+
     private static final Set<String> BLOCKED_WORLDS = new HashSet<>(Arrays.asList(
             "spawnworld", "shops"
     ));
@@ -69,7 +73,13 @@ public class ArchaeologyShovelItem implements CustomItem {
     @Override
     public void onBlockBreak(Player player, Block block, ItemStack item, BlockBreakEvent event) {
         if (!TARGET_BLOCKS.contains(block.getType())) return;
-        if (BLOCKED_WORLDS.contains(block.getWorld().getName())) return;
+
+        String worldName = block.getWorld().getName();
+        // Only proceed if in allowed worlds
+        if (!ALLOWED_WORLDS.contains(worldName)) return;
+        // Explicitly block forbidden worlds just in case
+        if (BLOCKED_WORLDS.contains(worldName)) return;
+
         if (!ClaimUtils.canBuild(player, block.getLocation())) return;
 
         if (Math.random() <= 0.10) {

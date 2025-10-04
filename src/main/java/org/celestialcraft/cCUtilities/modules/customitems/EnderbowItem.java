@@ -51,6 +51,7 @@ public class EnderbowItem implements CustomItem {
         arrowShooters.put(proj.getUniqueId(), player.getUniqueId());
     }
 
+    @Override
     public void onProjectileHit(ProjectileHitEvent event) {
         Projectile proj = event.getEntity();
         UUID shooterId = arrowShooters.remove(proj.getUniqueId());

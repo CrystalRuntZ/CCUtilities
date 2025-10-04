@@ -11,12 +11,37 @@ import java.util.List;
 public class MessageConfig {
 
     private static YamlConfiguration config;
+    private static File file; // cache the file so we can reload without recomputing
     private static final MiniMessage miniMessage = MiniMessage.miniMessage();
 
     public static void load(JavaPlugin plugin) {
-        File file = new File(plugin.getDataFolder(), "messages.yml");
+        file = new File(plugin.getDataFolder(), "messages.yml");
         if (!file.exists()) {
             plugin.saveResource("messages.yml", false);
+        }
+        config = YamlConfiguration.loadConfiguration(file);
+    }
+
+    /** Reload messages.yml. Safe to call from a /reload command. */
+    public static void reload(JavaPlugin plugin) {
+        // If plugin is provided, refresh the file handle and ensure default exists
+        if (plugin != null) {
+            file = new File(plugin.getDataFolder(), "messages.yml");
+            if (!file.exists()) {
+                plugin.saveResource("messages.yml", false);
+            }
+        }
+        // If load() hasn't been called yet and no plugin provided, we can’t resolve the file
+        if (file == null) {
+            throw new IllegalStateException("MessageConfig not loaded yet. Call load(plugin) first or pass plugin to reload(plugin).");
+        }
+        config = YamlConfiguration.loadConfiguration(file);
+    }
+
+    /** Convenience: reload using the cached file (after an initial load). */
+    public static void reload() {
+        if (file == null) {
+            throw new IllegalStateException("MessageConfig not loaded yet. Call load(plugin) first or use reload(plugin).");
         }
         config = YamlConfiguration.loadConfiguration(file);
     }
@@ -37,9 +62,9 @@ public class MessageConfig {
     }
 
     public static boolean has(String key) {
-        return config.contains(key) ||
-                config.contains("ced." + key) ||
-                config.contains("customenderdragon." + key);
+        return config.contains(key)
+                || config.contains("ced." + key)
+                || config.contains("customenderdragon." + key);
     }
 
     public static Component mm(String key) {
@@ -49,5 +74,4 @@ public class MessageConfig {
     public static List<String> getStringList(String path) {
         return config.getStringList(path);
     }
-
 }

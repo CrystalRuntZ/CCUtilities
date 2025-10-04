@@ -51,7 +51,9 @@ public class SourCitrusItem implements CustomItem {
         long now = System.currentTimeMillis();
         Long last = pdc.get(lastUseKey, PersistentDataType.LONG);
         if (last != null && now - last < COOLDOWN_MS) {
-            player.sendMessage(Component.text("You must wait before using this again.").color(net.kyori.adventure.text.format.NamedTextColor.RED));
+            long remainingMillis = COOLDOWN_MS - (now - last);
+            long secondsLeft = (remainingMillis + 999) / 1000; // round up
+            player.sendActionBar(Component.text("§cYou must wait " + secondsLeft + "s before using this again."));
             return;
         }
 

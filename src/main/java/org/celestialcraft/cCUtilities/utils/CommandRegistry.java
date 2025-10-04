@@ -26,6 +26,7 @@ public class CommandRegistry {
         CommandRegistrar.register(plugin, "ccmodules", new ModuleToggleCommand(plugin), new ModuleToggleCommand(plugin));
         CommandRegistrar.register(plugin, "unityaccept", new UnityAcceptCommand(), null);
         CommandRegistrar.register(plugin, "unitydeny", new UnityDenyCommand(), null);
+        CommandRegistrar.register(plugin, "rawbc", new RawBroadcastCommand(), null);
 
         // Quests
         if (ModuleManager.isEnabled("quests")) {
@@ -72,7 +73,8 @@ public class CommandRegistry {
         // Custom Ender Dragon Module
         if (ModuleManager.isEnabled("ced")) {
             DragonManager dragonManager = instance.cedModule.getDragonManager();
-            CommandRegistrar.register(plugin, "ced", new CedCommand(dragonManager), null);
+            CedCommand cedCmd = new CedCommand(dragonManager);
+            CommandRegistrar.register(plugin, "ced", cedCmd, cedCmd);
         }
 
         // MapArts + Resource Regions
@@ -119,5 +121,10 @@ public class CommandRegistry {
         if (ModuleManager.isEnabled("referral")) {
             CommandRegistrar.register(plugin, "referral", new ReferralCommand(plugin, instance.referralModule.getDatabase()), null);
         }
+
+        // === Backpack admin command (universal for backpack-style items) ===
+        // single instance used for executor and tab completer
+        var backpackCmd = new BackpackCommand(plugin);
+        CommandRegistrar.register(plugin, "backpack", backpackCmd, backpackCmd);
     }
 }

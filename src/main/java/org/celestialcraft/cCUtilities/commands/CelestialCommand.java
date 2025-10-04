@@ -6,6 +6,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.celestialcraft.cCUtilities.CCUtilities;
 import org.celestialcraft.cCUtilities.MessageConfig;
+import org.celestialcraft.cCUtilities.modules.celestialvoting.config.VotingConfig; // <-- make sure this path matches your project
 import org.jetbrains.annotations.NotNull;
 
 public class CelestialCommand implements CommandExecutor {
@@ -33,10 +34,16 @@ public class CelestialCommand implements CommandExecutor {
         sender.sendMessage(mm.deserialize(MessageConfig.get("core.reloading")));
 
         try {
-            // Ensure config.yml is reloaded
+            // 1) Reload config.yml
             main.reloadConfig();
 
-            // Your existing full reload routine
+            // 2) Reload messages.yml
+            MessageConfig.reload(main);
+
+            // 3) Reload VotingConfig.yml
+            VotingConfig.reload(main);
+
+            // 4) Let the plugin re-initialize anything that depends on the above
             main.reloadAll();
 
             sender.sendMessage(mm.deserialize(MessageConfig.get("core.reloaded")));

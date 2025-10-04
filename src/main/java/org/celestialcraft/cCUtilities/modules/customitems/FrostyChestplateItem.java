@@ -2,7 +2,12 @@ package org.celestialcraft.cCUtilities.modules.customitems;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import org.bukkit.entity.*;
+import org.bukkit.Location;
+import org.bukkit.Particle;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -40,7 +45,9 @@ public class FrostyChestplateItem implements CustomItem {
 
     @Override
     public void onAttack(EntityDamageByEntityEvent event) {
-        if (!(event.getEntity() instanceof Player victim)) return;
+        if (event.isCancelled()) return;
+        Entity victimEntity = event.getEntity();
+        if (!(victimEntity instanceof Player victim)) return;
 
         ItemStack chestplate = victim.getInventory().getChestplate();
         if (chestplate == null || !matches(chestplate)) return;
@@ -61,6 +68,14 @@ public class FrostyChestplateItem implements CustomItem {
 
         if (attacker != null) {
             attacker.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 200, 1));
+
+            Location loc = victim.getLocation().add(0, 1, 0);
+            victim.getWorld().spawnParticle(
+                    Particle.ITEM_SNOWBALL,
+                    loc,
+                    30,
+                    0.5, 1.0, 0.5,
+                    0.1);
         }
     }
 }

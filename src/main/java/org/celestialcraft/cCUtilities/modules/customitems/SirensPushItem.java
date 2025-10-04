@@ -53,11 +53,20 @@ public class SirensPushItem implements CustomItem {
         UUID uuid = player.getUniqueId();
         long now = System.currentTimeMillis();
 
-        if (cooldowns.containsKey(uuid) && (now - cooldowns.get(uuid)) < COOLDOWN_MILLIS) return;
+        if (cooldowns.containsKey(uuid)) {
+            long elapsed = now - cooldowns.get(uuid);
+            if (elapsed < COOLDOWN_MILLIS) {
+                long secondsLeft = (COOLDOWN_MILLIS - elapsed) / 1000;
+                player.sendActionBar(Component.text("§cSiren's Push cooldown: " + secondsLeft + "s"));
+                event.setCancelled(true);
+                return;
+            }
+        }
+
         if (!hasSirenPushEquipped(player)) return;
 
         cooldowns.put(uuid, now);
-        player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, INVIS_DURATION_TICKS, 1));
+        player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, INVIS_DURATION_TICKS, 0)); // amplifier 0
 
         Bukkit.getScheduler().runTaskLater(CCUtilities.getInstance(), () -> {
             for (Entity entity : player.getNearbyEntities(5, 5, 5)) {
@@ -70,9 +79,12 @@ public class SirensPushItem implements CustomItem {
                 target.setVelocity(push);
             }
 
-            player.getWorld().spawnParticle(Particle.CLOUD, player.getLocation(), 50, 1, 1, 1, 0.05);
-            player.getWorld().spawnParticle(Particle.SWEEP_ATTACK, player.getLocation(), 10);
-            player.sendMessage("§eSiren's Push activated!");
+            // Spawn particles slightly above player's head
+            var headLocation = player.getLocation().add(0, player.getEyeHeight() + 0.2, 0);
+            player.getWorld().spawnParticle(Particle.CLOUD, headLocation, 50, 0.5, 0.5, 0.5, 0.05);
+            player.getWorld().spawnParticle(Particle.SWEEP_ATTACK, headLocation, 10);
+
+            player.sendActionBar(Component.text("§aSiren's Push activated!"));
         }, INVIS_DURATION_TICKS);
     }
 

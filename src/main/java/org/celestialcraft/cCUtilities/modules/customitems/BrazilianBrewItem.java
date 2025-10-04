@@ -16,12 +16,15 @@ import org.bukkit.Color;
 import java.util.*;
 
 public class BrazilianBrewItem implements CustomItem {
+
     private final LegacyComponentSerializer serializer = LegacyComponentSerializer.legacySection();
     private static final String IDENTIFIER = "brazilian_brew";
     private final Set<UUID> cooldownPlayers = new HashSet<>();
     private final Random random = new Random();
+    private final JavaPlugin plugin;
 
     public BrazilianBrewItem(JavaPlugin plugin) {
+        this.plugin = plugin;
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -57,12 +60,13 @@ public class BrazilianBrewItem implements CustomItem {
     }
 
     private void applySpeedEffect(Player player) {
+        if (player.hasPotionEffect(PotionEffectType.SPEED)) return; // avoid overlapping
         player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20 * 10, 254, true, true, true));
         spawnWhiteDust(player);
         cooldownPlayers.add(player.getUniqueId());
 
         long delay = 20L * (120 + random.nextInt(180)); // 2–5 minutes
-        Bukkit.getScheduler().runTaskLater(JavaPlugin.getProvidingPlugin(getClass()), () -> cooldownPlayers.remove(player.getUniqueId()), delay);
+        Bukkit.getScheduler().runTaskLater(plugin, () -> cooldownPlayers.remove(player.getUniqueId()), delay);
     }
 
     private void spawnWhiteDust(Player player) {

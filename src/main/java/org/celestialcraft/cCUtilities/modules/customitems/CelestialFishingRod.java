@@ -36,6 +36,7 @@ public class CelestialFishingRod implements CustomItem {
         return lore != null && !lore.isEmpty() && serializer.serialize(lore.getFirst()).equals("§7Celestial Fishing Rod");
     }
 
+    @Override
     public void onFish(PlayerFishEvent event) {
         if (event.getState() != PlayerFishEvent.State.CAUGHT_FISH) return;
         Player player = event.getPlayer();
@@ -102,6 +103,7 @@ public class CelestialFishingRod implements CustomItem {
         itemEntity.setItemStack(customFish);
     }
 
+    @Override
     public void onConsume(PlayerItemConsumeEvent event) {
         ItemStack item = event.getItem();
         if (!item.hasItemMeta()) return;

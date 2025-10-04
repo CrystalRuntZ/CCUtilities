@@ -8,6 +8,7 @@ import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.Sound;
 
 import java.util.List;
 
@@ -38,6 +39,7 @@ public class GwynnbleiddItem implements CustomItem {
 
     @Override
     public void onAttack(EntityDamageByEntityEvent event) {
+        if (event.isCancelled()) return;
         if (!(event.getDamager() instanceof Player player)) return;
 
         ItemStack weapon = player.getInventory().getItemInMainHand();
@@ -46,13 +48,26 @@ public class GwynnbleiddItem implements CustomItem {
         AttributeInstance attr = player.getAttribute(Attribute.MAX_HEALTH);
         double maxHealth = attr != null ? attr.getValue() : 20.0;
         double healthRatio = player.getHealth() / maxHealth;
+        healthRatio = Math.max(0.0, Math.min(healthRatio, 1.0)); // Clamp 0 to 1
+
+        boolean boosted = false;
+        double damage = event.getDamage();
+
         if (healthRatio <= 0.25) {
-            event.setDamage(event.getDamage() * 1.5);
+            damage *= 1.5;
+            boosted = true;
         }
 
         Entity target = event.getEntity();
         if (target instanceof Wither || target instanceof EnderDragon) {
-            event.setDamage(event.getDamage() * 1.1);
+            damage *= 1.1;
+            boosted = true;
+        }
+
+        if (boosted) {
+            event.setDamage(damage);
+            // Optional: play a sound or send particle effects to player
+            player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1f, 1f);
         }
     }
 }

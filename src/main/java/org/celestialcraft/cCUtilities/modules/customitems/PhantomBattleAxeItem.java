@@ -55,15 +55,18 @@ public class PhantomBattleAxeItem implements CustomItem {
         Location spawnLoc = target.getLocation();
 
         for (int i = 0; i < 3; i++) {
-            Phantom phantom = (Phantom) spawnLoc.getWorld().spawnEntity(spawnLoc, EntityType.PHANTOM);
+            Location spawnLocation = spawnLoc.clone().add(0, 3, 0);  // Spawn 3 blocks higher
+
+            Phantom phantom = (Phantom) spawnLocation.getWorld().spawnEntity(spawnLocation, EntityType.PHANTOM);
             phantom.setTarget(target);
             phantom.customName(Component.text("Phantom Guardian"));
+            phantom.setCustomNameVisible(true);  // Make name visible
             phantom.setSilent(true);
             phantom.setRemoveWhenFarAway(true);
             phantom.setInvisible(false);
 
-            spawnLoc.getWorld().spawnParticle(Particle.ASH, phantom.getLocation(), 30, 0.3, 0.5, 0.3, 0.01);
-            spawnLoc.getWorld().playSound(phantom.getLocation(), Sound.ENTITY_PHANTOM_FLAP, 1.0f, 1.0f);
+            spawnLocation.getWorld().spawnParticle(Particle.ASH, phantom.getLocation(), 30, 0.3, 0.5, 0.3, 0.01);
+            spawnLocation.getWorld().playSound(phantom.getLocation(), Sound.ENTITY_PHANTOM_FLAP, 1.0f, 1.0f);
 
             new BukkitRunnable() {
                 int cycles = 0;

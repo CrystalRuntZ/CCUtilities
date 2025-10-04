@@ -6,6 +6,8 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityResurrectEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -50,7 +52,6 @@ public class MercyUltimateItem implements CustomItem {
         Player player = event.getPlayer();
         if (!player.isValid() || player.isDead()) return;
         if (player.isInsideVehicle()) return;
-
         if (event.getFrom().getWorld() != event.getTo().getWorld()) return;
         if (event.getFrom().distanceSquared(event.getTo()) < 0.01) return;
 
@@ -58,13 +59,28 @@ public class MercyUltimateItem implements CustomItem {
         if (distance <= 0) return;
 
         ItemStack item = getFirstChargingMercyItem(player);
-        if (item == null || !item.hasItemMeta()) return;
+        if (item == null || !item.hasItemMeta()) {
+            player.sendActionBar(Component.empty());
+            notified.remove(player.getUniqueId());
+            distanceMap.remove(player.getUniqueId());
+            return;
+        }
 
         UUID uuid = player.getUniqueId();
         double accumulated = distanceMap.getOrDefault(uuid, 0.0) + distance;
 
         if (accumulated < 100.0) {
             distanceMap.put(uuid, accumulated);
+
+            // Show charge progress in action bar
+            int oldCharge = getCharge(item);
+            int gain = (int) (accumulated / 100.0);
+            int newCharge = Math.min(100, oldCharge + gain);
+            Component progressMsg = Component.text("Mercy Ultimate Charge: ")
+                    .color(TextColor.color(0xAAAAAA))
+                    .append(Component.text(newCharge + "%").color(TextColor.fromHexString("#c1adfe")));
+            player.sendActionBar(progressMsg);
+
             return;
         }
 
@@ -99,7 +115,12 @@ public class MercyUltimateItem implements CustomItem {
 
         if (updated == 100) {
             if (notified.add(uuid)) {
-                player.sendActionBar(Component.text("Your Mercy Ultimate has charged to 100%").color(TextColor.fromHexString("#c1adfe")));
+                player.sendActionBar(Component.text("💜 Mercy Ultimate fully charged!").color(TextColor.fromHexString("#c1adfe")));
+                player.getWorld().playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1f, 1f);
+                player.getWorld().spawnParticle(Particle.END_ROD, player.getLocation().add(0, 1, 0), 50, 0.5, 1, 0.5, 0.1);
+            } else {
+                // Continuously show charged state on action bar
+                player.sendActionBar(Component.text("💜 Mercy Ultimate fully charged!").color(TextColor.fromHexString("#c1adfe")));
             }
         } else {
             notified.remove(uuid);
@@ -132,6 +153,12 @@ public class MercyUltimateItem implements CustomItem {
         }
 
         event.setCancelled(false);
+    }
+
+    private int getCharge(ItemStack item) {
+        if (item == null || !item.hasItemMeta()) return 0;
+        var container = item.getItemMeta().getPersistentDataContainer();
+        return container.getOrDefault(mercyKey, PersistentDataType.INTEGER, 0);
     }
 
     private ItemStack getFirstChargingMercyItem(Player player) {

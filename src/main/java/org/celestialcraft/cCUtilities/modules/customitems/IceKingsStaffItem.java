@@ -2,8 +2,9 @@ package org.celestialcraft.cCUtilities.modules.customitems;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.title.Title;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
@@ -23,6 +24,7 @@ public class IceKingsStaffItem implements CustomItem {
 
     private final Map<UUID, Integer> selectedIndex = new HashMap<>();
     private final Map<UUID, Long> lastPlaceTime = new HashMap<>();
+    private final LegacyComponentSerializer legacy = LegacyComponentSerializer.legacySection();
 
     @Override
     public String getIdentifier() {
@@ -35,7 +37,7 @@ public class IceKingsStaffItem implements CustomItem {
         ItemMeta meta = item.getItemMeta();
         if (!meta.hasLore()) return false;
         return Objects.requireNonNull(meta.lore()).stream().anyMatch(line ->
-                Component.text(LORE_LINE.replace("&", "§")).equals(line));
+                legacy.serialize(line).equalsIgnoreCase(LORE_LINE.replace("&", "§")));
     }
 
     @Override
@@ -75,7 +77,11 @@ public class IceKingsStaffItem implements CustomItem {
 
         UUID uuid = player.getUniqueId();
         long now = System.currentTimeMillis();
-        if (lastPlaceTime.containsKey(uuid) && now - lastPlaceTime.get(uuid) < 2000) return;
+        if (lastPlaceTime.containsKey(uuid) && now - lastPlaceTime.get(uuid) < 2000) {
+            player.sendActionBar(Component.text("Ice placement is cooling down. Please wait.")
+                    .color(TextColor.color(0xFF5555)));
+            return;
+        }
 
         Block placeTarget = clickedBlock.getRelative(face);
         if (!placeTarget.getType().isAir() && !placeTarget.isReplaceable()) return;
@@ -83,5 +89,9 @@ public class IceKingsStaffItem implements CustomItem {
         Material selected = ICE_TYPES.get(selectedIndex.getOrDefault(uuid, 0));
         placeTarget.setType(selected);
         lastPlaceTime.put(uuid, now);
+
+        player.getWorld().playSound(placeTarget.getLocation(), Sound.BLOCK_GLASS_PLACE, 1f, 1f);
+        player.getWorld().spawnParticle(Particle.BLOCK_CRUMBLE, placeTarget.getLocation().add(0.5, 0.5, 0.5), 10,
+                new ItemStack(selected));
     }
 }

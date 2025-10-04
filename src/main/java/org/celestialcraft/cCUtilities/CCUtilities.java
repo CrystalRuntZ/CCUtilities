@@ -7,7 +7,9 @@ import org.celestialcraft.cCUtilities.modules.celestialvoting.CelestialVotingMod
 import org.celestialcraft.cCUtilities.modules.celestialvoting.VoteStreakTracker;
 import org.celestialcraft.cCUtilities.modules.customenchants.CustomEnchantsModule;
 import org.celestialcraft.cCUtilities.modules.customitems.CustomItemsModule;
+import org.celestialcraft.cCUtilities.modules.customitems.BlackCatSpawnEggItem;
 import org.celestialcraft.cCUtilities.modules.customparticles.CustomParticlesModule;
+import org.celestialcraft.cCUtilities.modules.customparticles.ParticleActiveCache;
 import org.celestialcraft.cCUtilities.modules.customparticles.ParticleManager;
 import org.celestialcraft.cCUtilities.modules.entitymanager.EntityManagerModule;
 import org.celestialcraft.cCUtilities.modules.joinitem.JoinItemModule;
@@ -92,6 +94,14 @@ public final class CCUtilities extends JavaPlugin {
         CommandRegistry.registerAll(this);
         ListenerRegistry.registerAll(this);
 
+        // --- Restore persistent black cats after listeners are registered ---
+        try {
+            BlackCatSpawnEggItem.loadCats();
+            getLogger().info("Loaded persistent black cats.");
+        } catch (Throwable t) {
+            getLogger().warning("Failed to load persistent black cats: " + t.getMessage());
+        }
+
         getLogger().info("CCUtilities loaded.");
         ActivityTracker.init("CCUtilities");
     }
@@ -106,6 +116,7 @@ public final class CCUtilities extends JavaPlugin {
         if (referralModule != null) referralModule.disable();
         if (activityModule != null) activityModule.disable();
         VoteStreakTracker.close();
+        ParticleActiveCache.clearAll();
     }
 
     public void reloadAll() {

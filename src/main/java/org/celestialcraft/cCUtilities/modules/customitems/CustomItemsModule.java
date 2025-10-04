@@ -2,7 +2,7 @@ package org.celestialcraft.cCUtilities.modules.customitems;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.celestialcraft.cCUtilities.listeners.CustomItemEffectListener;
+import org.celestialcraft.cCUtilities.listeners.CustomEffectsListener;
 import org.celestialcraft.cCUtilities.modules.modulemanager.Module;
 import org.celestialcraft.cCUtilities.modules.modulemanager.ModuleManager;
 
@@ -10,6 +10,11 @@ public class CustomItemsModule implements Module {
 
     private final JavaPlugin plugin;
     private boolean enabled = false;
+
+    // Hold a single instance for SpiderBackpackItem to share across registration and listener usage
+    private SpiderBackpackItem spiderBackpackItem;
+    private WitchDisguiseItem witchDisguiseItem;
+
 
     public CustomItemsModule(JavaPlugin plugin) {
         this.plugin = plugin;
@@ -42,10 +47,12 @@ public class CustomItemsModule implements Module {
     }
 
     private void registerListeners() {
-        Bukkit.getPluginManager().registerEvents(new CustomItemEffectListener(), plugin);
+        // Pass the single SpiderBackpackItem instance into the listener so it keeps consistent state
+        Bukkit.getPluginManager().registerEvents(new CustomEffectsListener(spiderBackpackItem), plugin);
+        Bukkit.getPluginManager().registerEvents(witchDisguiseItem, plugin);
     }
 
-    public static void registerAll(JavaPlugin plugin) {
+    public void registerAll(JavaPlugin plugin) {
         CustomItemRegistry.register(new ArchaeologyShovelItem());
         CustomItemRegistry.register(new GuqinItem());
         CustomItemRegistry.register(new InfiniteEnderPearlItem());
@@ -84,7 +91,7 @@ public class CustomItemsModule implements Module {
         CustomItemRegistry.register(new LeapingMaceItem());
         CustomItemRegistry.register(new LifestealSwordItem());
         CustomItemRegistry.register(new MantisBladeItem());
-        CustomItemRegistry.register(new MobPacifierItem());
+        CustomItemRegistry.register(new MobPacifierItem(plugin));
         CustomItemRegistry.register(new MoltenCorePickaxeItem());
         CustomItemRegistry.register(new MultitoolItem());
         CustomItemRegistry.register(new ParticleWandItem());
@@ -139,6 +146,24 @@ public class CustomItemsModule implements Module {
         CustomItemRegistry.register(new UnstripperItem());
         CustomItemRegistry.register(new WaxyEffectItem());
         CustomItemRegistry.register(new XpStorageItem());
+        CustomItemRegistry.register(new ReapersScythe());
+        CustomItemRegistry.register(new JumpScareWand());
+
+        // IMPORTANT: Use the single SpiderBackpackItem instance for registry and later listener
+        spiderBackpackItem = new SpiderBackpackItem(plugin);
+        CustomItemRegistry.register(spiderBackpackItem);
+
+        witchDisguiseItem = new WitchDisguiseItem(plugin);
+        CustomItemRegistry.register(witchDisguiseItem);
+
+
+        CustomItemRegistry.register(new BatWingsItem());
+        CustomItemRegistry.register(new BlackstonePickaxeItem());
+        CustomItemRegistry.register(new ReapersScythe());
+        CustomItemRegistry.register(new SavannaBiomeWand());
+        CustomItemRegistry.register(new TrickOrTreatItem());
+        CustomItemRegistry.register(new DemonTridentItem());
+        CustomItemRegistry.register(new UltimateInvisibilityWand());
 
         if (Bukkit.getPluginManager().isPluginEnabled("LuckPerms")) {
             CustomItemRegistry.register(new CapybaraSpawnEggItem());
@@ -147,3 +172,4 @@ public class CustomItemsModule implements Module {
         }
     }
 }
+

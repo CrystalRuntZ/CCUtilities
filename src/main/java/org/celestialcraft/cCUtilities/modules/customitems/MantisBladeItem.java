@@ -1,8 +1,10 @@
 package org.celestialcraft.cCUtilities.modules.customitems;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import org.bukkit.Material;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -28,7 +30,7 @@ public class MantisBladeItem implements CustomItem {
 
     @Override
     public boolean matches(ItemStack item) {
-        if (item == null || item.getType() != Material.NETHERITE_SWORD || !item.hasItemMeta()) return false;
+        if (item == null || item.getType() != org.bukkit.Material.NETHERITE_SWORD || !item.hasItemMeta()) return false;
 
         ItemMeta meta = item.getItemMeta();
         if (!meta.hasLore()) return false;
@@ -42,6 +44,7 @@ public class MantisBladeItem implements CustomItem {
 
     @Override
     public void onRightClick(PlayerInteractEvent event) {
+        if (event.isCancelled()) return;
         if (!event.getPlayer().isSneaking()) return;
         if (event.getHand() != EquipmentSlot.HAND) return;
 
@@ -52,11 +55,18 @@ public class MantisBladeItem implements CustomItem {
         UUID uuid = player.getUniqueId();
         long now = System.currentTimeMillis();
 
-        if (cooldowns.containsKey(uuid) && now - cooldowns.get(uuid) < COOLDOWN_MILLIS) {
-            return;
+        if (cooldowns.containsKey(uuid)) {
+            long elapsed = now - cooldowns.get(uuid);
+            if (elapsed < COOLDOWN_MILLIS) {
+                long remSeconds = (COOLDOWN_MILLIS - elapsed + 999) / 1000; // round up
+                player.sendActionBar(Component.text("⏳ Cooldown: " + remSeconds + "s")
+                        .color(TextColor.color(0xFF5555)));
+                event.setCancelled(true);
+                return;
+            }
         }
 
-        Block below = player.getLocation().subtract(0, 0.1, 0).getBlock();
+        Block below = player.getLocation().clone().subtract(0, 0.1, 0).getBlock();
         if (!below.getType().isSolid()) return;
 
         Vector direction = player.getLocation().getDirection().normalize();
@@ -64,6 +74,11 @@ public class MantisBladeItem implements CustomItem {
 
         player.setVelocity(velocity);
         cooldowns.put(uuid, now);
+
+        // Particle and sound effects
+        player.getWorld().spawnParticle(Particle.CLOUD, player.getLocation().add(0, 1, 0), 20, 0.3, 0.3, 0.3, 0.05);
+        player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1f, 1.3f);
+
         event.setCancelled(true);
     }
 }

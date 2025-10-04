@@ -20,10 +20,12 @@ import java.util.UUID;
 
 public class CelestialBucketItem implements CustomItem {
 
-    private static final String LORE_IDENTIFIER = "&7Celestial Bucket";
+    private static final String LORE_IDENTIFIER = "§7Celestial Bucket";
     private final LegacyComponentSerializer legacy = LegacyComponentSerializer.legacySection();
     private final Map<UUID, Long> removalCooldown = new HashMap<>();
     private final Map<UUID, Long> placementCooldown = new HashMap<>();
+
+    private static final String[] BLOCKED_WORLDS = {"shops", "spawnworld"};
 
     @Override
     public String getIdentifier() {
@@ -38,9 +40,8 @@ public class CelestialBucketItem implements CustomItem {
         List<Component> lore = meta.lore();
         if (lore == null) return false;
 
-        String formatted = LORE_IDENTIFIER.replace("&", "§");
         for (Component line : lore) {
-            if (legacy.serialize(line).equalsIgnoreCase(formatted)) {
+            if (legacy.serialize(line).equals(LORE_IDENTIFIER)) {
                 return true;
             }
         }
@@ -52,6 +53,8 @@ public class CelestialBucketItem implements CustomItem {
         if (event.getHand() != EquipmentSlot.HAND) return;
 
         Player player = event.getPlayer();
+        if (isBlockedWorld(player.getWorld().getName())) return;
+
         ItemStack item = event.getItem();
         if (!matches(item)) return;
 
@@ -60,10 +63,11 @@ public class CelestialBucketItem implements CustomItem {
         UUID uuid = player.getUniqueId();
         long now = System.currentTimeMillis();
 
-        // Sneak right-click → remove water
         if (player.isSneaking() &&
                 (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)) {
             if (removalCooldown.containsKey(uuid) && now < removalCooldown.get(uuid)) {
+                long remainingMs = removalCooldown.get(uuid) - now;
+                player.sendActionBar(Component.text("§cWater removal cooldown: " + (remainingMs / 1000.0) + "s"));
                 event.setCancelled(true);
                 return;
             }
@@ -74,7 +78,7 @@ public class CelestialBucketItem implements CustomItem {
             for (int x = -3; x <= 3; x++) {
                 for (int y = -3; y <= 3; y++) {
                     for (int z = -3; z <= 3; z++) {
-                        Block nearby = player.getLocation().add(x, y, z).getBlock();
+                        Block nearby = targetBlock.getLocation().add(x, y, z).getBlock();
                         if (nearby.getType() == Material.WATER) {
                             nearby.setType(Material.AIR);
                         }
@@ -87,9 +91,10 @@ public class CelestialBucketItem implements CustomItem {
             return;
         }
 
-        // Normal right-click → place water
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             if (placementCooldown.containsKey(uuid) && now < placementCooldown.get(uuid)) {
+                long remainingMs = placementCooldown.get(uuid) - now;
+                player.sendActionBar(Component.text("§cWater placement cooldown: " + (remainingMs / 1000.0) + "s"));
                 event.setCancelled(true);
                 return;
             }
@@ -105,6 +110,13 @@ public class CelestialBucketItem implements CustomItem {
             placementCooldown.put(uuid, now + 2000);
             event.setCancelled(true);
         }
+    }
+
+    private boolean isBlockedWorld(String worldName) {
+        for (String blocked : BLOCKED_WORLDS) {
+            if (blocked.equalsIgnoreCase(worldName)) return true;
+        }
+        return false;
     }
 
     private Block getTargetBlock(Player player) {

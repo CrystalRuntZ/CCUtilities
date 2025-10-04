@@ -15,12 +15,15 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class BedrockPickaxeItem implements CustomItem {
 
-    private static final String LORE_IDENTIFIER = "&7Bedrock Pickaxe";
+    private static final String LORE_IDENTIFIER = "§7Bedrock Pickaxe";
     private static final String USES_PREFIX = "§7Uses Left: ";
     private final LegacyComponentSerializer legacy = LegacyComponentSerializer.legacySection();
+
+    private static final Set<String> ALLOWED_WORLDS = Set.of("wild", "wild_nether");
 
     @Override
     public String getIdentifier() {
@@ -34,7 +37,7 @@ public class BedrockPickaxeItem implements CustomItem {
         List<Component> lore = meta.lore();
         if (lore == null) return false;
         for (Component line : lore) {
-            if (legacy.serialize(line).equalsIgnoreCase(LORE_IDENTIFIER.replace("&", "§"))) {
+            if (legacy.serialize(line).equals(LORE_IDENTIFIER)) {
                 return true;
             }
         }
@@ -46,6 +49,8 @@ public class BedrockPickaxeItem implements CustomItem {
         if (event.getAction() != Action.LEFT_CLICK_BLOCK) return;
         Block target = event.getClickedBlock();
         if (target == null || target.getType() != Material.BEDROCK) return;
+
+        if (!ALLOWED_WORLDS.contains(target.getWorld().getName())) return;
 
         Player player = event.getPlayer();
         ItemStack tool = event.getHand() == EquipmentSlot.HAND
@@ -92,6 +97,7 @@ public class BedrockPickaxeItem implements CustomItem {
                             player.getInventory().setItemInOffHand(null);
                         }
                     }
+                    event.setCancelled(true);
                 } catch (NumberFormatException e) {
                     player.sendMessage("§cInvalid uses count on Bedrock Pickaxe.");
                 }

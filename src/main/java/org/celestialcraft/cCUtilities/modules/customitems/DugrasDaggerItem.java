@@ -7,13 +7,17 @@ import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.player.*;
+import org.bukkit.event.player.PlayerItemHeldEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.celestialcraft.cCUtilities.CCUtilities;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class DugrasDaggerItem implements CustomItem {
     private final LegacyComponentSerializer serializer = LegacyComponentSerializer.legacySection();
@@ -49,6 +53,7 @@ public class DugrasDaggerItem implements CustomItem {
     @Override
     public void onQuit(PlayerQuitEvent event) {
         stopStrengthCheck(event.getPlayer());
+        cooldowns.remove(event.getPlayer().getUniqueId());
     }
 
     @Override
@@ -65,7 +70,11 @@ public class DugrasDaggerItem implements CustomItem {
         stopStrengthCheck(player); // Clear existing task
 
         UUID uuid = player.getUniqueId();
-        int task = Bukkit.getScheduler().runTaskTimer(CCUtilities.getInstance(), () -> {
+        int taskId = Bukkit.getScheduler().runTaskTimer(CCUtilities.getInstance(), () -> {
+            if (!player.isOnline()) {
+                stopStrengthCheck(player);
+                return;
+            }
             ItemStack main = player.getInventory().getItemInMainHand();
             if (matches(main)) {
                 player.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, 40, 0, true, false));
@@ -75,7 +84,7 @@ public class DugrasDaggerItem implements CustomItem {
             }
         }, 0L, 20L).getTaskId();
 
-        activeTasks.put(uuid, task);
+        activeTasks.put(uuid, taskId);
     }
 
     private void stopStrengthCheck(Player player) {
@@ -88,6 +97,7 @@ public class DugrasDaggerItem implements CustomItem {
 
     @Override
     public void onAttack(EntityDamageByEntityEvent event) {
+        if (event.isCancelled()) return;
         if (!(event.getDamager() instanceof Player player)) return;
         if (!(event.getEntity() instanceof LivingEntity target)) return;
 

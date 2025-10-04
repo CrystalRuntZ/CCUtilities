@@ -49,4 +49,5 @@ public interface CustomItem {
     default void onProjectileHit(ProjectileHitEvent event) { }
     default void onWorldChange(PlayerChangedWorldEvent event) { }
     default void onBedEnter(PlayerBedEnterEvent event) { }
+    default void onToggleGlide(EntityToggleGlideEvent event) {}
 }

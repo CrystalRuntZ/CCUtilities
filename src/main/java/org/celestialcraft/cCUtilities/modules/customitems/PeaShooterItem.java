@@ -44,7 +44,6 @@ public class PeaShooterItem implements CustomItem {
         Snowball snowball = player.launchProjectile(Snowball.class);
         snowball.setItem(new ItemStack(Material.SLIME_BALL)); // gives it a green-ish look in-flight
 
-        // Add green particle trail
         snowball.getWorld().spawnParticle(
                 Particle.DUST,
                 snowball.getLocation(),
@@ -52,22 +51,20 @@ public class PeaShooterItem implements CustomItem {
                 new Particle.DustOptions(Color.LIME, 1.5f)
         );
 
-        // Schedule repeating trail update while snowball is alive
-        org.bukkit.Bukkit.getScheduler().runTaskTimer(
-                org.celestialcraft.cCUtilities.CCUtilities.getInstance(),
-                task -> {
-                    if (!snowball.isValid() || snowball.isDead()) {
-                        task.cancel();
-                        return;
-                    }
-                    snowball.getWorld().spawnParticle(
-                            Particle.DUST,
-                            snowball.getLocation(),
-                            1, 0, 0, 0,
-                            new Particle.DustOptions(Color.LIME, 1.5f)
-                    );
-                },
-                1L, 1L
-        );
+        new org.bukkit.scheduler.BukkitRunnable() {
+            @Override
+            public void run() {
+                if (!snowball.isValid() || snowball.isDead()) {
+                    this.cancel();
+                    return;
+                }
+                snowball.getWorld().spawnParticle(
+                        Particle.DUST,
+                        snowball.getLocation(),
+                        1, 0, 0, 0,
+                        new Particle.DustOptions(Color.LIME, 1.5f)
+                );
+            }
+        }.runTaskTimer(org.celestialcraft.cCUtilities.CCUtilities.getInstance(), 1L, 1L);
     }
 }

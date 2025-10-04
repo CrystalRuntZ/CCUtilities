@@ -1,6 +1,7 @@
 package org.celestialcraft.cCUtilities.modules.customitems;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -54,8 +55,11 @@ public class FlowerWandItem implements CustomItem {
         long now = System.currentTimeMillis();
         long last = cooldowns.getOrDefault(player.getUniqueId(), 0L);
         if (now - last < COOLDOWN_MS) {
+            player.sendActionBar(Component.text("Wait before using Flower Wand again")
+                    .color(TextColor.color(0xFF5555)));
             return;
         }
+
         cooldowns.put(player.getUniqueId(), now);
 
         // Loop over blocks in radius 5

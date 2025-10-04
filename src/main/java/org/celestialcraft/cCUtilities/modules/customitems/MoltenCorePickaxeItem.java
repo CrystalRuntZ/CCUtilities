@@ -33,13 +33,12 @@ public class MoltenCorePickaxeItem implements CustomItem {
         List<Component> lore = meta.lore();
         if (lore == null) return false;
 
-        return lore.stream().anyMatch(line -> serializer.serialize(line).contains(LORE_LINE));
+        return lore.stream().anyMatch(line -> serializer.serialize(line).equals(LORE_LINE));
     }
 
     @Override
     public void onInteract(PlayerInteractEvent event) {
-        Action action = event.getAction();
-        if (action != Action.LEFT_CLICK_BLOCK) return;
+        if (event.getAction() != Action.LEFT_CLICK_BLOCK) return;
 
         Player player = event.getPlayer();
         Block block = event.getClickedBlock();
@@ -52,13 +51,12 @@ public class MoltenCorePickaxeItem implements CustomItem {
         int count = minedCount.getOrDefault(uuid, 0);
 
         if (count >= OBSIDIAN_PER_INGOT) {
-            if (removeItem(player.getInventory())) {
-                minedCount.put(uuid, 0);
-            } else {
+            if (!removeItem(player.getInventory())) {
                 player.sendMessage("§cYou need iron ingots to fuel the Molten Core Pickaxe!");
                 event.setCancelled(true);
                 return;
             }
+            minedCount.put(uuid, 0);
         }
 
         block.setType(Material.AIR);
@@ -69,21 +67,19 @@ public class MoltenCorePickaxeItem implements CustomItem {
 
     private boolean removeItem(Inventory inventory) {
         int remaining = 1;
-
         for (ItemStack item : inventory.getContents()) {
             if (item == null || item.getType() != Material.IRON_INGOT) continue;
 
             int stackAmount = item.getAmount();
-            if (stackAmount > remaining) {
+            if (stackAmount >= remaining) {
                 item.setAmount(stackAmount - remaining);
                 return true;
             } else {
-                inventory.removeItem(item);
                 remaining -= stackAmount;
+                item.setAmount(0);
                 if (remaining <= 0) return true;
             }
         }
-
         return false;
     }
 }

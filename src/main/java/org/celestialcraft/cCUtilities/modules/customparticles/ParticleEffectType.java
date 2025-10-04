@@ -14,7 +14,9 @@ public enum ParticleEffectType {
     DRAGON_FIRE   (ParticleDrawers::drawDragonFire),
     WATER_SPLASH  (ParticleDrawers::drawWaterSplash),
     LIGHTNING_ARC (ParticleDrawers::drawLightningArc),
-    CHERRY_WINGS  (ParticleDrawers::drawCherryWings);
+    CHERRY_WINGS  (ParticleDrawers::drawCherryWings),
+    AUTUMN_LEAVES (ParticleDrawers::drawAutumnLeaves),
+    BLOODY_ICOSPHERE(ParticleDrawers::drawBloodyIcosphere);
 
     private final BiConsumer<Player, Double> renderer;
 

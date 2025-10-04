@@ -21,6 +21,13 @@ public class LeapingMaceItem implements CustomItem {
 
     private final Set<UUID> fallImmune = new HashSet<>();
 
+    private static final Set<Material> MACE_MATERIALS = Set.of(
+            Material.NETHERITE_AXE,
+            Material.DIAMOND_AXE,
+            Material.IRON_AXE,
+            Material.MACE
+    );
+
     @Override
     public String getIdentifier() {
         return "leaping_mace";
@@ -28,7 +35,7 @@ public class LeapingMaceItem implements CustomItem {
 
     @Override
     public boolean matches(ItemStack item) {
-        if (item == null || item.getType() != Material.NETHERITE_AXE || !item.hasItemMeta()) return false;
+        if (item == null || !MACE_MATERIALS.contains(item.getType()) || !item.hasItemMeta()) return false;
 
         ItemMeta meta = item.getItemMeta();
         if (!meta.hasLore()) return false;
@@ -36,8 +43,8 @@ public class LeapingMaceItem implements CustomItem {
         List<Component> lore = meta.lore();
         if (lore == null) return false;
 
-        return lore.stream().anyMatch(component ->
-                serializer.serialize(component).contains(LORE_LINE));
+        return lore.stream()
+                .anyMatch(component -> serializer.serialize(component).contains(LORE_LINE));
     }
 
     @Override
@@ -46,16 +53,21 @@ public class LeapingMaceItem implements CustomItem {
 
         Player player = event.getPlayer();
         if (!player.isSneaking()) return;
-        if (DISABLED_WORLDS.contains(player.getWorld().getName().toLowerCase())) return;
+        if (DISABLED_WORLDS.contains(player.getWorld().getName().toLowerCase(Locale.ROOT))) return;
 
         ItemStack item = player.getInventory().getItemInMainHand();
         if (!matches(item)) return;
 
-        boolean grounded = player.getLocation().subtract(0, 0.1, 0).getBlock().getType().isSolid();
+        // Check grounded by looking slightly below player's feet for a solid block
+        boolean grounded = player.getLocation().clone().subtract(0, 0.1, 0).getBlock().getType().isSolid();
         if (!grounded) return;
 
+        // Launch player upward with fixed velocity
         player.setVelocity(new Vector(0, 2.5, 0));
+
+        // Track fall immunity for next fall damage event
         fallImmune.add(player.getUniqueId());
+
         event.setCancelled(true);
     }
 

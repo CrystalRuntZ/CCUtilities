@@ -12,6 +12,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.celestialcraft.cCUtilities.utils.ClaimUtils;
 
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class PotOfGreedItem implements CustomItem {
 
@@ -63,17 +64,23 @@ public class PotOfGreedItem implements CustomItem {
         item.setItemMeta(meta);
 
         List<Player> online = new ArrayList<>(Bukkit.getOnlinePlayers());
-        online.remove(player);
-        Collections.shuffle(online);
+        online.remove(player); // Remove the player using the Pot of Greed
+
+        Collections.shuffle(online, ThreadLocalRandom.current()); // Shuffle using ThreadLocalRandom for better randomness
 
         List<Player> selected = new ArrayList<>();
         selected.add(player);
+
+        int maxSelections = 3;
         for (Player p : online) {
-            if (selected.size() >= 3) break;
-            selected.add(p);
+            if (selected.size() >= maxSelections) break;
+            if (!selected.contains(p)) { // Prevent duplication, though shuffle + remove ensures this
+                selected.add(p);
+            }
         }
 
-        int rewardNumber = 1 + (int) (Math.random() * 10);
+        int rewardNumber = ThreadLocalRandom.current().nextInt(1, 11); // 1 to 10 inclusive
+
         int amount;
         switch (rewardNumber) {
             case 4 -> amount = 64;

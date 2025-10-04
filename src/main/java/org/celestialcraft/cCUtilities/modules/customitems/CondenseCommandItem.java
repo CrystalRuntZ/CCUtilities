@@ -1,6 +1,7 @@
 package org.celestialcraft.cCUtilities.modules.customitems;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -14,7 +15,7 @@ import java.util.List;
 
 public class CondenseCommandItem implements CustomItem {
 
-    private static final String LORE_IDENTIFIER = "&7Condense Command";
+    private static final String LORE_IDENTIFIER = "§7Condense Command";
     private static final String PERMISSION_NODE = "essentials.condense";
     private final LegacyComponentSerializer legacy = LegacyComponentSerializer.legacySection();
 
@@ -30,9 +31,8 @@ public class CondenseCommandItem implements CustomItem {
         List<Component> lore = meta.lore();
         if (lore == null) return false;
 
-        String formatted = LORE_IDENTIFIER.replace("&", "§");
         for (Component line : lore) {
-            if (legacy.serialize(line).equalsIgnoreCase(formatted)) {
+            if (legacy.serialize(line).equals(LORE_IDENTIFIER)) {
                 return true;
             }
         }
@@ -49,20 +49,27 @@ public class CondenseCommandItem implements CustomItem {
         if (!matches(item)) return;
         if (!player.isSneaking()) return;
 
-        // If player already has permission, block usage
         if (player.hasPermission(PERMISSION_NODE)) {
-            player.sendMessage("§c⚠ You already have access to the condense command!");
+            player.sendMessage(Component.text("⚠ You already have access to the condense command!")
+                    .color(TextColor.color(0xFF5555)));
             event.setCancelled(true);
             return;
         }
 
-        // Run the command as console to grant permission
-        String command = "lp user " + player.getName() + " permission set essentials.condense true";
+        String command = "lp user " + player.getName() + " permission set " + PERMISSION_NODE + " true";
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
 
-        // Remove the item from the player's inventory
+        // Decrease the held item amount by 1 or remove if last
         assert item != null;
-        player.getInventory().removeItem(item);
+        if (item.getAmount() > 1) {
+            item.setAmount(item.getAmount() - 1);
+            player.getInventory().setItemInMainHand(item);
+        } else {
+            player.getInventory().setItemInMainHand(null);
+        }
+
+        player.sendMessage(Component.text("You have been granted access to the condense command!")
+                .color(TextColor.color(0x55FF55)));
 
         event.setCancelled(true);
     }

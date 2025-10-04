@@ -1,6 +1,7 @@
 package org.celestialcraft.cCUtilities.modules.customitems;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
@@ -26,8 +27,8 @@ public class WarHorseItem implements CustomItem {
         if (item == null || item.getType() != Material.HORSE_SPAWN_EGG || !item.hasItemMeta()) return false;
         List<Component> lore = item.getItemMeta().lore();
         if (lore == null) return false;
+        String legacyTag = "§7War Horse";
         for (Component line : lore) {
-            String legacyTag = "§7War Horse";
             if (serializer.serialize(line).equals(legacyTag)) {
                 return true;
             }
@@ -43,7 +44,7 @@ public class WarHorseItem implements CustomItem {
         if (!matches(item)) return;
 
         if (!player.getWorld().getName().equalsIgnoreCase("wild")) {
-            player.sendMessage("§cYou can only summon your War Horse in the wild.");
+            player.sendMessage(Component.text("You can only summon your War Horse in the wild.").color(NamedTextColor.RED));
             return;
         }
 
@@ -56,7 +57,7 @@ public class WarHorseItem implements CustomItem {
             if (healthAttr != null) healthAttr.setBaseValue(33.75);
             horse.setHealth(33.75);
 
-            horse.setJumpStrength(Math.min(1.0, 1.25));
+            horse.setJumpStrength(1.0); // capped jump strength
             AttributeInstance speedAttr = horse.getAttribute(Attribute.MOVEMENT_SPEED);
             if (speedAttr != null) speedAttr.setBaseValue(0.3375);
 
@@ -64,6 +65,12 @@ public class WarHorseItem implements CustomItem {
         });
 
         player.getWorld().playSound(player.getLocation(), Sound.ENTITY_LIGHTNING_BOLT_THUNDER, SoundCategory.PLAYERS, 1f, 1.2f);
-        item.setAmount(item.getAmount() - 1);
+
+        int amount = item.getAmount();
+        if (amount <= 1) {
+            player.getInventory().setItemInMainHand(null);
+        } else {
+            item.setAmount(amount - 1);
+        }
     }
 }

@@ -4,7 +4,10 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Material;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -45,15 +48,19 @@ public class IceStaffItem implements CustomItem {
         ItemStack item = event.getItem();
         if (!matches(item)) return;
 
-        UUID id = event.getPlayer().getUniqueId();
+        Player player = event.getPlayer();
+        UUID id = player.getUniqueId();
         int next = (mode.getOrDefault(id, 0) + 1) % 3;
         mode.put(id, next);
 
-        switch (next) {
-            case 0 -> event.getPlayer().sendMessage(mm.deserialize("&7Selected: <#C1AFDE>Ice"));
-            case 1 -> event.getPlayer().sendMessage(mm.deserialize("&7Selected: <#C1AFDE>Packed Ice"));
-            case 2 -> event.getPlayer().sendMessage(mm.deserialize("&7Selected: <#C1AFDE>Blue Ice"));
-        }
+        String selectedName = switch (next) {
+            case 1 -> "Packed Ice";
+            case 2 -> "Blue Ice";
+            default -> "Ice";
+        };
+
+        player.sendMessage(mm.deserialize("&7Selected: <#C1AFDE>" + selectedName));
+        player.sendActionBar(mm.deserialize("<#C1AFDE>Selected ice mode switched."));
     }
 
     @Override
@@ -63,16 +70,20 @@ public class IceStaffItem implements CustomItem {
         ItemStack item = event.getItem();
         if (!matches(item)) return;
 
-        UUID id = event.getPlayer().getUniqueId();
+        Player player = event.getPlayer();
+        UUID id = player.getUniqueId();
         long now = System.currentTimeMillis();
         long last = cooldown.getOrDefault(id, 0L);
-        if (now - last < COOLDOWN_MS) return;
+        if (now - last < COOLDOWN_MS) {
+            player.sendActionBar(mm.deserialize("<red>Ice placement is cooling down. Please wait."));
+            return;
+        }
         cooldown.put(id, now);
 
         Block base = event.getClickedBlock();
         Block above = base.getRelative(0, 1, 0);
         if (above.getType() != Material.AIR) {
-            event.getPlayer().sendMessage(mm.deserialize("<red>You can't place ice here."));
+            player.sendMessage(mm.deserialize("<red>You can't place ice here."));
             return;
         }
 
@@ -84,5 +95,9 @@ public class IceStaffItem implements CustomItem {
         };
 
         above.setType(toPlace);
+
+        player.getWorld().playSound(above.getLocation(), Sound.BLOCK_GLASS_PLACE, 1f, 1f);
+        player.getWorld().spawnParticle(Particle.BLOCK_CRUMBLE, above.getLocation().add(0.5, 0.5, 0.5), 15,
+                toPlace.createBlockData());
     }
 }

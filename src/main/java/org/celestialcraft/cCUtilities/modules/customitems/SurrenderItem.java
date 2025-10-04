@@ -57,8 +57,11 @@ public class SurrenderItem implements CustomItem {
         long now = System.currentTimeMillis();
         long lastUse = cooldownMap.getOrDefault(player.getUniqueId(), 0L);
         if (now - lastUse < 600_000) {
-            long remaining = (600_000 - (now - lastUse)) / 1000;
-            player.sendMessage("§cYou must wait " + remaining + " seconds before surrendering again.");
+            long remaining = (600_000 - (now - lastUse) + 999) / 1000; // round up seconds
+            player.sendActionBar(
+                    Component.text("§cSurrender cooldown: " + remaining + "s remaining.")
+            );
+            event.setCancelled(true);
             return;
         }
 

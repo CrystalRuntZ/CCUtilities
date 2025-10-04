@@ -63,7 +63,7 @@ public class LavaforgedBootsItem implements CustomItem {
         }
 
         changed.removeIf(loc -> {
-            if (loc.distance(playerLoc) > 2.5) {
+            if (loc.distanceSquared(playerLoc) > 2.5 * 2.5) {
                 Block block = loc.getBlock();
                 if (block.getType() == Material.OBSIDIAN) {
                     block.setType(Material.LAVA);

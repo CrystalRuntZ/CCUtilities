@@ -13,6 +13,10 @@ public class CustomEnchantRegistry {
         enchants.put(id, enchant);
     }
 
+    public static Set<String> getAllIdentifiers() {
+        return new HashSet<>(enchants.keySet());
+    }
+
     public static Collection<CustomEnchant> getAll() {
         return Collections.unmodifiableCollection(enchants.values());
     }

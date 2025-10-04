@@ -4,6 +4,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.Particle;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -50,6 +51,7 @@ public class BowOfLevitationItem implements CustomItem {
         arrow.getPersistentDataContainer().set(KEY, PersistentDataType.STRING, shooter.getUniqueId().toString());
     }
 
+    @Override
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
         if (!(event.getDamager() instanceof Arrow arrow)) return;
         if (!(event.getEntity() instanceof LivingEntity target)) return;
@@ -57,6 +59,14 @@ public class BowOfLevitationItem implements CustomItem {
         PersistentDataContainer container = arrow.getPersistentDataContainer();
         if (!container.has(KEY, PersistentDataType.STRING)) return;
 
-        target.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 200, 2)); // 10 seconds, level 3
+        target.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 20 * 10, 2)); // 10 seconds, Levitation III
+
+        target.getWorld().spawnParticle(
+                Particle.CLOUD,
+                target.getLocation().add(0, target.getHeight() / 2.0, 0),
+                30,
+                0.3, 0.5, 0.3,
+                0.05
+        );
     }
 }

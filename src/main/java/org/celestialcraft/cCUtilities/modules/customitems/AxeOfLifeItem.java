@@ -12,11 +12,14 @@ import org.celestialcraft.cCUtilities.CCUtilities;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class AxeOfLifeItem implements CustomItem {
 
     private static final String LORE_LINE = "§7Axe of Life";
     private final LegacyComponentSerializer serializer = LegacyComponentSerializer.legacySection();
+
+    private static final Set<String> ALLOWED_WORLDS = Set.of("wild", "wild_nether");
 
     private static final Map<Material, Material> SAPLING_MAP = Map.ofEntries(
             Map.entry(Material.OAK_LOG, Material.OAK_SAPLING),
@@ -41,18 +44,18 @@ public class AxeOfLifeItem implements CustomItem {
         if (item == null || !item.getType().name().endsWith("_AXE") || !item.hasItemMeta()) return false;
         ItemMeta meta = item.getItemMeta();
         if (!meta.hasLore()) return false;
-
         List<Component> lore = meta.lore();
         return lore != null && lore.stream().anyMatch(line -> serializer.serialize(line).equals(LORE_LINE));
     }
 
     public void onBlockBreak(BlockBreakEvent event) {
+        if (!ALLOWED_WORLDS.contains(event.getBlock().getWorld().getName())) return;
+
         ItemStack tool = event.getPlayer().getInventory().getItemInMainHand();
         if (!matches(tool)) return;
 
         Block brokenBlock = event.getBlock();
         Material logType = brokenBlock.getType();
-
         if (!SAPLING_MAP.containsKey(logType)) return;
 
         Material sapling = SAPLING_MAP.get(logType);

@@ -12,7 +12,9 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.celestialcraft.cCUtilities.utils.ClaimUtils;
 
-import java.util.*;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Set;
 
 public class VoidPickaxeItem implements CustomItem {
 
@@ -76,15 +78,30 @@ public class VoidPickaxeItem implements CustomItem {
         if (type == Material.AIR || BLOCKED_TYPES.contains(type)) return;
         if (!ClaimUtils.canBuild(player, block.getLocation())) return;
 
-        boolean silkTouch = tool.containsEnchantment(Enchantment.SILK_TOUCH);
+        boolean hasSilkTouch = tool.containsEnchantment(Enchantment.SILK_TOUCH);
         int fortuneLevel = tool.getEnchantmentLevel(Enchantment.FORTUNE);
 
-        List<ItemStack> drops = silkTouch && !block.getDrops(tool).isEmpty()
-                ? List.of(new ItemStack(type))
-                : applyFortune(block, tool, fortuneLevel);
+        // Use vanilla drop handling for silk touch
+        List<ItemStack> drops;
+
+        if (hasSilkTouch) {
+            // When silk touch present, drop block itself
+            drops = List.of(new ItemStack(type));
+        } else if (fortuneLevel > 0) {
+            // Convert drops Collection to List
+            drops = List.copyOf(block.getDrops(tool));
+        } else {
+            drops = List.copyOf(block.getDrops(tool));
+        }
 
         Inventory inventory = player.getInventory();
-        if (!hasInventorySpace(inventory, drops)) return;
+
+        if (!hasInventorySpace(inventory, drops)) {
+            // Cancel breaking if inventory full, or optionally drop on ground
+            event.setCancelled(true);
+            player.sendActionBar(Component.text("Not enough inventory space for drops."));
+            return;
+        }
 
         event.setDropItems(false);
         block.setType(Material.AIR);
@@ -98,13 +115,20 @@ public class VoidPickaxeItem implements CustomItem {
                 ItemStack slot = inventory.getItem(i);
                 if (slot != null && slot.isSimilar(drop) && slot.getAmount() < slot.getMaxStackSize()) {
                     int space = slot.getMaxStackSize() - slot.getAmount();
-                    if (space >= remaining) return true;
+                    if (space >= remaining) {
+                        remaining = 0;
+                        break;
+                    } else {
+                        remaining -= space;
+                    }
                 } else if (slot == null) {
-                    return true;
+                    remaining = 0;
+                    break;
                 }
             }
+            if (remaining > 0) return false;
         }
-        return false;
+        return true;
     }
 
     private void depositItems(Inventory inventory, Player player, List<ItemStack> drops) {
@@ -139,21 +163,5 @@ public class VoidPickaxeItem implements CustomItem {
                 }
             }
         }
-    }
-
-    private List<ItemStack> applyFortune(Block block, ItemStack tool, int level) {
-        List<ItemStack> originalDrops = new ArrayList<>(block.getDrops(tool));
-        if (originalDrops.isEmpty() || level <= 0) return originalDrops;
-
-        List<ItemStack> result = new ArrayList<>();
-        Random random = new Random();
-
-        for (ItemStack item : originalDrops) {
-            int multiplier = Math.max(1, random.nextInt(level + 2));
-            ItemStack copy = item.clone();
-            copy.setAmount(item.getAmount() * multiplier);
-            result.add(copy);
-        }
-        return result;
     }
 }

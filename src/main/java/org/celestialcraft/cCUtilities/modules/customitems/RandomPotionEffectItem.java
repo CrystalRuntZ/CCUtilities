@@ -53,7 +53,7 @@ public class RandomPotionEffectItem implements CustomItem {
     public void onEntityDamage(EntityDamageByEntityEvent event) {
         if (!(event.getDamager() instanceof Player player)) return;
 
-        String worldName = player.getWorld().getName();
+        String worldName = player.getWorld().getName().toLowerCase();
         if (!ALLOWED_WORLDS.contains(worldName)) return;
 
         ItemStack item = player.getInventory().getItemInMainHand();
@@ -66,6 +66,9 @@ public class RandomPotionEffectItem implements CustomItem {
             int amplifier = random.nextInt(4);
             int duration = (5 + random.nextInt(26)) * 20;
             target.addPotionEffect(new PotionEffect(effectType, duration, amplifier));
+
+            player.sendActionBar(Component.text("§aApplied " + effectType.getName().toLowerCase().replace('_', ' ') +
+                    " to " + target.getName() + " for " + (duration/20) + " seconds!"));
         }
     }
 }

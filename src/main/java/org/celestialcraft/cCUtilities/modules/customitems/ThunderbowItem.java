@@ -35,7 +35,11 @@ public class ThunderbowItem implements CustomItem {
         if (!meta.hasLore()) return false;
         List<Component> lore = meta.lore();
         if (lore == null) return false;
-        return lore.stream().anyMatch(line -> line.equals(LORE_LINE));
+
+        // Check for Thunderbow identifier tag as well (for robustness)
+        boolean tagMatch = meta.getPersistentDataContainer().has(THUNDERBOW_KEY, PersistentDataType.BYTE);
+
+        return lore.stream().anyMatch(line -> line.equals(LORE_LINE)) || tagMatch;
     }
 
     @Override

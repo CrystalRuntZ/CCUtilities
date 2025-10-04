@@ -1,6 +1,7 @@
 package org.celestialcraft.cCUtilities.modules.customitems;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -33,20 +34,28 @@ public class DayFlyTokenItem implements CustomItem {
 
     @Override
     public void onRightClick(PlayerInteractEvent event) {
+        if (event.getHand() != EquipmentSlot.HAND) return;
         Player player = event.getPlayer();
         if (!player.isSneaking()) return;
-        if (event.getHand() != EquipmentSlot.HAND) return;
 
         ItemStack item = event.getItem();
         if (!matches(item)) return;
 
-        player.sendMessage(Component.text("You have activated /fly for 1 day!").color(serializer.deserialize("§x§C§1§A§F§D§E").color()));
+        player.sendMessage(Component.text("You have activated /fly for 1 day!")
+                .color(TextColor.fromHexString("#C11AFD")));
 
-        String command = "lp user %player% permission settemp essentials.fly true 24h"
-                .replace("%player%", player.getName());
+        String command = "lp user " + player.getName() + " permission settemp essentials.fly true 24h";
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
 
         assert item != null;
-        item.setAmount(item.getAmount() - 1);
+        int newAmount = item.getAmount() - 1;
+        if (newAmount <= 0) {
+            player.getInventory().setItemInMainHand(null);
+        } else {
+            item.setAmount(newAmount);
+            player.getInventory().setItemInMainHand(item);
+        }
+
+        event.setCancelled(true);
     }
 }

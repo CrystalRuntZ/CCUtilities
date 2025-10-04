@@ -3,7 +3,6 @@ package org.celestialcraft.cCUtilities.modules.customenchants;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.celestialcraft.cCUtilities.listeners.CustomEnchantAnvilStackingListener;
-import org.celestialcraft.cCUtilities.listeners.CustomEnchantEffectListener;
 import org.celestialcraft.cCUtilities.modules.customparticles.*;
 import org.celestialcraft.cCUtilities.modules.modulemanager.Module;
 import org.celestialcraft.cCUtilities.modules.modulemanager.ModuleManager;
@@ -97,12 +96,12 @@ public class CustomEnchantsModule implements Module {
         CustomEnchantRegistry.register(new EndermanPleaserEnchant());
         CustomEnchantRegistry.register(new LevitationImmunityEnchant());
         CustomEnchantRegistry.register(new VoidSafetyEnchant());
+        CustomEnchantRegistry.register(new AutumnParticlesEnchant());
+        CustomEnchantRegistry.register(new BloodyIcosphereEnchant());
+        CustomEnchantRegistry.register(new HalloweenKillAnnouncerEnchant());
 
         // --- Listeners ---
         PluginManager pm = plugin.getServer().getPluginManager();
         pm.registerEvents(new CustomEnchantAnvilStackingListener(), plugin);
-        pm.registerEvents(new CustomEnchantEffectListener(), plugin);
-        // NOTE: some of the new enchants respond to BlockBreak/EntityDeath/BlockExp/ItemDamage events.
-        // If you don't already have a forwarder for those, I can add a fan-out listener next.
     }
 }

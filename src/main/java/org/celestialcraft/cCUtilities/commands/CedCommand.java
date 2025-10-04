@@ -10,13 +10,13 @@ import org.celestialcraft.cCUtilities.MessageConfig;
 import org.celestialcraft.cCUtilities.modules.ced.AutoDragonSpawner;
 import org.celestialcraft.cCUtilities.modules.ced.DragonManager;
 import org.celestialcraft.cCUtilities.modules.ced.DragonType;
+import org.celestialcraft.cCUtilities.modules.ced.DragonUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class CedCommand implements CommandExecutor, TabCompleter {
 
@@ -161,6 +161,30 @@ public class CedCommand implements CommandExecutor, TabCompleter {
                 return true;
             }
 
+            case "clearisland" -> {
+                if (!sender.hasPermission("customenderdragon.clearisland")) {
+                    sender.sendMessage(MessageConfig.mm("ced.no-permission"));
+                    return true;
+                }
+
+                JavaPlugin plugin = (JavaPlugin) Bukkit.getPluginManager().getPlugin("cCUtilities");
+                if (plugin == null) {
+                    sender.sendMessage("§cPlugin not found: cCUtilities");
+                    return true;
+                }
+
+                String worldName = plugin.getConfig().getString("spawn-world", "wild_the_end");
+                World end = Bukkit.getWorld(worldName);
+                if (end == null) {
+                    sender.sendMessage("§cEnd world not found: §f" + worldName);
+                    return true;
+                }
+
+                DragonUtils.clearEntitiesOnMainIsland(end);
+                sender.sendMessage("§aCleared non-player, non-XP entities on the End main island.");
+                return true;
+            }
+
             default -> {
                 sender.sendMessage(MessageConfig.mm("ced.usage"));
                 return true;
@@ -221,23 +245,37 @@ public class CedCommand implements CommandExecutor, TabCompleter {
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String @NotNull [] args) {
         if (args.length == 1) {
-            return Stream.of("spawn", "kill", "reload", "timer", "fight")
-                    .filter(sub -> sub.startsWith(args[0].toLowerCase()))
+            // Only suggest subcommands the sender can use
+            List<String> subs = new ArrayList<>();
+            if (sender.hasPermission("customenderdragon.spawn")) subs.add("spawn");
+            if (sender.hasPermission("customenderdragon.kill")) subs.add("kill");
+            if (sender.hasPermission("customenderdragon.reload")) subs.add("reload");
+            if (sender.hasPermission("customenderdragon.timer")) subs.add("timer");
+            if (sender.hasPermission("customenderdragon.fight")) subs.add("fight");
+            if (sender.hasPermission("customenderdragon.clearisland")) subs.add("clearisland");
+
+            String partial = args[0].toLowerCase(Locale.ROOT);
+            return subs.stream()
+                    .filter(s -> s.startsWith(partial))
+                    .sorted()
                     .collect(Collectors.toList());
         }
 
         if (args.length == 2 && args[0].equalsIgnoreCase("spawn")) {
+            // Suggest dragon types + "random" (if permitted)
             List<String> suggestions = Arrays.stream(DragonType.values())
                     .map(Enum::name)
                     .map(String::toLowerCase)
-                    .collect(Collectors.toList());
+                    .collect(Collectors.toCollection(ArrayList::new));
 
-            if (sender.hasPermission("customenderdragon.spawn.random")) {
+            if (sender.hasPermission("ced.spawn.random")) { // <-- fixed to match your command check
                 suggestions.add("random");
             }
 
+            String partial = args[1].toLowerCase(Locale.ROOT);
             return suggestions.stream()
-                    .filter(name -> name.startsWith(args[1].toLowerCase()))
+                    .filter(s -> s.startsWith(partial))
+                    .sorted()
                     .collect(Collectors.toList());
         }
 

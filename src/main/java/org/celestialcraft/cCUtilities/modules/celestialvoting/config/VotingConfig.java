@@ -9,6 +9,22 @@ import java.util.*;
 
 public class VotingConfig {
 
+    // --- NEW: singleton bridge so commands can call VotingConfig.reload(main) ---
+    private static volatile VotingConfig INSTANCE;
+
+    /** Returns the current singleton instance (may be null if not constructed yet). */
+    public static VotingConfig getInstance() { return INSTANCE; }
+
+    /** Ensure an instance exists, then reload it. Safe to call from commands. */
+    public static synchronized void reload(JavaPlugin plugin) {
+        if (INSTANCE == null) {
+            INSTANCE = new VotingConfig(plugin);
+        } else {
+            INSTANCE.reload();
+        }
+    }
+    // ---------------------------------------------------------------------------
+
     private final Map<String, List<Map<String, Object>>> rewardsByTier = new HashMap<>();
     private final Map<String, List<Map<String, Object>>> botmRewardsByTier = new HashMap<>();
     private final List<String> tierPriority = new ArrayList<>();
@@ -23,6 +39,9 @@ public class VotingConfig {
         }
         this.config = YamlConfiguration.loadConfiguration(configFile);
         loadRewards();
+
+        // NEW: register as the singleton so static reload() can find us
+        INSTANCE = this;
     }
 
     public void reload() {

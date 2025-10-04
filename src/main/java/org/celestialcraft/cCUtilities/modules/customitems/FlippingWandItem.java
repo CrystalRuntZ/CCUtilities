@@ -1,9 +1,9 @@
 package org.celestialcraft.cCUtilities.modules.customitems;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -15,7 +15,9 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.celestialcraft.cCUtilities.CCUtilities;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class FlippingWandItem implements CustomItem {
     private final LegacyComponentSerializer serializer = LegacyComponentSerializer.legacySection();
@@ -29,13 +31,13 @@ public class FlippingWandItem implements CustomItem {
 
     @Override
     public boolean matches(ItemStack item) {
-        if (item == null || item.getType() == Material.AIR || !item.hasItemMeta()) return false;
+        if (item == null || item.getType().isAir() || !item.hasItemMeta()) return false;
 
         var meta = item.getItemMeta();
         var lore = meta.lore();
         if (lore == null) return false;
 
-        for (Component line : lore) {
+        for (var line : lore) {
             if ("§7Flipping Wand".equals(serializer.serialize(line))) {
                 return true;
             }
@@ -50,10 +52,15 @@ public class FlippingWandItem implements CustomItem {
         Player player = event.getPlayer();
         ItemStack held = player.getInventory().getItemInMainHand();
         if (!matches(held)) return;
-        if (isOnCooldown(player.getUniqueId())) return;
+        if (isOnCooldown(player.getUniqueId())) {
+            player.sendActionBar(Component.text("Flipping Wand is cooling down. Please wait.")
+                    .color(TextColor.color(0xFF5555)));
+            return;
+        }
 
         toggleUpsideDown(player);
         setCooldown(player.getUniqueId());
+        player.sendActionBar(Component.text("You flipped yourself!").color(TextColor.color(0x55FF55)));
     }
 
     @Override
@@ -65,11 +72,16 @@ public class FlippingWandItem implements CustomItem {
         if (!matches(held)) return;
 
         Entity target = event.getRightClicked();
-        if (target instanceof Player) return; // Ignore flipping players
-        if (isOnCooldown(user.getUniqueId())) return;
+        if (target instanceof Player) return;
+        if (isOnCooldown(user.getUniqueId())) {
+            user.sendActionBar(Component.text("Flipping Wand is cooling down. Please wait.")
+                    .color(TextColor.color(0xFF5555)));
+            return;
+        }
 
         toggleUpsideDown(target);
         setCooldown(user.getUniqueId());
+        user.sendActionBar(Component.text("You flipped the entity!").color(TextColor.color(0x55FF55)));
     }
 
     private void toggleUpsideDown(Entity entity) {

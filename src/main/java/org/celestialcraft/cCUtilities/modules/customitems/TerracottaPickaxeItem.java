@@ -45,10 +45,12 @@ public class TerracottaPickaxeItem implements CustomItem {
         if (!matches(tool)) return;
         if (block.getType() != Material.STONE) return;
 
-        event.setCancelled(true);
-        block.setType(Material.AIR, false);
+        event.setDropItems(false);
 
         var drop = new ItemStack(COLORS[ThreadLocalRandom.current().nextInt(COLORS.length)], 1);
-        block.getWorld().dropItemNaturally(block.getLocation(), drop);
+        block.getWorld().dropItemNaturally(block.getLocation().add(0.5, 0.5, 0.5), drop);
+
+        player.playSound(player.getLocation(), "block.stone.break", 1f, 1f);
     }
+
 }
