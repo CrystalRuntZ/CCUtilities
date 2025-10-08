@@ -13,6 +13,7 @@ C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtili
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\customitems\SilkSpawnerPickItem.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\listeners\ShopChestListener.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\commands\RandomKeysCommand.java
+C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\customitems\HalloweenRankTokenItem.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\util\ItemChecks.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\utils\CommandRegistrar.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\customitems\CyberCottonCandyItem.java
@@ -37,6 +38,7 @@ C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtili
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\customparticles\ParticleEffectType.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\playershops\data\ShopRegion.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\ced\listeners\LightDragonListener.java
+C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\customitems\BroomStickPetTokenItem.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\quests\util\QuestProgress.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\customenchants\BeheadingEnchant.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\customitems\FlowerWandItem.java
@@ -57,6 +59,7 @@ C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtili
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\ced\listeners\AetherDragonListener.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\ced\listeners\EarthDragonListener.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\quests\listeners\DamageListener.java
+C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\customitems\LilJackPetTokenItem.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\quests\listeners\RunDistanceListener.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\customitems\PocketSandItem.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\listeners\ShopWandListener.java
@@ -147,6 +150,7 @@ C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtili
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\ced\DragonConfig.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\commands\CompositeCommandExecutor.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\customenchants\LevitationImmunityEnchant.java
+C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\customitems\LilGrimPetTokenItem.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\customenchants\DoubleXPEnchant.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\customitems\MultitoolItem.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\customitems\DayFlyTokenItem.java
@@ -255,6 +259,7 @@ C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtili
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\maparts\MapArtSelectionManager.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\customitems\ReapersScythe.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\quests\util\LoreUtils.java
+C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\customitems\HalloweenHatBoxItem.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\customitems\MoltenCorePickaxeItem.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\customitems\FrostyChestplateItem.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\listeners\ShopTransferGuardListener.java
@@ -270,6 +275,7 @@ C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtili
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\customenchants\CustomEnchant.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\customitems\CelestialFishingRod.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\commands\SetShopCommand.java
+C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\customitems\HalloweenPetBoxItem.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\activity\CelestialPointManager.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\ced\NoSnowTrailCleaner.java
 C:\Users\antho\IdeaProjects\CCUtilities\src\main\java\org\celestialcraft\cCUtilities\modules\customitems\RailGunItem.java

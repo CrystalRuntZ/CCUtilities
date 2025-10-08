@@ -3,6 +3,7 @@ package org.celestialcraft.cCUtilities.modules.customenchants;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.celestialcraft.cCUtilities.listeners.CustomEnchantAnvilStackingListener;
+import org.celestialcraft.cCUtilities.modules.customitems.HalloweenPetBoxItem;
 import org.celestialcraft.cCUtilities.modules.customparticles.*;
 import org.celestialcraft.cCUtilities.modules.modulemanager.Module;
 import org.celestialcraft.cCUtilities.modules.modulemanager.ModuleManager;

@@ -84,7 +84,7 @@ public class ReusableFlyTokenItem implements CustomItem {
         pdc.set(COOLDOWN_KEY, PersistentDataType.LONG, now);
 
         int usesLeft = MAX_USES - uses;
-        player.sendMessage(MINI_MESSAGE.deserialize("<#C1AFDE>You have activated /fly for 1 hour! Uses left: <c1adfe>" + usesLeft));
+        player.sendMessage(MINI_MESSAGE.deserialize("<#C1AFDE>You have activated /fly for 1 hour! Uses left:" + usesLeft));
 
         if (inHand != null && inHand.hasItemMeta()) {
             ItemMeta meta = inHand.getItemMeta();
@@ -93,14 +93,15 @@ public class ReusableFlyTokenItem implements CustomItem {
                 if (lore == null) lore = new ArrayList<>();
                 else lore = new ArrayList<>(lore);
 
+                // --- Italic Fix: Use <!italic> at the start ---
                 if (lore.size() > 1) {
                     if (usesLeft > 0) {
-                        lore.set(1, MINI_MESSAGE.deserialize("<gray>Uses Left:</gray> <#c1adfe>" + usesLeft + "</#c1adfe>"));
+                        lore.set(1, MINI_MESSAGE.deserialize("<!italic><gray>Uses Left:</gray> <#c1adfe>" + usesLeft + "</#c1adfe>"));
                     } else {
                         lore.remove(1);
                     }
                 } else if (usesLeft > 0) {
-                    lore.add(MINI_MESSAGE.deserialize("<gray>Uses Left:</gray> <#c1adfe>" + usesLeft + "</#c1adfe>"));
+                    lore.add(MINI_MESSAGE.deserialize("<!italic><gray>Uses Left:</gray> <#c1adfe>" + usesLeft + "</#c1adfe>"));
                 }
 
                 meta.lore(lore);

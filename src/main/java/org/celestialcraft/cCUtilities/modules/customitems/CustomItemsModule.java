@@ -164,6 +164,12 @@ public class CustomItemsModule implements Module {
         CustomItemRegistry.register(new TrickOrTreatItem());
         CustomItemRegistry.register(new DemonTridentItem());
         CustomItemRegistry.register(new UltimateInvisibilityWand());
+        CustomItemRegistry.register(new HalloweenRankTokenItem());
+        CustomItemRegistry.register(new HalloweenHatBoxItem());
+        CustomItemRegistry.register(new HalloweenPetBoxItem());
+        CustomItemRegistry.register(new LilJackPetTokenItem());
+        CustomItemRegistry.register(new LilGrimPetTokenItem());
+        CustomItemRegistry.register(new BroomStickPetTokenItem());
 
         if (Bukkit.getPluginManager().isPluginEnabled("LuckPerms")) {
             CustomItemRegistry.register(new CapybaraSpawnEggItem());

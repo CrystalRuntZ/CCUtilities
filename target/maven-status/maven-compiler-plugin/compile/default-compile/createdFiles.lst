@@ -42,6 +42,7 @@ org\celestialcraft\cCUtilities\modules\customenchants\UnbreakableEnchant.class
 org\celestialcraft\cCUtilities\modules\customitems\CyberCottonCandyItem.class
 org\celestialcraft\cCUtilities\modules\entitymanager\ChunkEntityTracker.class
 org\celestialcraft\cCUtilities\modules\ced\listeners\CelestialDragonListener$2.class
+org\celestialcraft\cCUtilities\modules\customitems\HalloweenRankTokenItem.class
 org\celestialcraft\cCUtilities\modules\quests\QuestModule.class
 org\celestialcraft\cCUtilities\modules\wordfilter\WordFilterModule.class
 org\celestialcraft\cCUtilities\modules\customitems\DoubleXpSwordItem.class
@@ -228,6 +229,7 @@ org\celestialcraft\cCUtilities\modules\customitems\InstaMagicBroomItem.class
 org\celestialcraft\cCUtilities\modules\playershops\data\ShopResetter$1RLE.class
 org\celestialcraft\cCUtilities\modules\customitems\PocketSandItem.class
 org\celestialcraft\cCUtilities\modules\customenchants\NightVisionEnchant.class
+org\celestialcraft\cCUtilities\modules\customitems\HalloweenHatBoxItem.class
 org\celestialcraft\cCUtilities\modules\maparts\ResourceRegionListener.class
 org\celestialcraft\cCUtilities\modules\customitems\SombreroItem$1.class
 org\celestialcraft\cCUtilities\modules\customitems\WindStaffItem.class
@@ -235,6 +237,7 @@ org\celestialcraft\cCUtilities\modules\customparticles\HeartTrailEnchant.class
 org\celestialcraft\cCUtilities\modules\ced\listeners\ArcaneDragonListener.class
 org\celestialcraft\cCUtilities\modules\customitems\CelestialFishingRod$1.class
 org\celestialcraft\cCUtilities\modules\ced\listeners\ArcaneDragonListener$2.class
+org\celestialcraft\cCUtilities\modules\customitems\HalloweenPetBoxItem.class
 org\celestialcraft\cCUtilities\modules\maparts\MapArtClearingWandListener.class
 org\celestialcraft\cCUtilities\listeners\ShopBlockProtectListener.class
 org\celestialcraft\cCUtilities\modules\customenchants\StrengthOfTheEndEnchant$1.class
@@ -296,6 +299,7 @@ org\celestialcraft\cCUtilities\modules\customitems\MushroomWandItem.class
 org\celestialcraft\cCUtilities\modules\customparticles\CustomParticlesListener.class
 org\celestialcraft\cCUtilities\listeners\LevitationImmunityListener$1.class
 org\celestialcraft\cCUtilities\modules\ced\listeners\SandDragonListener$1.class
+org\celestialcraft\cCUtilities\modules\customitems\BroomStickPetTokenItem.class
 org\celestialcraft\cCUtilities\modules\quests\util\WeeklyQuestGenerator.class
 org\celestialcraft\cCUtilities\modules\customitems\LemurLeaperItem.class
 org\celestialcraft\cCUtilities\modules\playershops\data\ShopResetter$1.class
@@ -356,6 +360,7 @@ org\celestialcraft\cCUtilities\modules\ced\NoSnowTrailCleaner.class
 org\celestialcraft\cCUtilities\modules\customitems\PeaShooterItem.class
 org\celestialcraft\cCUtilities\modules\playershops\PlayerShopsModule.class
 org\celestialcraft\cCUtilities\listeners\CustomEnchantAnvilStackingListener.class
+org\celestialcraft\cCUtilities\modules\customitems\LilJackPetTokenItem.class
 org\celestialcraft\cCUtilities\modules\customitems\BlackCatSpawnEggItem.class
 org\celestialcraft\cCUtilities\listeners\ShopChestAccessListener.class
 org\celestialcraft\cCUtilities\commands\UnityAcceptCommand.class
@@ -365,6 +370,7 @@ org\celestialcraft\cCUtilities\modules\entitymanager\EntityManagerModule.class
 org\celestialcraft\cCUtilities\modules\customitems\RedRidingHoodHelmItem.class
 org\celestialcraft\cCUtilities\modules\customparticles\DragonFireEnchant.class
 org\celestialcraft\cCUtilities\listeners\ShopChestDragListener.class
+org\celestialcraft\cCUtilities\modules\customitems\LilGrimPetTokenItem.class
 org\celestialcraft\cCUtilities\modules\ced\DamageTracker.class
 org\celestialcraft\cCUtilities\modules\ced\listeners\PlagueDragonListener.class
 org\celestialcraft\cCUtilities\modules\customitems\BatWingsItem.class
